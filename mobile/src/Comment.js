@@ -5,7 +5,7 @@ import ReactNative, {
 } from 'react-native'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 
-export default class Question extends Component {
+export default class Comment extends Component {
   constructor(props){
     super(props)
     this.state = {

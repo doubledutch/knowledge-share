@@ -22,9 +22,33 @@ export default class CustomModal extends Component {
     this.props.hideModal()
   }
 
-  makeQuestion = (question, anom) => {
-    this.props.createSharedTask(question, anom)
-    this.setState({question: '', anom: false})
+  makeQuestion = (question) => {
+    if (this.props.showQuestion) {
+      this.props.createSharedQuestion(question)
+      this.setState({question: ''})
+    }
+    else {
+      this.props.createSharedComment(question)
+      this.setState({question: ''})
+    }
+  }
+
+  renderQuestion = () => {
+    const question = this.props.question
+    if (this.props.showQuestion === false) {
+      return (
+        <View style={s.listContainer}>
+          <View style={s.rightContainer}>
+            <Text style={s.questionText}>{question.text}</Text>
+            <View style={s.buttonContainer}>
+              <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
+              <Text style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
+            </View>
+          </View>
+        </View>
+    )
+  }
+
   }
 
   render() {
@@ -63,6 +87,7 @@ export default class CustomModal extends Component {
       const borderStyle = {borderColor: borderColor}
       return (
         <View style={{flex: 1}}>
+          {this.renderQuestion()}
           <View style={[s.modal, borderStyle]}>
               <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
               <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder="Type your question here"
@@ -103,6 +128,39 @@ const s = ReactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EFEFEF',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 2,
+    marginBottom: 2,
+  },
+  subText:{
+    fontSize: 12,
+    color: '#9B9B9B'
+  },
+  nameText:{
+    fontSize: 14,
+    color: '#9B9B9B',
+  },
+  questionText:{
+    fontSize: 16,
+    color: '#364247',
+    fontFamily: 'System',
+    marginBottom: 5
+  },
+  listContainer: {
+    flexDirection: 'row',
+    alignItems:'center',
+    backgroundColor: 'white',
+    marginBottom: 1,
+  },
+  rightContainer: {
+    flex: 1,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    margin: 5,
   },
   bottomButtons: {
     flexDirection: 'row',

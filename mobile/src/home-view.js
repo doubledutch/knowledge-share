@@ -7,6 +7,8 @@ import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 import FirebaseConnector from '@doubledutch/firebase-connector'
 import MyList  from './Table'
 import CustomModal from './Modal'
+import HomeHeader from './HomeHeader'
+
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
 
@@ -15,22 +17,16 @@ class HomeView extends Component {
     super()
     this.state = {
       question: '', 
-      vote: '', 
       disable: false, 
       questions: [], 
-      sharedVotes: [], 
-      characterCount: 0, 
       showRecent: false, 
       showError: "white", 
       modalVisible: false, 
-      color: 'white', 
-      height: 20, 
-      newValue: '', 
-      marginTop: 18, 
       animation: "none",
       title: "Knowledge Share",
       questionError: "Ask Question",
       topBorder: "#EFEFEF",
+      showQuestion:true
     }
     this.signin = fbc.signin()
       .then(user => this.user = user)
@@ -48,66 +44,48 @@ class HomeView extends Component {
       <KeyboardAvoidingView style={s.container} behavior={Platform.select({ios: "padding", android: null})}>
         <TitleBar title={this.state.title} client={client} signin={this.signin} />
         {this.renderHome()}
+        {this.renderFooter()}
       </KeyboardAvoidingView> 
     )
   }
 
   renderHome = () => {
-    const newStyle = {
-      flex: 1,
-      marginBottom: 20,
-      fontSize: 18,
-      color: '#9B9B9B',
-      maxHeight: 100,
-      height: 22,
-      marginTop: 20,
-      paddingTop: 0,
-    }
-    
-    const androidStyle = {
-      paddingLeft: 0,
-      paddingBottom: 0,
-      textAlignVertical: 'center'
-    }
-
-    const { questions, sharedVotes, showRecent, dropDown, newValue, height, marginTop } = this.state
     var pinnedQuestions = this.state.questions.filter(item => item.pin === true && item.block === false)
     var otherQuestions = this.state.questions.filter(item => item.pin === false && item.block === false)
     this.originalOrder(pinnedQuestions)
     this.originalOrder(otherQuestions)
     let newQuestions = pinnedQuestions.concat(otherQuestions)
+
     if (this.state.modalVisible === false){
       return(
       <View style={{flex:1}}>
-        <View style={s.textBox}>
-            <TouchableOpacity style={s.circleBox} onPress={this.showModal}><Text style={s.whiteText}>?</Text></TouchableOpacity>
-            <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder="Type your question here"
-              value={this.state.question}
-              autoFocus={false}
-              onFocus={this.showModal}
-              multiline={true}
-              placeholderTextColor="#9B9B9B"
-            />
-        </View>
+        <HomeHeader
+          showModal={this.showModal}
+          showQuestion={this.state.showQuestion}
+          question={this.state.question}
+        />
         <View style={{flex:1}}>
           <MyList 
             questions={newQuestions}
             showModal = {this.showModal}
-            findOrder = {this.findOrder}
             showRecent = {this.state.showRecent}
-            findOrderDate = {this.findOrderDate}
             originalOrder = {this.originalOrder}
             newVote = {this.newVote}
+            showQuestion ={this.state.showQuestion}
+            handleChange={this.handleChange}
+            showComments={this.showComments}
           />
         </View>
       </View>
       )
-    } else {
+    } 
+    else {
       return(
         <CustomModal 
           showModal = {this.showModal}
           makeTrue = {this.makeTrue}
-          createSharedTask = {this.createSharedTask}
+          createSharedQuestion = {this.createSharedQuestion}
+          createSharedComment = {this.createSharedComment}
           disable = {this.state.disable}
           question = {this.state.question}
           showError = {this.state.showError}
@@ -115,17 +93,17 @@ class HomeView extends Component {
           modalVisible = {this.state.modalVisible}
           questionError = {this.state.questionError}
           style={{flex:1}}
+          showQuestion={this.state.showQuestion}
         />
       )
     }
   }
 
-  renderIcon = (question) => {
-    if (question.myVote === true){
-      return <TouchableOpacity onPress={() => this.newVote(question)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
-    }
-    else {
-      return <TouchableOpacity onPress={() => this.newVote(question)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
+  renderFooter = () => {
+    if (this.state.showQuestion === false && this.state.modalVisible === false) {
+      return (
+        <TouchableOpacity onPress={() => this.handleChange("showQuestion", true)} style={s.back}></TouchableOpacity>
+      )
     }
   }
 
@@ -135,6 +113,10 @@ class HomeView extends Component {
 
   hideModal = () => {
       this.setState({modalVisible: false, animation: "slide", showError: "white"})
+  }
+
+  flagQuestion = () => {
+
   }
   
   downloadQuestions = () => {
@@ -193,36 +175,65 @@ class HomeView extends Component {
       }
     }
 
+    showComments = (question) => {
+      this.handleChange("question", question)
+      this.handleChange("showQuestion", false)
+    }
+
     dateSort = (questions) => {
       questions.sort(function (a,b){
         return b.dateCreate - a.dateCreate
       })
     }
 
-    findOrder = () => {
-      this.setState({showRecent: false})
+    handleChange = (prop, value) => {
+      this.setState({[prop]: value})
     }
 
-    findOrderDate = () => {
-      this.setState({showRecent: true})
-    }
-
-    createSharedTask = (question, anom) => this.createQuestion(fbc.database.public.allRef, question, anom)
+    createSharedQuestion = (question, anom) => this.createQuestion(fbc.database.public.allRef, question)
   
-    createQuestion = (ref, question, anom) => {
+    createQuestion = (ref, question) => {
       var time = new Date().getTime()
       var questionName = question.trim()
       if (questionName.length === 0) {
         this.setState({showError: "red"})
       }
-  
       if (this.user && questionName.length > 0) {
         ref('questions').push({
           text: questionName,
           creator: client.currentUser,
           score : 0,
           dateCreate: time,
-          anom: anom,
+          block: false,
+          pin: false,
+          lastEdit: time
+        })
+        .then(() => {
+          this.setState({question: '', anom: false, showError: "white"})
+          setTimeout(() => {
+            this.hideModal()
+            }
+            ,250)
+        })
+        .catch(error => this.setState({questionError: "Retry"}))
+      }
+    }
+
+    
+    createSharedComment = (comment) => this.createComment(fbc.database.public.allRef, comment)
+  
+    createComment = (ref, comment) => {
+      var time = new Date().getTime()
+      var commentName = comment.trim()
+      if (commentName.length === 0) {
+        this.setState({showError: "red"})
+      }
+      if (this.user && commentName.length > 0) {
+        ref('comments').child(this.state.question.key).push({
+          text: commentName,
+          creator: client.currentUser,
+          score : 0,
+          dateCreate: time,
           block: false,
           pin: false,
           lastEdit: time
@@ -257,6 +268,13 @@ const s = ReactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EFEFEF',
+  },
+  back: {
+    height: 75,
+    backgroundColor: 'black',
+    opacity: 0.5,
+    borderTopWidth: 1,
+    borderTopColor: '#EFEFEF'
   },
   textBox: {
     flexDirection: 'row',

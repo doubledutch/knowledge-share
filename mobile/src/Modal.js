@@ -90,7 +90,7 @@ export default class CustomModal extends Component {
           {this.renderQuestion()}
           <View style={[s.modal, borderStyle]}>
               <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
-              <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder="Type your question here"
+              <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? "Type your question here" : "Add your own answer"}
                 value={this.state.question}
                 onChangeText={question => this.setState({question})} 
                 maxLength={250}
@@ -109,7 +109,7 @@ export default class CustomModal extends Component {
                 <Text style={s.anomText}>{client.currentUser.firstName + " " + client.currentUser.lastName}</Text>
               </View>
             </View>
-            <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion(this.state.question, this.state.anom)}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
+            <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion(this.state.question)}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
           </View>
           <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 
         </View>

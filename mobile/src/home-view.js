@@ -18,7 +18,9 @@ class HomeView extends Component {
     this.state = {
       question: '', 
       disable: false, 
-      questions: [], 
+      questions: [],
+      comments: {},
+      votes: {},
       showRecent: false, 
       showError: "white", 
       modalVisible: false, 
@@ -35,7 +37,41 @@ class HomeView extends Component {
 
   componentDidMount(){
     this.signin.then(() => {
-      this.downloadQuestions()
+      fbc.database.public.allRef('questions').on('child_added', data => {
+        this.setState({ questions: [...this.state.questions, {...data.val(), key: data.key}] }) 
+      })
+  
+      fbc.database.public.allRef('comments').on('child_added', data => {
+        this.setState(state => {
+          const comment = data.val()
+          const commentsForQuestion = this.state.comments[comment.questionId]
+          if (commentsForQuestion) {
+            var newCommentsForQuestion = [...commentsForQuestion, {...comment, key: data.key}]
+          } else {
+            var newCommentsForQuestion = [{...comment, key: data.key}]
+          }
+          return {comments: {...state.comments, [comment.questionId]: newCommentsForQuestion}}
+        })
+      })
+  
+      fbc.database.public.allRef('votes').on('child_added', data => {
+        this.setState(state => {
+          const vote = data.val()
+          const votesForQuestion = this.state.votes[vote.commentKey]
+          if (votesForQuestion) {
+            var newVotesForQuestion = [...votesForQuestion, {...vote, key: data.key}]
+          } else {
+            var newVotesForQuestion = [{...vote, key: data.key}]
+          }
+          return {votes: {...state.votes, [vote.commentKey]: newVotesForQuestion}}
+        })
+      })
+  
+      fbc.database.public.allRef('votes').on('child_removed', data => {
+        var currentVotes = this.state.votes
+        currentVotes[data.val().commentKey].filter(x => {x.key !== data.key})
+        this.setState({ votes: currentVotes })
+      })
     })
   }
 
@@ -50,12 +86,11 @@ class HomeView extends Component {
   }
 
   renderHome = () => {
-    var pinnedQuestions = this.state.questions.filter(item => item.pin === true && item.block === false)
-    var otherQuestions = this.state.questions.filter(item => item.pin === false && item.block === false)
-    this.originalOrder(pinnedQuestions)
-    this.originalOrder(otherQuestions)
-    let newQuestions = pinnedQuestions.concat(otherQuestions)
-
+    // var pinnedQuestions = this.state.questions.filter(item => item.pin === true && item.block === false)
+    // var otherQuestions = this.state.questions.filter(item => item.pin === false && item.block === false)
+    // this.originalOrder(pinnedQuestions)
+    // this.originalOrder(otherQuestions)
+    let newQuestions = this.state.questions
     if (this.state.modalVisible === false){
       return(
       <View style={{flex:1}}>
@@ -67,6 +102,7 @@ class HomeView extends Component {
         <View style={{flex:1}}>
           <MyList 
             questions={newQuestions}
+            question={this.state.question}
             showModal = {this.showModal}
             showRecent = {this.state.showRecent}
             originalOrder = {this.originalOrder}
@@ -74,6 +110,8 @@ class HomeView extends Component {
             showQuestion ={this.state.showQuestion}
             handleChange={this.handleChange}
             showComments={this.showComments}
+            comments = {this.state.comments}
+            votes = {this.state.votes}
           />
         </View>
       </View>
@@ -118,50 +156,6 @@ class HomeView extends Component {
   flagQuestion = () => {
 
   }
-  
-  downloadQuestions = () => {
-      fbc.database.public.allRef('questions').on('child_added', data => {
-        this.setState({ questions: [...this.state.questions, {...data.val(), key: data.key }] })
-        fbc.database.public.allRef('votes').child(data.key).on('child_added', vote => {
-          const isThisMyVote = vote.key === client.currentUser.id
-          this.setState(prevState => ({
-            questions: prevState.questions.map(question => 
-              question.key === data.key
-                ? { ...question, myVote: question.myVote || isThisMyVote, score: question.score + 1}
-                : question
-            )
-          }))
-        })
-        fbc.database.public.allRef('votes').child(data.key).on('child_removed', vote => {
-          const wasThisMyVote = vote.key === client.currentUser.id
-          this.setState(prevState => ({
-            questions: prevState.questions.map(question => 
-              question.key === data.key
-                ? { ...question, myVote: question.myVote && !wasThisMyVote, score: question.score - 1}
-                : question
-            )
-          }))
-        })
-      })
-      fbc.database.public.allRef('questions').on('child_changed', data => {
-        var questions = this.state.questions
-        for (var i in questions) {
-          if (questions[i].key === data.key) {
-            var score = questions[i].score
-            var myVote = questions[i].myVote
-            questions[i] = data.val()
-            questions[i].score = score
-            questions[i].myVote = myVote
-            questions[i].key = data.key
-            this.setState({questions})
-            break
-          }
-        }
-      })
-      fbc.database.public.allRef('questions').on('child_removed', data => {
-        this.setState({ questions: this.state.questions.filter(x => x.key !== data.key) })
-      })
-    }
 
     originalOrder = (questions) => {
       if (this.state.showRecent === false) {
@@ -190,7 +184,7 @@ class HomeView extends Component {
       this.setState({[prop]: value})
     }
 
-    createSharedQuestion = (question, anom) => this.createQuestion(fbc.database.public.allRef, question)
+    createSharedQuestion = (question) => this.createQuestion(fbc.database.public.allRef, question)
   
     createQuestion = (ref, question) => {
       var time = new Date().getTime()
@@ -203,13 +197,14 @@ class HomeView extends Component {
           text: questionName,
           creator: client.currentUser,
           score : 0,
+          comments: [],
           dateCreate: time,
           block: false,
           pin: false,
           lastEdit: time
         })
         .then(() => {
-          this.setState({question: '', anom: false, showError: "white"})
+          this.setState({question: '', showError: "white"})
           setTimeout(() => {
             this.hideModal()
             }
@@ -229,17 +224,18 @@ class HomeView extends Component {
         this.setState({showError: "red"})
       }
       if (this.user && commentName.length > 0) {
-        ref('comments').child(this.state.question.key).push({
+        ref('comments').push({
           text: commentName,
           creator: client.currentUser,
           score : 0,
           dateCreate: time,
           block: false,
           pin: false,
-          lastEdit: time
+          lastEdit: time,
+          questionId: this.state.question.key
         })
         .then(() => {
-          this.setState({question: '', anom: false, showError: "white"})
+          this.setState({showError: "white"})
           setTimeout(() => {
             this.hideModal()
             }
@@ -249,12 +245,18 @@ class HomeView extends Component {
       }
     }
 
-    newVote = (question) => {
-      if (question.myVote === true) {
-        fbc.database.public.allRef("votes").child(question.key).child(client.currentUser.id).remove()
+    newVote = (c, myVote) => {
+      if (myVote) {
+        console.log("remove")
+        fbc.database.public.allRef("votes").child(myVote.key).remove()
       }
       else {
-        fbc.database.public.allRef('votes').child(question.key).child(client.currentUser.id).set(1)
+        console.log("add")
+        fbc.database.public.allRef('votes').push({
+          user: client.currentUser.id,
+          commentKey: c.key,
+          value: 1
+        })
         .then(() => this.setState({vote: ''}))
         .catch(x => console.error(x))
       }

@@ -8,6 +8,7 @@ import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 export default class TableCell extends Component {
   render() {
     const { item } = this.props 
+
     return (
       <View>
         {this.renderCell(item)}
@@ -22,7 +23,7 @@ export default class TableCell extends Component {
           <View style={s.leftContainer}>
             {/* {this.renderIcon(item)} */}
             <Text style={s.subText}>Votes</Text>
-            <Text style={s.subText}>{item.score}</Text>
+            <Text style={s.subText}>{this.countVotes()}</Text>
           </View>
           <View style={s.rightContainer}>
             <Text style={s.questionText}>{item.text}</Text>
@@ -38,8 +39,8 @@ export default class TableCell extends Component {
       return (
         <View style={s.listContainer}>
           <View style={s.leftContainer}>
-            {this.renderIcon(item)}
-            <Text style={s.subText}>{item.score}</Text>
+            {this.renderIcon()}
+            <Text style={s.subText}>{this.countVotes()}</Text>
           </View>
           <View style={s.rightContainer}>
             <Text style={s.questionText}>{item.text}</Text>
@@ -53,13 +54,32 @@ export default class TableCell extends Component {
     }
   }
 
-  renderIcon = (question) => {
-    if (question.myVote === true){
-      return <TouchableOpacity onPress={() => this.props.newVotes(question)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
+  renderIcon = () => {
+    var comment = this.props.item
+    var num = this.props.item.key
+    var votes = this.props.votes[num]
+    var myVote = null
+    if (votes) {
+    myVote = votes.find((vote) => {
+      return vote.user
+    })
+  }
+    if (myVote){
+      return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
     }
     else {
-       return <TouchableOpacity onPress={() => this.props.newVotes(question)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
+       return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
     }
+  }
+
+  countVotes = () => {
+      var num = this.props.item.key
+      var votes = this.props.votes[num]
+      var total = 0
+    if (votes){
+      total = votes.length
+    }
+    return total
   }
 
 }

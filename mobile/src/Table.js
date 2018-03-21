@@ -12,20 +12,43 @@ export class MyList extends Component {
 
   render() { 
     const { questions, newVote, showQuestion, showComments }= this.props
+    const data = this.verifyData()
     return (
       <View>
         {this.renderHeader(showQuestion)}
         <FlatList
-          data={questions}
+          data={data}
           ListFooterComponent={<View style={{height: 100}}></View>}
           renderItem={({item}) => {
             return (
-              <TableCell item={item} newVotes={newVote} showQuestion={showQuestion} showComments={showComments}/>
+              <TableCell item={item} newVotes={newVote} votes={this.props.votes} showQuestion={showQuestion} showComments={showComments}/>
             )
           }}
         />
       </View>
     )
+  }
+
+  verifyData = () => {
+    if (this.props.showQuestion) {
+      return this.props.questions
+    }
+    else {
+      // console.log(this.props.question.comments)
+      // var comments = this.props.question.comments
+
+      const comments = this.props.comments[this.props.question.key]
+      // comments.pop()
+      // this.props.question.commments.map(comment => {
+      //   for (var i in this.props.question.comments) {
+      //   if (this.props.) {
+      //     comments.push(comment)
+      //   }
+      // }
+      // })
+    
+      return comments
+    }
   }
 
  

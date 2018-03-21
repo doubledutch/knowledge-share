@@ -27,18 +27,21 @@ All data is stored independently and associated on the mobile device via its par
 
 With questions as the first data type in any tree we do not need to worry about its association with other objects.
 
-  ```.key: {
+```
+  .key: {
       text: questionName,
       creator: client.currentUser,
       comments: [],
       dateCreate: time,
       block: false,
       lastEdit: time
-    } ```
+    } 
+```
 
 To track comments since they are created from the questions details screen we can easily track them via the original questions key.
 
-  ```.key: {
+```
+  .key: {
         text: questionName,
         creator: client.currentUser,
         comments: [],
@@ -46,21 +49,24 @@ To track comments since they are created from the questions details screen we ca
         block: false,
         lastEdit: time,
         questionId: this.state.question.key
-      } ```
+    } 
+```
 
 To track votes we use a similar method of associated them via the parent objects key.      
 
-  ```.key: {
+``` .key: {
         user: client.currentUser.id,
         commentKey: c.key,
         value: 1
-      } ```
+    } 
+```
 
 #### Mobile client state
 
 The mobile client side is critical for organizing and associating the objects. An example method is found below:
 
- ```fbc.database.public.allRef('comments').on('child_added', data => {
+```
+fbc.database.public.allRef('comments').on('child_added', data => {
         this.setState(state => {
           const comment = data.val()
           const commentsForQuestion = this.state.comments[comment.questionId]
@@ -71,6 +77,7 @@ The mobile client side is critical for organizing and associating the objects. A
           }
           return {comments: {...state.comments, [comment.questionId]: newCommentsForQuestion}}
         })
-      })```
+      })
+```
 
-  Here we are organizing comments via the question key. This ensures that we can effictely organize comments even if data for the questions has not been downloaded. It also allows us to quickly find the correct comments to display for each question.
+Here we are organizing comments via the question key. This ensures that we can effictely organize comments even if data for the questions has not been downloaded. It also allows us to quickly find the correct comments to display for each question.

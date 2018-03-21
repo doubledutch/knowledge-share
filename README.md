@@ -19,9 +19,9 @@ on a per-event basis.
 As the mobile client is the driver for content creation this is the focus of our data model. As this application requires an open sharing of commentary we are storing everything as public which enables visibility by all.
 
 We have 3 principals data types to power this application:
-- **`private/all/questions`**: Original questions asked
-- **`private/all/comments`**: The commentary on those questions
-- **`private/all/votes`**: Any votes associated to those questions or comments.
+- **`public/all/questions`**: Original questions asked
+- **`public/all/comments`**: The commentary on those questions
+- **`public/all/votes`**: Any votes associated to those questions or comments.
 
 All data is stored independently and associated on the mobile device via its parent object key.
 

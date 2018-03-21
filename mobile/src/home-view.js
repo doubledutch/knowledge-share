@@ -66,6 +66,8 @@ class HomeView extends Component {
           return {votes: {...state.votes, [vote.commentKey]: newVotesForQuestion}}
         })
       })
+
+      //not working
   
       fbc.database.public.allRef('votes').on('child_removed', data => {
         var currentVotes = this.state.votes
@@ -196,11 +198,9 @@ class HomeView extends Component {
         ref('questions').push({
           text: questionName,
           creator: client.currentUser,
-          score : 0,
           comments: [],
           dateCreate: time,
           block: false,
-          pin: false,
           lastEdit: time
         })
         .then(() => {
@@ -227,10 +227,8 @@ class HomeView extends Component {
         ref('comments').push({
           text: commentName,
           creator: client.currentUser,
-          score : 0,
           dateCreate: time,
           block: false,
-          pin: false,
           lastEdit: time,
           questionId: this.state.question.key
         })

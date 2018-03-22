@@ -113,12 +113,39 @@ class HomeView extends Component {
   }
 
   organizeFilters = (questions) => {
-    console.log(questions)
     var filters = []
     questions.map((item) => {
-      filters.push(item.filters)
+      if (item.filters) {
+        item.filters.map((filter) => {
+          filters.push(filter)
+        })
+      }
     })
-    console.log(filters)
+    filters.sort()
+    this.countFilters(filters)
+  }
+
+  countFilters = (filters) => {
+    var newFilters = []
+    var current = null;
+    var cnt = 0;
+    for (var i = 0; i < filters.length; i++) {
+        if (filters[i] != current) {
+            if (cnt > 0) {
+              var filter = {title: current, count:cnt}
+              newFilters.push(filter)
+            }
+            current = filters[i];
+            cnt = 1;
+        } else {
+            cnt++;
+        }
+    }
+    if (cnt > 0) {
+      var filter = {title: current, count:cnt}
+      newFilters.push(filter)
+    }
+    this.setState({filters: newFilters})
   }
 
  

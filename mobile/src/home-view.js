@@ -104,7 +104,6 @@ class HomeView extends Component {
       votes = {...votes, [vote.commentKey]: newVotesForQuestion}
     }
     this.setState({votes})
-    console.log(votes)
   }
 
  

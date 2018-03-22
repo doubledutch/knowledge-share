@@ -21,6 +21,7 @@ class HomeView extends Component {
       questions: [],
       comments: {},
       votes: {},
+      filters: [],
       showRecent: false, 
       showError: "white", 
       modalVisible: false, 
@@ -84,11 +85,16 @@ class HomeView extends Component {
 
   organizeQuestions = (newQuestions) => {
     var questions = []
+    var filters = []
     for (var i in newQuestions){
       var question = newQuestions[i]
+      var filter = question.filters
       questions = [...questions, {...question, key: i}]
+      filters = {...filters, ...filter}
+      console.log(filters)
     }
-    this.setState({ questions }) 
+    this.organizeFilters(questions)
+    this.setState({ questions}) 
   }
 
   organizeVotes = (newVotes, id) => {
@@ -104,6 +110,15 @@ class HomeView extends Component {
       votes = {...votes, [vote.commentKey]: newVotesForQuestion}
     }
     this.setState({votes})
+  }
+
+  organizeFilters = (questions) => {
+    console.log(questions)
+    var filters = []
+    questions.map((item) => {
+      filters.push(item.filters)
+    })
+    console.log(filters)
   }
 
  
@@ -170,10 +185,14 @@ class HomeView extends Component {
   }
 
   hideModal = () => {
-      this.setState({modalVisible: false, animation: "slide", showError: "white"})
+    this.setState({modalVisible: false, animation: "slide", showError: "white"})
   }
 
   flagQuestion = () => {
+
+  }
+
+  sortTopics = () => {
 
   }
 
@@ -219,7 +238,8 @@ class HomeView extends Component {
         comments: [],
         dateCreate: time,
         block: false,
-        lastEdit: time
+        lastEdit: time,
+        filters: ["pizza", "food"]
       })
       .then(() => {
         this.setState({question: '', showError: "white"})

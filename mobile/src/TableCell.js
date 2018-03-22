@@ -22,6 +22,8 @@ export default class TableCell extends Component {
         <TouchableOpacity style={s.listContainer} onPress={() => this.props.showComments(item)}>
           <View style={s.leftContainer}>
             {/* {this.renderIcon(item)} */}
+            <Text style={s.subText}>Answer</Text>
+            <Text style={s.subText}>{this.props.commentsTotal}</Text>
             <Text style={s.subText}>Votes</Text>
             <Text style={s.subText}>{this.countVotes()}</Text>
           </View>

@@ -44,7 +44,9 @@ class HomeView extends Component {
       })
 
       fbc.database.public.usersRef().on('child_changed', data => {
-        console.log(data.val())
+        if (data.val().comments){this.organizeComments(data.val().comments)}
+        if (data.val().votes){this.organizeVotes(data.val().votes, data.key)}
+        if (data.val().questions){this.organizeQuestions(data.val().questions)}
       })
   
       fbc.database.public.userRef('votes').on('child_removed', data => {
@@ -66,7 +68,7 @@ class HomeView extends Component {
   }
 
   organizeComments = (newComments) => {
-    var comments = this.state.comments
+    var comments = {}
     for (var i in newComments){
       var comment = newComments[i]
       const commentsForQuestion = comments[comment.questionId]
@@ -81,7 +83,7 @@ class HomeView extends Component {
   }
 
   organizeQuestions = (newQuestions) => {
-    var questions = this.state.questions
+    var questions = []
     for (var i in newQuestions){
       var question = newQuestions[i]
       questions = [...questions, {...question, key: i}]
@@ -90,10 +92,10 @@ class HomeView extends Component {
   }
 
   organizeVotes = (newVotes, id) => {
-    var votes = this.state.votes
+    var votes = {}
     for (var i in newVotes){
       var vote = newVotes[i]
-      const votesForQuestion = this.state.votes[vote.commentKey]
+      const votesForQuestion = votes[vote.commentKey]
       if (votesForQuestion) {
         var newVotesForQuestion = [...votesForQuestion, {...vote, key: i, user: id}]
       } else {
@@ -102,6 +104,7 @@ class HomeView extends Component {
       votes = {...votes, [vote.commentKey]: newVotesForQuestion}
     }
     this.setState({votes})
+    console.log(votes)
   }
 
  

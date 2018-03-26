@@ -6,7 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 import com.brentvatne.react.ReactVideoPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
-import org.reactnative.camera.RNCameraPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -30,7 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativeYouTube(),
             new ReactVideoPackage(),
             new RNFetchBlobPackage(),
-            new RNCameraPackage()
+            new RCTCameraPackage()
       );
     }
   };

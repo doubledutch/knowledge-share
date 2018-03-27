@@ -9,6 +9,12 @@ import MyList  from './Table'
 import CustomModal from './Modal'
 import HomeHeader from './HomeHeader'
 
+import {
+  mapPerUserPushedDataToStateObjects,
+  mapPerUserPushedDataToObjectOfStateObjects,
+  reducePerUserDataToStateCount,
+} from './firebaseHelpers'
+
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
 
@@ -18,9 +24,10 @@ class HomeView extends Component {
     this.state = {
       question: '', 
       disable: false, 
-      questions: [],
-      comments: {},
-      votes: {},
+      questions: {},
+      answersByQuestion: {},
+      votesByQuestion: {},
+      votesByAnswer: {},
       filters: [],
       showRecent: false, 
       showError: "white", 
@@ -33,28 +40,16 @@ class HomeView extends Component {
     }
     this.signin = fbc.signin()
       .then(user => this.user = user)
-      .catch(err => console.error(err))
+
+    this.signin.catch(err => console.error(err))
   }
 
   componentDidMount(){
     this.signin.then(() => {
-      fbc.database.public.usersRef().on('child_added', data => {
-        if (data.val().comments){this.organizeComments(data.val().comments)}
-        if (data.val().votes){this.organizeVotes(data.val().votes, data.key)}
-        if (data.val().questions){this.organizeQuestions(data.val().questions)}
-      })
-
-      fbc.database.public.usersRef().on('child_changed', data => {
-        if (data.val().comments){this.organizeComments(data.val().comments)}
-        if (data.val().votes){this.organizeVotes(data.val().votes, data.key)}
-        if (data.val().questions){this.organizeQuestions(data.val().questions)}
-      })
-  
-      fbc.database.public.userRef('votes').on('child_removed', data => {
-        var currentVotes = this.state.votes
-        currentVotes[data.val().commentKey].filter(x => {x.key !== data.key})
-        this.setState({ votes: currentVotes })
-      })
+      mapPerUserPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
+      mapPerUserPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
+      reducePerUserDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
+      reducePerUserDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
     })
   }
 
@@ -62,59 +57,67 @@ class HomeView extends Component {
     return (
       <KeyboardAvoidingView style={s.container} behavior={Platform.select({ios: "padding", android: null})}>
         <TitleBar title={this.state.title} client={client} signin={this.signin} />
-        {this.renderHome()}
-        {this.renderFooter()}
+        { Object.values(this.state.questions).map(q => (
+          <View key={q.id}>
+            <Text>{q.id}: ({this.state.votesByQuestion[q.id] || 0}) {q.text}</Text>
+            { Object.values(this.state.answersByQuestion[q.id] || {}).map(a => (
+              <Text key={a.id}>    {a.id}: ({this.state.votesByAnswer[a.id] || 0}) {a.text}</Text>
+            ))}
+          </View>
+        ))}
+        {/* {this.renderHome()}
+        {this.renderFooter()} */}
       </KeyboardAvoidingView> 
     )
   }
 
-  organizeComments = (newComments) => {
-    var comments = {}
-    for (var i in newComments){
-      var comment = newComments[i]
-      const commentsForQuestion = comments[comment.questionId]
-      if (commentsForQuestion) {
-        var newCommentsForQuestion = [...commentsForQuestion, {...comment, key: i}]
-      } else {
-        var newCommentsForQuestion = [{...comment, key: i}]
-      }
-      comments = {...comments, [comment.questionId]: newCommentsForQuestion}
-    }
-    this.setState({comments})
-  }
+  // organizeComments = (newComments) => {
+  //   var comments = {}
+  //   for (var i in newComments){
+  //     var comment = newComments[i]
+  //     const commentsForQuestion = comments[comment.questionId]
+  //     if (commentsForQuestion) {
+  //       var newCommentsForQuestion = [...commentsForQuestion, {...comment, key: i}]
+  //     } else {
+  //       var newCommentsForQuestion = [{...comment, key: i}]
+  //     }
+  //     comments = {...comments, [comment.questionId]: newCommentsForQuestion}
+  //   }
+  //   this.setState({comments})
+  // }
 
-  organizeQuestions = (newQuestions) => {
-    var questions = []
-    var filters = []
-    for (var i in newQuestions){
-      var question = newQuestions[i]
-      var filter = question.filters
-      questions = [...questions, {...question, key: i}]
-      filters = {...filters, ...filter}
-      console.log(filters)
-    }
-    this.organizeFilters(questions)
-    this.setState({ questions}) 
-  }
+  // organizeQuestions = (newQuestions) => {
+  //   var questions = []
+  //   var filters = []
+  //   for (var i in newQuestions){
+  //     var question = newQuestions[i]
+  //     var filter = question.filters
+  //     questions = [...questions, {...question, key: i}]
+  //     filters = {...filters, ...filter}
+  //     console.log(filters)
+  //   }
+  //   this.organizeFilters(questions)
+  //   this.setState({ questions}) 
+  // }
 
-  organizeVotes = (newVotes, id) => {
-    var votes = {}
-    for (var i in newVotes){
-      var vote = newVotes[i]
-      const votesForQuestion = votes[vote.commentKey]
-      if (votesForQuestion) {
-        var newVotesForQuestion = [...votesForQuestion, {...vote, key: i, user: id}]
-      } else {
-        var newVotesForQuestion = [{...vote, key: i, user: id}]
-      }
-      votes = {...votes, [vote.commentKey]: newVotesForQuestion}
-    }
-    this.setState({votes})
-  }
+  // organizeVotes = (newVotes, id) => {
+  //   var votes = {}
+  //   for (var i in newVotes){
+  //     var vote = newVotes[i]
+  //     const votesForQuestion = votes[vote.commentKey]
+  //     if (votesForQuestion) {
+  //       var newVotesForQuestion = [...votesForQuestion, {...vote, key: i, user: id}]
+  //     } else {
+  //       var newVotesForQuestion = [{...vote, key: i, user: id}]
+  //     }
+  //     votes = {...votes, [vote.commentKey]: newVotesForQuestion}
+  //   }
+  //   this.setState({votes})
+  // }
 
   organizeFilters = (questions) => {
     var filters = []
-    questions.map((item) => {
+    Object.values(questions).map((item) => {
       if (item.filters) {
         item.filters.map((filter) => {
           filters.push(filter)
@@ -148,11 +151,8 @@ class HomeView extends Component {
     this.setState({filters: newFilters})
   }
 
- 
-
-
   renderHome = () => {
-    let newQuestions = this.state.questions
+    let newQuestions = Object.keys(this.state.questions)
     if (this.state.modalVisible === false){
       return(
       <View style={{flex:1}}>

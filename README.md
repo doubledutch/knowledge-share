@@ -12,54 +12,71 @@ This extension connects to a simple firebase database via
 [@doubledutch/firebase-connector](https://www.npmjs.com/package/@doubledutch/firebase-connector)
 on a per-event basis.
 
-#### `public/all`
+As the mobile client is the driver for content creation, this is the focus of our data model.
 
-### Mobile client state
+#### `public/users`
 
-As the mobile client is the driver for content creation this is the focus of our data model. As this application requires an open sharing of commentary we are storing everything as public which enables visibility by all.
+Questions, answers, and votes for each are writable by the users that create
+them and readable by everyone, so we store them all under `public/users/:userId`
+via `fbc.database.public.userRef()`
 
-We have 3 principals data types to power this application:
-- **`public/all/questions`**: Original questions asked
-- **`public/all/comments`**: The commentary on those questions
-- **`public/all/votes`**: Any votes associated to those questions or comments.
+1. `public/users/:userId/questions`
 
-All data is stored independently and associated on the mobile device via its parent object key.
-
-With questions as the first data type in any tree we do not need to worry about its association with other objects.
-
-```
-  .key: {
-      text: questionName,
-      creator: client.currentUser,
-      comments: [],
-      dateCreate: time,
-      block: false,
-      lastEdit: time
-    } 
+```json
+{
+  "abc123": {
+    "text": "Where is good to eat around here?",
+    "creator": {},
+    "dateCreate": 1522097081,
+    "block": false,
+    "lastEdit": 1522097081
+  }
+}
 ```
 
-To track comments since they are created from the questions details screen we can easily track them via the original questions key.
+2. `public/users/:userId/answers`
 
-```
-  .key: {
-        text: questionName,
-        creator: client.currentUser,
-        comments: [],
-        dateCreate: time,
-        block: false,
-        lastEdit: time,
-        questionId: this.state.question.key
-    } 
+```json
+{
+  ":answerId": {
+    "text": "Papalote has good burritos",
+    "creator": {},
+    "dateCreate": 1522097081,
+    "block": false,
+    "lastEdit": 1522097081,
+    "questionId": "abc123"
+  }
+}
 ```
 
-To track votes we use a similar method of associated them via the parent objects key.      
+3. `public/users/:userId/questionVotes`
 
-``` .key: {
-        user: client.currentUser.id,
-        commentKey: c.key,
-        value: 1
-    } 
+```json
+{
+  ":questionId": true
+}
 ```
+
+4. `public/users/:userId/answerVotes`
+
+```json
+{
+  ":answerId": true
+}
+```
+
+### Mobile device
+
+For simplicity, mobile clients download all questions, comments, and votes up
+front, with the expectation that a single event will not have too much data that
+would make this impractical.
+
+The firebase data is mapped by the client to state:
+
+1. `questions`
+2. `answersByQuestion`
+3. `votesByQuestion`
+4. `votesByAnswer`
 
 #### Mobile client state
 

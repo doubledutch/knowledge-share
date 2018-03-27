@@ -8,6 +8,7 @@ import FirebaseConnector from '@doubledutch/firebase-connector'
 import MyList  from './Table'
 import CustomModal from './Modal'
 import HomeHeader from './HomeHeader'
+import FilterSelect from './FilterSelect'
 
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
@@ -18,9 +19,12 @@ class HomeView extends Component {
     this.state = {
       question: '', 
       disable: false, 
-      questions: [],
-      comments: {},
-      votes: {},
+      questions: [], // { questionId: {...q} }
+      commentsByUser: {}, // {'userId': [{...comments}]}
+      questionsByUser: {},
+      votesByUser: {},
+      //comments: {}, // { 'questionId': [{...comments}]}
+      //votes: {},
       filters: [],
       showRecent: false, 
       showError: "white", 
@@ -29,7 +33,8 @@ class HomeView extends Component {
       title: "Knowledge Share",
       questionError: "Ask Question",
       topBorder: "#EFEFEF",
-      showQuestion:true
+      showQuestion:true,
+      showFilters: false
     }
     this.signin = fbc.signin()
       .then(user => this.user = user)
@@ -70,13 +75,16 @@ class HomeView extends Component {
 
   organizeComments = (newComments) => {
     var comments = {}
-    for (var i in newComments){
+    if (this.state.comment) {
+      comments = this.state.comments
+    }
+     for (var i in newComments){
       var comment = newComments[i]
       const commentsForQuestion = comments[comment.questionId]
       if (commentsForQuestion) {
         var newCommentsForQuestion = [...commentsForQuestion, {...comment, key: i}]
       } else {
-        var newCommentsForQuestion = [{...comment, key: i}]
+        var  newCommentsForQuestion= [{...comment, key: i}]
       }
       comments = {...comments, [comment.questionId]: newCommentsForQuestion}
     }
@@ -91,7 +99,6 @@ class HomeView extends Component {
       var filter = question.filters
       questions = [...questions, {...question, key: i}]
       filters = {...filters, ...filter}
-      console.log(filters)
     }
     this.organizeFilters(questions)
     this.setState({ questions}) 
@@ -153,6 +160,13 @@ class HomeView extends Component {
 
   renderHome = () => {
     let newQuestions = this.state.questions
+    if (this.state.showFilters) {
+      return(
+        <View style={{flex:1}}>
+          <FilterSelect handleChange={this.handleChange}/>
+        </View>
+      )
+    }
     if (this.state.modalVisible === false){
       return(
       <View style={{flex:1}}>
@@ -160,6 +174,7 @@ class HomeView extends Component {
           showModal={this.showModal}
           showQuestion={this.state.showQuestion}
           question={this.state.question}
+          showFilters={this.state.showFilters}
         />
         <View style={{flex:1}}>
           <MyList 

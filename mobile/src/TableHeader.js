@@ -31,6 +31,7 @@ export default class TableHeader extends Component {
             <View style={s.dividerSm}/>
             <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showRecent", true)}><Text style={s.dashboardButton}>Recent</Text></TouchableOpacity>
             <View style={s.divider}/>
+            <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showFilters", true)}><Text style={s.dashboardButton}>Filters</Text></TouchableOpacity>
           </View>
         </View>
         {this.renderPrompt(questions)}

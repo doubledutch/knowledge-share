@@ -5,6 +5,8 @@ import ReactNative, {
 } from 'react-native'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 import TableCell from './TableCell'
+import FilterCell from './FilterCell'
+import ReportButton from './ReportButton'
 
 export default class HomeHeader extends Component {
 
@@ -30,7 +32,7 @@ export default class HomeHeader extends Component {
       return (
         <View style={s.textBox}>
           <TouchableOpacity style={s.circleBox} onPress={this.props.showModal}><Text style={s.whiteText}>?</Text></TouchableOpacity>
-          <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder="Type your question here"
+          <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder="What is your question?"
             autoFocus={false}
             onFocus={this.props.showModal}
             multiline={true}
@@ -58,19 +60,48 @@ export default class HomeHeader extends Component {
   }
 
   renderQuestion = (question) => {
+    // var filters = []
+    // if (question.filters) filters = question.filters
     return (
-      <View style={s.listContainer}>
-        <View style={s.rightContainer}>
-          <Text style={s.questionText}>{question.text}</Text>
-          <View style={s.buttonContainer}>
-            <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-            <Text style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
+      <View style={{flexDirection: 'column'}}>
+        <View style={s.listContainer}>
+          <View style={s.rightContainer}>
+            <Text style={s.boldText}>{question.text}</Text>
+            <View style={s.buttonContainer}>
+              <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
+              <Text style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
+              <View style={{flex: 1}}/>
+              <ReportButton report={this.props.reportQuestion} item={question} handleReport={this.props.handleReport}/>
+            </View>
           </View>
         </View>
-    </View>
+        <View style={s.filterContainer}>
+          <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(question)}><Text style={s.voteText}>{"Upvote | " + ((this.props.votesByQuestion[question.id]) ? this.props.votesByQuestion[question.id] : 0 )}</Text></TouchableOpacity>
+          {this.renderFilters(question)}
+        </View>
+      </View>
     )
 
   }
+
+  renderFilters = (item) => {
+    var filters = []
+    if (item.filters) filters = item.filters
+    return (
+      <View style={s.filterTable}>
+        <FlatList
+          data={filters}
+          horizontal={true}
+          renderItem={({item, i}) => {
+          return (
+            <FilterCell item={item} key={i} state={true} />
+          )
+          }}
+        />
+      </View>
+    )
+  }
+
 
 
 }
@@ -81,6 +112,30 @@ const s = ReactNative.StyleSheet.create({
     flexDirection: 'row',
     marginTop: 2,
     marginBottom: 2,
+  },
+  filterContainer: {
+    height: 50, 
+    flexDirection: 'row',
+    backgroundColor: 'white'
+  },
+  filterTable: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    paddingTop: 2,
+    marginLeft: 10,
+    alignContent: 'center',
+  },
+  upVoteButton: {
+    backgroundColor: client.primaryColor, 
+    alignContent:'center', 
+    height: 30,
+    paddingHorizontal: 10, 
+    margin: 10,
+    justifyContent: "center",
+    borderRadius: 5
+  },
+  voteText: {
+    color: 'white'
   },
   subText:{
     fontSize: 12,
@@ -95,6 +150,13 @@ const s = ReactNative.StyleSheet.create({
     color: '#364247',
     fontFamily: 'System',
     marginBottom: 5
+  },
+  boldText: {
+    fontSize: 16,
+    color: "#404040",
+    fontFamily: 'System',
+    marginBottom: 5,
+    fontWeight: "bold"
   },
   listContainer: {
     flexDirection: 'row',

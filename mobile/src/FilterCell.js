@@ -7,134 +7,79 @@ import client, { Color } from '@doubledutch/rn-client'
 
 export default class FilterCell extends Component {
   render() {
-    const { item } = this.props 
+    const { item, select, state } = this.props 
 
-    return (
-      <View>
-        {this.renderCell(item)}
-      </View>
+    if (state) return (
+      <TouchableOpacity style={s.buttonContainerMargin}>
+        <Text style={s.title}>{item}</Text>
+      </TouchableOpacity>
+    )
+
+    if (select) return (
+      <TouchableOpacity onPress={ () => this.props.removeFilter(item) } style={s.buttonContainerColor}>
+        <Text style={s.titleColor}>{item.title}</Text>
+      </TouchableOpacity>
+    )
+    else return (
+      <TouchableOpacity onPress={ () => this.props.addFilter(item)} style={s.buttonContainer}>
+        <Text style={s.title}>{item.title}</Text>
+      </TouchableOpacity>
     )
   }
 
-  renderCell = (item) => {
-    if (this.props.showQuestion) {
-      return (
-        <TouchableOpacity style={s.listContainer} onPress={() => this.props.showComments(item)}>
-          <View style={s.leftContainer}>
-            {/* {this.renderIcon(item)} */}
-            <Text style={s.subText}>Answer</Text>
-            <Text style={s.subText}>{this.props.commentsTotal}</Text>
-            <Text style={s.subText}>Votes</Text>
-            <Text style={s.subText}>{this.countVotes()}</Text>
-          </View>
-          <View style={s.rightContainer}>
-            <Text style={s.questionText}>{item.text}</Text>
-            <View style={s.buttonContainer}>
-              <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-              <Text style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      )
-    }
-    else {
-      return (
-        <View style={s.listContainer}>
-          <View style={s.leftContainer}>
-            {this.renderIcon()}
-            <Text style={s.subText}>{this.countVotes()}</Text>
-          </View>
-          <View style={s.rightContainer}>
-            <Text style={s.questionText}>{item.text}</Text>
-            <View style={s.buttonContainer}>
-              <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-              <Text style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
-            </View>
-          </View>
-        </View>
-      )
-    }
-  }
 
-  renderIcon = () => {
-    var comment = this.props.item
-    var num = this.props.item.key
-    var votes = this.props.votes[num]
-    var myVote = null
-    if (votes) {
-    myVote = votes.find((vote) => {
-      return vote.user
-    })
-  }
-    if (myVote){
-      return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
-    }
-    else {
-       return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
-    }
-  }
 
-  countVotes = () => {
-      var num = this.props.item.key
-      var votes = this.props.votes[num]
-      var total = 0
-    if (votes){
-      total = votes.length
-    }
-    return total
-  }
 
+
+
+}
+
+function hexToRgb(hex) {
+  var hex = hex.slice(1)
+  var bigint = parseInt(hex, 16);
+  var r = (bigint >> 16) & 255;
+  var g = (bigint >> 8) & 255;
+  var b = bigint & 255;
+  return r + "," + g + "," + b;
 }
 
 const fontSize = 18
 const s = ReactNative.StyleSheet.create({
   buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    marginTop: 2,
-    marginBottom: 2
-  },
-  subText:{
-    fontSize: 12,
-    color: '#9B9B9B'
-  },
-  nameText:{
-    fontSize: 14,
-    color: '#9B9B9B',
-  },
-  questionText:{
-    fontSize: 16,
-    color: '#364247',
-    fontFamily: 'System',
-    marginBottom: 5
-  },
-  listContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems:'center',
-    backgroundColor: 'white',
-    marginBottom: 2,
-    minHeight: 60,
-  },
-  leftContainer: {
-    flexDirection: 'column',
-    paddingLeft: 10,
-    alignItems:'center',
+    height: 25,
+    paddingHorizontal: 20,
     justifyContent: 'center',
-    height: '100%',
-    paddingTop: 10
+    margin: 10,
+    borderRadius: 25,
+    backgroundColor: 'rgba('+ hexToRgb(client.primaryColor) + ',0.1)',
   },
-  rightContainer: {
-    flex: 1,
-    width: '80%',
-    paddingLeft: 15,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
+  buttonContainerMargin: {
+    height: 25,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    marginTop: 10,
+    marginRight: 10,
+    borderRadius: 25,
+    backgroundColor: 'rgba('+ hexToRgb(client.primaryColor) + ',0.1)',
   },
-  checkmark: {
-    height: 16,
-    width: 16,
-    marginTop: 4
+  title: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: client.primaryColor
   },
+  buttonContainerColor: {
+    backgroundColor: client.primaryColor,
+    height: 25,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    margin: 10,
+    borderRadius: 25,
+  },
+  titleColor: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white"
+  }
+
+  
 })

@@ -9,6 +9,8 @@ import MyList  from './Table'
 import CustomModal from './Modal'
 import HomeHeader from './HomeHeader'
 import FilterSelect from './FilterSelect'
+import SortSelect from './SortSelect'
+import ReportModal from './ReportModal'
 
 import {
   mapPerUserPushedDataToStateObjects,
@@ -23,13 +25,15 @@ class HomeView extends Component {
   constructor() {
     super()
     this.state = {
-      question: '', 
+      question: '',
+      report: '',
       disable: false, 
       questions: {},
       answersByQuestion: {},
       votesByQuestion: {},
       votesByAnswer: {},
       filters: [],
+      selectedFilters: [],
       showRecent: false, 
       showError: "white", 
       modalVisible: false, 
@@ -38,7 +42,10 @@ class HomeView extends Component {
       questionError: "Ask Question",
       topBorder: "#EFEFEF",
       showQuestion:true,
-      showFilters: false
+      showFilters: false,
+      showSort: false,
+      currentSort: "Most Popular",
+      showReportModal: false
     }
     this.signin = fbc.signin()
       .then(user => this.user = user)
@@ -52,6 +59,7 @@ class HomeView extends Component {
       mapPerUserPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
       reducePerUserDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
       reducePerUserDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
+
     })
   }
 
@@ -59,67 +67,31 @@ class HomeView extends Component {
     return (
       <KeyboardAvoidingView style={s.container} behavior={Platform.select({ios: "padding", android: null})}>
         <TitleBar title={this.state.title} client={client} signin={this.signin} />
-        { Object.values(this.state.questions).map(q => (
-          <View key={q.id}>
-            <Text>{q.id}: ({this.state.votesByQuestion[q.id] || 0}) {q.text}</Text>
-            { Object.values(this.state.answersByQuestion[q.id] || {}).map(a => (
-              <Text key={a.id}>    {a.id}: ({this.state.votesByAnswer[a.id] || 0}) {a.text}</Text>
-            ))}
-          </View>
-        ))}
-        {/* {this.renderHome()}
-        {this.renderFooter()} */}
+        {this.modalControl()}
+        {this.renderHome()}
+        {this.renderFooter()}
       </KeyboardAvoidingView> 
     )
   }
 
-  // organizeComments = (newComments) => {
-  //   var comments = {}
-  //   for (var i in newComments){
-  //     var comment = newComments[i]
-  //     const commentsForQuestion = comments[comment.questionId]
-  //     if (commentsForQuestion) {
-  //       var newCommentsForQuestion = [...commentsForQuestion, {...comment, key: i}]
-  //     } else {
-  //       var newCommentsForQuestion = [{...comment, key: i}]
-  //     }
-  //     comments = {...comments, [comment.questionId]: newCommentsForQuestion}
-  //   }
-  //   this.setState({comments})
-  // }
+  modalControl = () => {
+    return (
+    <Modal
+      animationType="none"
+      transparent={true}
+      visible={this.state.showReportModal}
+      onRequestClose={() => {
+        alert('Modal has been closed.');
+      }}
+      >
+      <ReportModal handleChange={this.handleChange} reportQuestion={this.reportQuestion} report={this.state.report}/>
+    </Modal>
+    )
+  }
 
-  // organizeQuestions = (newQuestions) => {
-  //   var questions = []
-  //   var filters = []
-  //   for (var i in newQuestions){
-  //     var question = newQuestions[i]
-  //     var filter = question.filters
-  //     questions = [...questions, {...question, key: i}]
-  //     filters = {...filters, ...filter}
-  //     console.log(filters)
-  //   }
-  //   this.organizeFilters(questions)
-  //   this.setState({ questions}) 
-  // }
-
-  // organizeVotes = (newVotes, id) => {
-  //   var votes = {}
-  //   for (var i in newVotes){
-  //     var vote = newVotes[i]
-  //     const votesForQuestion = votes[vote.commentKey]
-  //     if (votesForQuestion) {
-  //       var newVotesForQuestion = [...votesForQuestion, {...vote, key: i, user: id}]
-  //     } else {
-  //       var newVotesForQuestion = [{...vote, key: i, user: id}]
-  //     }
-  //     votes = {...votes, [vote.commentKey]: newVotesForQuestion}
-  //   }
-  //   this.setState({votes})
-  // }
-
-  organizeFilters = (questions) => {
+  organizeFilters = () => {
     var filters = []
-    Object.values(questions).map((item) => {
+    Object.values(this.state.questions).map((item) => {
       if (item.filters) {
         item.filters.map((filter) => {
           filters.push(filter)
@@ -128,6 +100,22 @@ class HomeView extends Component {
     })
     filters.sort()
     this.countFilters(filters)
+  }
+
+  addFilter = (selected) => {
+    var filters = this.state.filters
+    var index = filters.indexOf(selected)
+    var filter = filters.splice(index, 1)
+    const selectedFilters = this.state.selectedFilters.concat(filter)
+    this.setState({filters, selectedFilters})
+  }
+
+  removeFilter = (selected) => {
+    var selectedFilters = this.state.selectedFilters
+    var index = selectedFilters.indexOf(selected)
+    var filter = selectedFilters.splice(index, 1)
+    const filters = this.state.filters.concat(filter)
+    this.setState({filters, selectedFilters})
   }
 
   countFilters = (filters) => {
@@ -154,16 +142,22 @@ class HomeView extends Component {
   }
 
   renderHome = () => {
-    let newQuestions = Object.keys(this.state.questions)
     if (this.state.showFilters) {
       return(
         <View style={{flex:1}}>
-          <FilterSelect handleChange={this.handleChange}/>
+          <FilterSelect handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter}/>
+        </View>
+      )
+    }
+    if (this.state.showSort) {
+      return(
+        <View style={{flex:1}}>
+          <SortSelect handleChange={this.handleChange} sortTopics={this.sortTopics} currentSort={this.state.currentSort}/>
         </View>
       )
     }
 
-    if (this.state.modalVisible === false){
+    if (this.state.modalVisible === false) {
       return(
       <View style={{flex:1}}>
         <HomeHeader
@@ -171,20 +165,29 @@ class HomeView extends Component {
           showQuestion={this.state.showQuestion}
           question={this.state.question}
           showFilters={this.state.showFilters}
+          votesByQuestion = {this.state.votesByQuestion}
+          reportQuestion={this.reportQuestion}
+          newVote={this.newVote}
+          handleChange={this.handleChange}
+          handleReport={this.handleReport}
         />
         <View style={{flex:1}}>
           <MyList 
-            questions={newQuestions}
+            questions={this.state.questions}
             question={this.state.question}
+            votesByQuestion = {this.state.votesByQuestion}
             showModal = {this.showModal}
-            showRecent = {this.state.showRecent}
-            originalOrder = {this.originalOrder}
             newVote = {this.newVote}
             showQuestion ={this.state.showQuestion}
             handleChange={this.handleChange}
             showComments={this.showComments}
-            comments = {this.state.comments}
-            votes = {this.state.votes}
+            comments = {this.state.answersByQuestion}
+            votesByAnswer = {this.state.votesByAnswer}
+            organizeFilters={this.organizeFilters}
+            currentSort={this.state.currentSort}
+            selectedFilters={this.state.selectedFilters}
+            reportQuestion={this.reportQuestion}
+            handleReport={this.handleReport}
           />
         </View>
       </View>
@@ -205,6 +208,10 @@ class HomeView extends Component {
           questionError = {this.state.questionError}
           style={{flex:1}}
           showQuestion={this.state.showQuestion}
+          filters={this.state.filters}
+          organizeFilters={this.organizeFilters}
+          votesByAnswer={this.state.votesByAnswer}
+          votesByQuestion={this.state.votesByQuestion}
         />
       )
     }
@@ -218,32 +225,40 @@ class HomeView extends Component {
     }
   }
 
+
   showModal = () => {
     this.setState({modalVisible: true, animation: "none"})
+
+    //move to the listener
+    this.organizeFilters()
   }
 
   hideModal = () => {
     this.setState({modalVisible: false, animation: "slide", showError: "white"})
   }
 
-  flagQuestion = () => {
-
+  handleReport = (item) => {
+    this.setState({showReportModal: true, report: item})
   }
 
-  sortTopics = () => {
+  
 
+
+  reportQuestion = (question) => this.createReport(fbc.database.private.adminableUserRef, question)
+
+  createReport = (ref, question) => {
+    var time = new Date().getTime()
+    ref('reportQuestions').child(question.id).push({
+      reportTime: time,
+      user: client.currentUser
+    })
+    .then(() => {
+      this.setState({showReportModal: false})
+    })
   }
 
-  originalOrder = (questions) => {
-    if (this.state.showRecent === false) {
-      this.dateSort(questions)
-      questions.sort(function (a,b){ 
-        return b.score - a.score
-      })
-    }
-    if (this.state.showRecent === true) {
-      this.dateSort(questions)
-    }
+  sortTopics = (currentSort) => {
+    this.setState({currentSort, showSort: false})
   }
 
   showComments = (question) => {
@@ -251,19 +266,13 @@ class HomeView extends Component {
     this.handleChange("showQuestion", false)
   }
 
-  dateSort = (questions) => {
-    questions.sort(function (a,b){
-      return b.dateCreate - a.dateCreate
-    })
-  }
-
   handleChange = (prop, value) => {
     this.setState({[prop]: value})
   }
 
-  createSharedQuestion = (question) => this.createQuestion(fbc.database.public.userRef, question)
+  createSharedQuestion = (question, filters) => this.createQuestion(fbc.database.public.userRef, question, filters)
 
-  createQuestion = (ref, question) => {
+  createQuestion = (ref, question, filters) => {
     var time = new Date().getTime()
     var questionName = question.trim()
     if (questionName.length === 0) {
@@ -277,7 +286,7 @@ class HomeView extends Component {
         dateCreate: time,
         block: false,
         lastEdit: time,
-        filters: ["pizza", "food"]
+        filters: filters
       })
       .then(() => {
         this.setState({question: '', showError: "white"})
@@ -300,13 +309,13 @@ class HomeView extends Component {
       this.setState({showError: "red"})
     }
     if (this.user && commentName.length > 0) {
-      ref('comments').push({
+      ref('answers').push({
         text: commentName,
         creator: client.currentUser,
         dateCreate: time,
         block: false,
         lastEdit: time,
-        questionId: this.state.question.key
+        questionId: this.state.question.id
       })
       .then(() => {
         this.setState({showError: "white"})
@@ -319,18 +328,14 @@ class HomeView extends Component {
     }
   }
 
-  newVote = (c, myVote) => {
-    if (myVote) {
-      fbc.database.public.userRef("votes").child(myVote.key).remove()
-    }
-    else {
-      fbc.database.public.userRef('votes').push({
-        commentKey: c.key,
-        value: 1
-      })
-      .then(() => this.setState({vote: ''}))
-      .catch(x => console.error(x))
-    }
+  newVote = (c) => {
+      if (c.questionId) {
+        fbc.database.public.userRef('answerVotes').child(c.id).set(true)
+      }
+      else { 
+        fbc.database.public.userRef('questionVotes').child(c.id).set(true)
+      }
+    // }
   }
 }
 

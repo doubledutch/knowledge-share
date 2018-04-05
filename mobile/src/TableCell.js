@@ -4,6 +4,8 @@ import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import FilterCell from './FilterCell'
+import ReportButton from './ReportButton'
 
 export default class TableCell extends Component {
   render() {
@@ -17,22 +19,24 @@ export default class TableCell extends Component {
   }
 
   renderCell = (item) => {
+    console.log(item.id)
+    const voteCount = item.questionId
+      ? (this.props.votesByAnswer[item.id] || 0)
+      : (this.props.votesByQuestion[item.id] || 0)
+
     if (this.props.showQuestion) {
       return (
         <TouchableOpacity style={s.listContainer} onPress={() => this.props.showComments(item)}>
-          <View style={s.leftContainer}>
-            {/* {this.renderIcon(item)} */}
-            <Text style={s.subText}>Answer</Text>
-            <Text style={s.subText}>{this.props.commentsTotal}</Text>
-            <Text style={s.subText}>Votes</Text>
-            <Text style={s.subText}>{this.countVotes()}</Text>
-          </View>
           <View style={s.rightContainer}>
-            <Text style={s.questionText}>{item.text}</Text>
+            <Text style={s.boldText}>{item.text}</Text>
             <View style={s.buttonContainer}>
               <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
               <Text style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
+              <View style={{flex:1}}></View>
+              <Text style={s.voteText}>{voteCount + " Votes"}</Text>
+              <Text style={s.subText}>{this.props.commentsTotal + " Answer" + ((this.props.commentsTotal === 1) ? "": "s")}</Text>
             </View>
+            {this.renderFilters(item)}
           </View>
         </TouchableOpacity>
       )
@@ -40,15 +44,18 @@ export default class TableCell extends Component {
     else {
       return (
         <View style={s.listContainer}>
-          <View style={s.leftContainer}>
-            {this.renderIcon()}
-            <Text style={s.subText}>{this.countVotes()}</Text>
-          </View>
           <View style={s.rightContainer}>
             <Text style={s.questionText}>{item.text}</Text>
             <View style={s.buttonContainer}>
               <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
               <Text style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
+            </View>
+            <View style={s.voteContainer}>
+              <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{"Upvote | " + voteCount}</Text></TouchableOpacity>
+              <View style={{flex:1}}></View>
+              <View style={{paddingTop: 15}}>
+                <ReportButton report={this.props.reportQuestion} item={item} handleReport={this.props.handleReport}/>
+              </View>
             </View>
           </View>
         </View>
@@ -56,34 +63,41 @@ export default class TableCell extends Component {
     }
   }
 
-  renderIcon = () => {
-    var comment = this.props.item
-    var num = this.props.item.key
-    var votes = this.props.votes[num]
-    var myVote = null
-    if (votes) {
-    myVote = votes.find((vote) => {
-      return vote.user
-    })
-  }
-    if (myVote){
-      return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
-    }
-    else {
-       return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
-    }
+  renderFilters = (item) => {
+    var filters = []
+    if (item.filters) filters = item.filters
+      return (
+        <View style={s.table2}>
+          { filters.map((item, i) => {
+            return (
+            <FilterCell item={item} key={i} state={true}/>
+            )
+          }) }
+        </View>
+      )
   }
 
-  countVotes = () => {
-      var num = this.props.item.key
-      var votes = this.props.votes[num]
-      var total = 0
-    if (votes){
-      total = votes.length
-    }
-    return total
-  }
 
+  renderIcon = (item) => {
+  //   var comment = this.props.item
+  //   var num = this.props.item.key
+  //   // var votes = this.props.votes[num]
+  //   // var votes = []
+  //   var myVote = null
+  //   if (votes) {
+  //   myVote = votes.find((vote) => {
+  //     return vote.user
+  //   })
+  //   console.log(myVote)
+  //   console.log(this.props.votesByAnswer)
+  // }
+  //   if (myVote){
+  //     return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
+  //   }
+  //   else {
+       return <TouchableOpacity onPress={() => this.props.newVotes(item)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
+    // }
+  }
 }
 
 const fontSize = 18
@@ -92,11 +106,39 @@ const s = ReactNative.StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginTop: 2,
-    marginBottom: 2
+    marginBottom: 2,
+  },
+  voteContainer: {
+    height: 40, 
+    flexDirection: 'row',
+    backgroundColor: 'white'
+  },
+  upVoteButton: {
+    backgroundColor: client.primaryColor, 
+    alignContent:'center', 
+    height: 30,
+    paddingHorizontal: 10, 
+    margin: 10,
+    marginLeft: 0,
+    justifyContent: "center",
+    borderRadius: 5
+  },
+  table2: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    flexWrap: "wrap"
   },
   subText:{
-    fontSize: 12,
+    fontSize: 14,
     color: '#9B9B9B'
+  },
+  voteText:{
+    fontSize: 14,
+    marginRight: 5,
+    color: '#9B9B9B'
+  },
+  upVoteText: {
+    color: 'white'
   },
   nameText:{
     fontSize: 14,
@@ -104,7 +146,14 @@ const s = ReactNative.StyleSheet.create({
   },
   questionText:{
     fontSize: 16,
-    color: '#364247',
+    color: "#404040",
+    fontFamily: 'System',
+    marginBottom: 5
+  },
+  boldText:{
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#404040",
     fontFamily: 'System',
     marginBottom: 5
   },
@@ -115,6 +164,9 @@ const s = ReactNative.StyleSheet.create({
     backgroundColor: 'white',
     marginBottom: 2,
     minHeight: 60,
+    justifyContent: 'center',
+    paddingTop: 10,
+    paddingBottom: 10
   },
   leftContainer: {
     flexDirection: 'column',
@@ -122,7 +174,7 @@ const s = ReactNative.StyleSheet.create({
     alignItems:'center',
     justifyContent: 'center',
     height: '100%',
-    paddingTop: 10
+ 
   },
   rightContainer: {
     flex: 1,
@@ -131,6 +183,7 @@ const s = ReactNative.StyleSheet.create({
     paddingRight: 20,
     paddingTop: 10,
     paddingBottom: 10,
+    justifyContent: 'center',
   },
   checkmark: {
     height: 16,

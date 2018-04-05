@@ -14,51 +14,30 @@ export default class TableHeader extends Component {
           <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Be the First to Ask a Question!</Text>
           <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>Tap here to get started</Text></TouchableOpacity>
         </View>
-
       )
     }
   }
 
   render() { 
     const questions = this.props.questions
-    if (this.props.showRecent === false) {
       return (
-      <View>
-        <View style={{height: 60}}>
-          <View style={s.buttonContainer}>
-            <View style={s.divider}/>
-            <TouchableOpacity style={s.button1} ><Text style={s.dashboardButton}>Popular</Text></TouchableOpacity>
-            <View style={s.dividerSm}/>
-            <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showRecent", true)}><Text style={s.dashboardButton}>Recent</Text></TouchableOpacity>
-            <View style={s.divider}/>
-            <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showFilters", true)}><Text style={s.dashboardButton}>Filters</Text></TouchableOpacity>
+        <View>
+          <View style={{height: 50, marginTop: 10, marginBottom: 1}}>
+            <View style={s.buttonContainer}>
+              <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButton}>{"Sort: " + this.props.currentSort}</Text></TouchableOpacity>
+              <View style={{flex: 1}}/>
+              <TouchableOpacity style={s.button2} onPress={this.getFilters}><Text style={s.dashboardButton}>{"Topics: " + this.props.selectedFilters.length}</Text></TouchableOpacity>
+            </View>
           </View>
+          {this.renderPrompt(questions)}
         </View>
-        {this.renderPrompt(questions)}
-      </View>
       )
-    }
-    if (this.props.showRecent === true) {
-      return (
-      <View>
-        <View style={{height: 60}}>
-          <View style={s.buttonContainer}>
-            <View style={s.divider}/>
-            <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showRecent", false)}><Text style={s.dashboardButton}>Popular</Text></TouchableOpacity>
-            <View style={s.dividerSm}/>
-            <TouchableOpacity style={s.button1}><Text style={s.dashboardButton}>Recent</Text></TouchableOpacity>
-            <View style={s.divider}/>
-          </View>
-        </View>
-        {this.renderPrompt(questions)}
-      </View>
-      )
-    }
   }
 
-  // handleChange = (prop, value) => {
-  //   this.props.handleChange(prop, value)
-  // }
+  getFilters = () => {
+    this.props.handleChange("showFilters", true)
+    this.props.organizeFilters()
+  }
 
 }
 
@@ -67,29 +46,20 @@ const s = ReactNative.StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
-  },
-  button1: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    justifyContent: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: client.primaryColor
+    backgroundColor: "white",
   },
   button2: {
     height: 40,
     paddingTop: 10,
     marginBottom: 10,
+    marginHorizontal: 40,
     justifyContent: 'center', 
-  },
-  divider: {
-    flex: 1
   },
   dividerSm: {
     width: 30
   },
   dashboardButton: {
     fontSize: 18,
-    color: '#9B9B9B'
+    color: client.primaryColor
   }
 })

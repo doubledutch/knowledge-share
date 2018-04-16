@@ -11,7 +11,6 @@ import HomeHeader from './HomeHeader'
 import FilterSelect from './FilterSelect'
 import SortSelect from './SortSelect'
 import ReportModal from './ReportModal'
-
 import {
   mapPerUserPushedDataToStateObjects,
   mapPerUserPushedDataToObjectOfStateObjects,
@@ -20,6 +19,9 @@ import {
 
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
+
+const topSpaceHeight = 21
+const barHeight = 43
 
 class HomeView extends Component {
   constructor() {
@@ -34,9 +36,11 @@ class HomeView extends Component {
       votesByAnswer: {},
       filters: [],
       selectedFilters: [],
-      showRecent: false, 
+      reportedQuestions: [],
+      reportedComments: [],
+      reports: [],
+      currentSort: "Most Popular",
       showError: "white", 
-      modalVisible: false, 
       animation: "none",
       title: "Knowledge Share",
       questionError: "Ask Question",
@@ -44,8 +48,9 @@ class HomeView extends Component {
       showQuestion:true,
       showFilters: false,
       showSort: false,
-      currentSort: "Most Popular",
-      showReportModal: false
+      showRecent: false, 
+      showReportModal: false,
+      modalVisible: false
     }
     this.signin = fbc.signin()
       .then(user => this.user = user)
@@ -59,6 +64,17 @@ class HomeView extends Component {
       mapPerUserPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
       reducePerUserDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
       reducePerUserDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
+      // mapPerUserPrivatePushedDataToStateObjects(fbc, 'reports', this, 'reports', (userId, key, value) => key)
+      const reportRef = fbc.database.private.adminableUserRef('reports')
+      // const reportCommentRef = fbc.database.private.adminableUserRef('reportComments')
+
+      reportRef.on('child_added', data => {
+        this.setState({ reports: [...this.state.reports, data.key ] })
+      })
+
+      // reportCommentRef.on('child_added', data => {
+      //   this.setState({ reportedComments: [...this.state.reportedComments, data.key ] })
+      // })
 
     })
   }
@@ -73,6 +89,9 @@ class HomeView extends Component {
       </KeyboardAvoidingView> 
     )
   }
+
+
+
 
   modalControl = () => {
     return (
@@ -118,6 +137,12 @@ class HomeView extends Component {
     this.setState({filters, selectedFilters})
   }
 
+  resetFilters = () => {
+    const filters = this.state.filters.concat(this.state.selectedFilters)
+    const selectedFilters = []
+    this.setState({filters, selectedFilters})
+  }
+
   countFilters = (filters) => {
     var newFilters = []
     var current = null;
@@ -145,7 +170,7 @@ class HomeView extends Component {
     if (this.state.showFilters) {
       return(
         <View style={{flex:1}}>
-          <FilterSelect handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter}/>
+          <FilterSelect handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} resetFilters={this.resetFilters}/>
         </View>
       )
     }
@@ -170,6 +195,8 @@ class HomeView extends Component {
           newVote={this.newVote}
           handleChange={this.handleChange}
           handleReport={this.handleReport}
+          reportedQuestions={this.state.reportedQuestions}
+          reports={this.state.reports}
         />
         <View style={{flex:1}}>
           <MyList 
@@ -188,6 +215,9 @@ class HomeView extends Component {
             selectedFilters={this.state.selectedFilters}
             reportQuestion={this.reportQuestion}
             handleReport={this.handleReport}
+            reportedQuestions={this.state.reportedQuestions}
+            reportedComments={this.state.reportedComments}
+            reports={this.state.reports}
           />
         </View>
       </View>
@@ -220,9 +250,13 @@ class HomeView extends Component {
   renderFooter = () => {
     if (this.state.showQuestion === false && this.state.modalVisible === false) {
       return (
-        <TouchableOpacity onPress={() => this.handleChange("showQuestion", true)} style={s.back}></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.closeAnswer()} style={s.back}></TouchableOpacity>
       )
     }
+  }
+
+  closeAnswer = () => {
+    this.setState({showQuestion: true, questionError: "Ask Question"})
   }
 
 
@@ -247,23 +281,46 @@ class HomeView extends Component {
   reportQuestion = (question) => this.createReport(fbc.database.private.adminableUserRef, question)
 
   createReport = (ref, question) => {
-    var time = new Date().getTime()
-    ref('reportQuestions').child(question.id).push({
-      reportTime: time,
-      user: client.currentUser
-    })
-    .then(() => {
-      this.setState({showReportModal: false})
-    })
+    const reportTime = new Date().getTime()
+    const isQuestion = ((question.questionId) ? false : true)
+    const questionId = ((question.questionId) ? question.questionId : '')
+    // if (isQuestion) {
+      ref('reports').child(question.id).set({
+        reportTime,
+        isQuestion,
+        questionId,
+        block: false,
+        approved: false
+      })
+      .then(() => {
+        this.setState({showReportModal: false})
+      })
+    // }
+    // else {
+    //   ref('reportComments').child(question.id).set({
+    //     reportTime,
+    //     // isQuestion,
+    //     // questionId,
+    //     // creator: client.currentUser,
+    //     // text: question.text,
+    //     block: false,
+    //     approved: false
+    //   })
+    //   .then(() => {
+    //     this.setState({showReportModal: false})
+    //   })
+    // }
+
   }
+
+
 
   sortTopics = (currentSort) => {
     this.setState({currentSort, showSort: false})
   }
 
   showComments = (question) => {
-    this.handleChange("question", question)
-    this.handleChange("showQuestion", false)
+    this.setState({question, showQuestion: false, questionError: "Submit Answer"})
   }
 
   handleChange = (prop, value) => {
@@ -335,7 +392,6 @@ class HomeView extends Component {
       else { 
         fbc.database.public.userRef('questionVotes').child(c.id).set(true)
       }
-    // }
   }
 }
 
@@ -343,6 +399,28 @@ export default HomeView
 
 const fontSize = 18
 const s = ReactNative.StyleSheet.create({
+  wholeBarEmulator: {
+    backgroundColor: new Color().rgbString(),
+    opacity: 0.9,
+    top: 0,
+    width: '100%',
+    zIndex: 1000000
+  },
+  wholeBar: {
+  },
+  topSpace: {
+    height: Platform.select({ios: topSpaceHeight, android: 0})
+  },
+  spacer: {
+    height: Platform.select({ios: barHeight, android: 0}),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  emulatorTitle: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 17
+  },
   container: {
     flex: 1,
     backgroundColor: '#EFEFEF',

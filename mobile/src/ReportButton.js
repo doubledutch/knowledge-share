@@ -7,24 +7,20 @@ import client, { Color } from '@doubledutch/rn-client'
 
 export default class FilterCell extends Component {
   render() {
-    const { item, handleReport } = this.props 
+    const { item, handleReport, isReported } = this.props 
 
-    // if (isReported) return (
-    //   <TouchableOpacity style={s.buttonContainer}>
-    //     <Text style={s.title}>Reported</Text>
-    //   </TouchableOpacity>
-    // )
-    return (
+    if (isReported) return (
+      <TouchableOpacity style={s.buttonContainer}>
+        <Text style={s.title}>Reported</Text>
+      </TouchableOpacity>
+    )
+  
+    else return (
       <TouchableOpacity style={s.buttonContainer} onPress={() => handleReport(item)}>
         <Text style={s.title}>Report</Text>
       </TouchableOpacity>
     )
   }
-
-  // openModal = () => {
-  //   this.props.handleChange("report", this.props.item)
-  //   this.props.handleChange("showReportModal", true)
-  // }
 
 
 

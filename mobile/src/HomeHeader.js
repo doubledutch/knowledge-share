@@ -60,8 +60,10 @@ export default class HomeHeader extends Component {
   }
 
   renderQuestion = (question) => {
-    // var filters = []
-    // if (question.filters) filters = question.filters
+    console.log(this.props.reportedQuestions)
+    // const reports = Object.keys(this.props.reports)
+    const reports = this.props.reports
+    const isReported = ((reports && reports.find(q => q === question.id)) ? true : false)
     return (
       <View style={{flexDirection: 'column'}}>
         <View style={s.listContainer}>
@@ -71,7 +73,7 @@ export default class HomeHeader extends Component {
               <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
               <Text style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
               <View style={{flex: 1}}/>
-              <ReportButton report={this.props.reportQuestion} item={question} handleReport={this.props.handleReport}/>
+              <ReportButton report={this.props.reportQuestion} item={question} handleReport={this.props.handleReport} isReported={isReported}/>
             </View>
           </View>
         </View>
@@ -81,25 +83,20 @@ export default class HomeHeader extends Component {
         </View>
       </View>
     )
-
   }
 
   renderFilters = (item) => {
     var filters = []
     if (item.filters) filters = item.filters
-    return (
-      <View style={s.filterTable}>
-        <FlatList
-          data={filters}
-          horizontal={true}
-          renderItem={({item, i}) => {
-          return (
-            <FilterCell item={item} key={i} state={true} />
-          )
-          }}
-        />
-      </View>
-    )
+      return (
+        <View style={s.filterTable}>
+          { filters.map((item, i) => {
+            return (
+              <FilterCell item={item} key={i} state={true}/>
+            )
+          }) }
+        </View>
+      )
   }
 
 
@@ -114,16 +111,19 @@ const s = ReactNative.StyleSheet.create({
     marginBottom: 2,
   },
   filterContainer: {
-    height: 50, 
     flexDirection: 'row',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   filterTable: {
+    flex: 1,
     flexDirection: "row",
     backgroundColor: "white",
-    paddingTop: 2,
     marginLeft: 10,
+    alignItems: 'center',
     alignContent: 'center',
+    flexWrap: 'wrap'
   },
   upVoteButton: {
     backgroundColor: client.primaryColor, 

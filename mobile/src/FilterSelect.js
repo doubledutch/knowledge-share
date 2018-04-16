@@ -32,7 +32,7 @@ export default class FilterSelect extends Component {
     if (this.state.search && this.state.newList.length === 0){
       return (
         <View style={{marginTop: 25, marginHorizontal: 10}}>
-          <Text style={s.clearButton}>Bummer! This search isn't returning any results</Text>
+          <Text style={s.helpText}>Bummer! This search isn't returning any results</Text>
         </View>
       )
     }
@@ -70,7 +70,7 @@ export default class FilterSelect extends Component {
       <View style={s.buttonContainer}>
         <TouchableOpacity onPress={() => this.props.handleChange("showFilters", false)}><Text style={s.closeButton}>X</Text></TouchableOpacity>
         <Text style={s.title}>Topics</Text>
-        <TouchableOpacity><Text style={s.clearButton}>Clear</Text></TouchableOpacity>
+        <TouchableOpacity><Text style={s.clearButton} onPress={() => this.props.resetFilters()}>Clear</Text></TouchableOpacity>
       </View>
     )
   }
@@ -140,7 +140,8 @@ const fontSize = 18
 const s = ReactNative.StyleSheet.create({
   table: {
     flexDirection: "row",
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    marginTop: 10
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -183,9 +184,13 @@ const s = ReactNative.StyleSheet.create({
   closeButton: {
     marginLeft: 20
   },
-  clearButton: {
+  helpText: {
     marginRight: 20,
     color: '#9B9B9B'
+  },
+  clearButton: {
+    marginRight: 20,
+    color: client.primaryColor
   },
   button1: {
     height: 40,

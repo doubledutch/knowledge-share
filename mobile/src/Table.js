@@ -20,8 +20,9 @@ export class MyList extends Component {
           data={data}
           ListFooterComponent={<View style={{height: 100}}></View>}
           renderItem={({item}) => {
+            const isReported = this.isReported(item)
             return (
-              <TableCell item={item} commentsTotal={this.totalComments(item.id)} newVote={newVote} votesByAnswer={this.props.votesByAnswer} votesByQuestion={this.props.votesByQuestion} showQuestion={showQuestion} showComments={showComments} handleReport={handleReport}/>
+              <TableCell item={item} commentsTotal={this.totalComments(item.id)} newVote={newVote} votesByAnswer={this.props.votesByAnswer} votesByQuestion={this.props.votesByQuestion} showQuestion={showQuestion} showComments={showComments} handleReport={handleReport} isReported={isReported}/>
             )
           }}
         />
@@ -29,17 +30,34 @@ export class MyList extends Component {
     )
   }
 
+  isReported = (item) => {
+    console.log(item)
+    const { reports } = this.props
+    // const reports = Object.keys(this.props.reports)
+    console.log(reports)
+    if (item.questionId) {
+      return (
+        ((reports && reports.find(q => q === item.id)) ? true : false)
+      )
+    }
+    else {
+      return (
+        ((reports && reports.find(q => q === item.id)) ? true : false)
+      )
+    }
+  }
+
   verifyData = () => {
-    const questions = Object.values(this.props.questions)
+    var questions = Object.values(this.props.questions)
     if (this.props.showQuestion) {
-      this.originalOrder(questions)
-      return questions
+      questions = questions.filter(question => question.block === false)
+      return this.originalOrder(questions)
     }
     else {
       if (this.props.comments) {    
         const comments = this.props.comments[this.props.question.id]
         if (comments) {
-          return Object.values(comments)
+          return this.commentsOrder(comments)
         }
         else {
           return []
@@ -56,27 +74,49 @@ export class MyList extends Component {
     var comments = this.props.comments[key]
     if (comments) {
       comments = Object.values(comments)
+      comments = comments.filter(item => item.block === false)
       total = comments.length
     }
     return total
   }
 
+  commentsOrder = (comments) => {
+    const votes = this.props.votesByAnswer || 0
+    var sortComments = Object.values(comments)
+    sortComments = sortComments.filter(comment => comment.block === false )
+    sortComments.sort(function (a,b){
+      const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
+      const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )
+      return voteCount2 - voteCount
+    })
+    return sortComments
+  }
+
   originalOrder = (questions) => {
+    const {currentSort, selectedFilters} = this.props
     const votes = this.props.votesByQuestion || 0
     if (questions) {
-      if (this.props.currentSort === "Most Popular") {
-        this.dateSort(questions)
-          questions.sort(function (a,b){
-            const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
-            const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )
-            return voteCount2 - voteCount
-          })
-      }
-      if (this.props.currentSort === "Most Recent") {
-        this.dateSort(questions)
-      }
-      else {
+      if (currentSort === 'My Questions') {
         return questions.filter((item) => item.creator === client.currentUser)
+      } else {
+        if (currentSort === "Most Popular") {
+          this.dateSort(questions)
+            questions.sort(function (a,b){
+              const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
+              const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )
+              return voteCount2 - voteCount
+            })
+        }
+        else if (currentSort === "Most Recent") {
+          this.dateSort(questions)
+        }
+
+        if (selectedFilters.length > 0) {
+          const searchFilters = selectedFilters.map(f => f.title)
+          questions = questions.filter(q => q.filters && q.filters.some(f => searchFilters.includes(f)))
+        }
+
+        return questions
       }
     }
     else {

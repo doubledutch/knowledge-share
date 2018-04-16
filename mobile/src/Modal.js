@@ -106,7 +106,7 @@ export default class CustomModal extends Component {
               />
               <Text style={s.counter}>{250 - this.state.question.length} </Text>
           </View>
-          <Text style={{color: this.props.showError, paddingTop: 2, fontSize: 12, marginLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a question</Text>
+          <Text style={{color: this.props.showError, paddingTop: 2, fontSize: 12, marginLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a valid message</Text>
           <View style={s.bottomButtons}>
             <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity>
             <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion()}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>

@@ -101,7 +101,7 @@ convertPrivatePerUserDataToState(fbc, userRefKey, component, stateKey, keyFn,
 }
 
 export function convertPrivatePerUserDataToState(fbc, userRefKey, component, stateKey, keyFn, stateDestroyer, stateCreator) {
-  const ref = fbc.database.private.adminableUserRef()
+  const ref = fbc.database.private.adminableUsersRef()
   const keysByUserId = {}
 
   ref.on('child_added', onUserData)
@@ -144,4 +144,3 @@ export function convertPrivatePerUserDataToState(fbc, userRefKey, component, sta
     })
   }
 }
-

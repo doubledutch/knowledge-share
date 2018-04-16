@@ -19,7 +19,6 @@ export default class TableCell extends Component {
   }
 
   renderCell = (item) => {
-    console.log(item.id)
     const voteCount = item.questionId
       ? (this.props.votesByAnswer[item.id] || 0)
       : (this.props.votesByQuestion[item.id] || 0)
@@ -53,9 +52,7 @@ export default class TableCell extends Component {
             <View style={s.voteContainer}>
               <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{"Upvote | " + voteCount}</Text></TouchableOpacity>
               <View style={{flex:1}}></View>
-              <View style={{paddingTop: 15}}>
-                <ReportButton report={this.props.reportQuestion} item={item} handleReport={this.props.handleReport}/>
-              </View>
+              <ReportButton report={this.props.reportQuestion} item={item} handleReport={this.props.handleReport} isReported={this.props.isReported}/> 
             </View>
           </View>
         </View>
@@ -111,7 +108,8 @@ const s = ReactNative.StyleSheet.create({
   voteContainer: {
     height: 40, 
     flexDirection: 'row',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    alignItems: 'center'
   },
   upVoteButton: {
     backgroundColor: client.primaryColor, 

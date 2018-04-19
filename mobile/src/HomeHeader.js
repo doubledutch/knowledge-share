@@ -60,8 +60,6 @@ export default class HomeHeader extends Component {
   }
 
   renderQuestion = (question) => {
-    console.log(this.props.reportedQuestions)
-    // const reports = Object.keys(this.props.reports)
     const reports = this.props.reports
     const isReported = ((reports && reports.find(q => q === question.id)) ? true : false)
     return (

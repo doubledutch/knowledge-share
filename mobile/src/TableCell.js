@@ -76,24 +76,7 @@ export default class TableCell extends Component {
 
 
   renderIcon = (item) => {
-  //   var comment = this.props.item
-  //   var num = this.props.item.key
-  //   // var votes = this.props.votes[num]
-  //   // var votes = []
-  //   var myVote = null
-  //   if (votes) {
-  //   myVote = votes.find((vote) => {
-  //     return vote.user
-  //   })
-  //   console.log(myVote)
-  //   console.log(this.props.votesByAnswer)
-  // }
-  //   if (myVote){
-  //     return <TouchableOpacity onPress={() => this.props.newVotes(comment, myVote)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
-  //   }
-  //   else {
-       return <TouchableOpacity onPress={() => this.props.newVotes(item)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
-    // }
+    return <TouchableOpacity onPress={() => this.props.newVotes(item)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
   }
 }
 

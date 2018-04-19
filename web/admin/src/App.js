@@ -63,16 +63,6 @@ export default class App extends Component {
   render() {
     const content = Object.keys(this.state.reports)
     const contentVal = Object.values(this.state.reports)
-
-    // console.log(contentVal)
-    // console.log(this.state.reports)
-    // console.log(content)
-    // console.log(contentVal)
-    // console.log(this.state.questions)
-    // console.log(this.state.answersByQuestion)
-    // const flagged = contentVal.filter(item => item.block === false && item.approved === false)
-    // const blocked = contentVal.filter(item => item.block === true && item.approved === false)
-  
     const time = new Date().getTime()
     return (
       <div>

@@ -12,10 +12,11 @@ import FilterSelect from './FilterSelect'
 import SortSelect from './SortSelect'
 import ReportModal from './ReportModal'
 import {
-  mapPerUserPushedDataToStateObjects,
-  mapPerUserPushedDataToObjectOfStateObjects,
-  reducePerUserDataToStateCount,
-} from './firebaseHelpers'
+  mapPerUserPublicPushedDataToStateObjects,
+  mapPerUserPublicPushedDataToObjectOfStateObjects,
+  reducePerUserPublicDataToStateCount,
+  mapPushedDataToStateObjects
+} from '@doubledutch/firebase-connector'
 
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
@@ -34,6 +35,8 @@ class HomeView extends Component {
       answersByQuestion: {},
       votesByQuestion: {},
       votesByAnswer: {},
+      myVotesByQuestion: {},
+      myVotesByAnswer: {},
       filters: [],
       selectedFilters: [],
       reportedQuestions: [],
@@ -60,22 +63,16 @@ class HomeView extends Component {
 
   componentDidMount(){
     this.signin.then(() => {
-      mapPerUserPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
-      mapPerUserPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
-      reducePerUserDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
-      reducePerUserDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
-      // mapPerUserPrivatePushedDataToStateObjects(fbc, 'reports', this, 'reports', (userId, key, value) => key)
+      mapPerUserPublicPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
+      mapPushedDataToStateObjects(fbc.database.public.userRef('questionVotes'), this, 'myVotesByQuestion')
+      mapPushedDataToStateObjects(fbc.database.public.userRef('answerVotes'), this, 'myVotesByAnswer')
+      mapPerUserPublicPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
+      reducePerUserPublicDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
+      reducePerUserPublicDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
       const reportRef = fbc.database.private.adminableUserRef('reports')
-      // const reportCommentRef = fbc.database.private.adminableUserRef('reportComments')
-
       reportRef.on('child_added', data => {
         this.setState({ reports: [...this.state.reports, data.key ] })
       })
-
-      // reportCommentRef.on('child_added', data => {
-      //   this.setState({ reportedComments: [...this.state.reportedComments, data.key ] })
-      // })
-
     })
   }
 
@@ -262,7 +259,6 @@ class HomeView extends Component {
 
   showModal = () => {
     this.setState({modalVisible: true, animation: "none"})
-
     //move to the listener
     this.organizeFilters()
   }
@@ -275,16 +271,12 @@ class HomeView extends Component {
     this.setState({showReportModal: true, report: item})
   }
 
-  
-
-
   reportQuestion = (question) => this.createReport(fbc.database.private.adminableUserRef, question)
 
   createReport = (ref, question) => {
     const reportTime = new Date().getTime()
     const isQuestion = ((question.questionId) ? false : true)
     const questionId = ((question.questionId) ? question.questionId : '')
-    // if (isQuestion) {
       ref('reports').child(question.id).set({
         reportTime,
         isQuestion,
@@ -295,22 +287,6 @@ class HomeView extends Component {
       .then(() => {
         this.setState({showReportModal: false})
       })
-    // }
-    // else {
-    //   ref('reportComments').child(question.id).set({
-    //     reportTime,
-    //     // isQuestion,
-    //     // questionId,
-    //     // creator: client.currentUser,
-    //     // text: question.text,
-    //     block: false,
-    //     approved: false
-    //   })
-    //   .then(() => {
-    //     this.setState({showReportModal: false})
-    //   })
-    // }
-
   }
 
 
@@ -386,13 +362,29 @@ class HomeView extends Component {
   }
 
   newVote = (c) => {
-      if (c.questionId) {
+    const answerVotes = Object.keys(this.state.myVotesByAnswer)
+    const questionVotes = Object.keys(this.state.myVotesByQuestion)
+    if (c.questionId) {
+      const isVoted = answerVotes.find(item => item === c.id) || false
+      if (isVoted) {
+        fbc.database.public.userRef('answerVotes').child(c.id).remove()
+      }
+      else {
         fbc.database.public.userRef('answerVotes').child(c.id).set(true)
       }
-      else { 
+    }
+    else { 
+      const isVoted = questionVotes.find(item => item === c.id) || false
+      if (isVoted) {
+        fbc.database.public.userRef('questionVotes').child(c.id).remove()
+      }
+      else {
         fbc.database.public.userRef('questionVotes').child(c.id).set(true)
       }
+    }
   }
+
+
 }
 
 export default HomeView

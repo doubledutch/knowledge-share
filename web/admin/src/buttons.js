@@ -19,19 +19,19 @@ import './App.css'
 
 export default class CustomButtons extends Component {
   render() {
-    const { markBlock, report, unBlock, currentKey } = this.props
+    const { markBlock, report, unBlock, currentKey, userId } = this.props
     if (markBlock) {
       return (
         <span className='cellBoxRight'>
-          <img className='button1' onClick={() => markBlock(report, currentKey)} src={require('./icons/deletecircle.svg')} alt="block" />
-          <img className='button1' onClick={() => unBlock(report, currentKey)} src={require('./icons/checkocircle.svg')} alt="check" />
+          <img className='button1' onClick={() => markBlock(report, currentKey, userId)} src={require('./icons/deleteocircle.svg')} alt="block" />
+          <img className='button1' onClick={() => unBlock(report, currentKey, userId)} src={require('./icons/checkocircle.svg')} alt="check" />
         </span>
       )
     }
     else {
       return (
         <span className='cellBoxRight'>
-          <img className='button1' onClick={() => unBlock(report, currentKey)} src={require('./icons/checkocircle.svg')} alt="check" />
+          <img className='button1' onClick={() => unBlock(report, currentKey, userId)} src={require('./icons/checkocircle.svg')} alt="check" />
         </span>
       )
     }

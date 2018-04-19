@@ -31,10 +31,7 @@ export class MyList extends Component {
   }
 
   isReported = (item) => {
-    console.log(item)
     const { reports } = this.props
-    // const reports = Object.keys(this.props.reports)
-    console.log(reports)
     if (item.questionId) {
       return (
         ((reports && reports.find(q => q === item.id)) ? true : false)

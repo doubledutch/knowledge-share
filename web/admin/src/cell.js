@@ -34,20 +34,15 @@ export default class CustomCell extends Component {
 
   renderButton = (report) => {
     if (this.state.isShowingQuestion) {
-      return <button className="noBorderButton" onClick={() => this.hideQuestion()}>Hide Question</button>
+      return <button className="noBorderButtonSmall" onClick={() => this.hideQuestion()}>Hide Question</button>
     }
     else {
-      return ((report.questionId) ? <button className="noBorderButton" onClick={() => this.showButton(report.questionId)}>Show Question</button> : null)
+      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.showButton(report.questionId)}>Show Question</button> : null)
     }
   }
 
-  renderCell = () => {
-    const { currentKey, difference, report, content} = this.props
-    // const content = this.props.returnContent(report, key)
-    console.log(content)
-    console.log(report)
-    console.log(currentKey)
-
+  renderCell = () => {  
+    const { currentKey, difference, report, content, singleReport } = this.props
     if (this.state.isShowingQuestion) {
       return(
         <div className="cellContainer">
@@ -65,17 +60,15 @@ export default class CustomCell extends Component {
           <div className='cellBox'>
             <div className='cellBoxLeft'>
               <div className='cellBoxTop'>
-                <p className='introText'>{((this.props.report.isQuestion) ? "Question" : "Answer")}</p>
-                {this.renderButton(report)}
+                <p className='introText'>{((this.props.singleReport.isQuestion) ? "Question" : "Answer")}</p>
+                {this.renderButton(singleReport)}
               </div>
               <p className="questionText">"{content.text}"</p>
               <div className="cellBoxTop">
                 <p className="nameText">
-                  -{content.creator.firstName || "Error"} {content.creator.lastName || "Error"}
+                  {(content.creator ? "-" + content.creator.firstName + " " + content.creator.lastName : null)}
                 </p>
-                <p className="nameText">
-                  Flagged by: {content.creator.firstName || "Error"} {content.creator.lastName || "Error"}
-                </p>
+                {this.returnUsers()}
               </div>
             </div>
             <CustomButtons
@@ -83,6 +76,7 @@ export default class CustomCell extends Component {
               currentKey = {currentKey}
               markBlock={this.props.markBlock}
               unBlock={this.props.unBlock}
+              userId={content.userId}
             />
           </div>
         </div>
@@ -93,17 +87,15 @@ export default class CustomCell extends Component {
         <div className='cellBox'>
           <div className='cellBoxLeft'>
             <div className='cellBoxTop'>
-              <p className='introText'>{((this.props.report.isQuestion) ? "Question" : "Answer")}</p>
-              {this.renderButton(report)}
+              <p className='introText'>{((singleReport.isQuestion) ? "Question" : "Answer")}</p>
+              {this.renderButton(singleReport)}
             </div>
             <p className="questionText">"{content.text}"</p>
             <div className="cellBoxTop">
               <p className="nameText">
-                -{content.creator.firstName || "Error"} {content.creator.lastName || "Error"}
+                {(content.creator ? "-" + content.creator.firstName + " " + content.creator.lastName : null)}
               </p>
-              <p className="nameText">
-                Flagged by: {content.creator.firstName || "Error"} {content.creator.lastName || "Error"}
-              </p>
+              {this.returnUsers()}
             </div>
           </div>
           <CustomButtons
@@ -115,6 +107,16 @@ export default class CustomCell extends Component {
         </div>
       )
     }
+  }
+
+  returnUsers = () => {
+    const reports = this.props.report
+    var users = ""
+    reports.map((item, i) => {
+      var user = this.props.getUser(item)
+      users = users + (i > 0 ? ", " : " ") + user.firstName + " " + user.lastName
+    })
+    return <p className="nameText">Flagged by: {users}</p>
   }
 
   showButton = (currentKey) => {

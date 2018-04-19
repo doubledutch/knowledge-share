@@ -26,10 +26,10 @@
 }
 
 .bigBoxTitle{
-  font-size: 24px;
-  height: 24px;
+  font-size: 18px;
   display: flex;
-  margin-bottom: 16px;
+  margin-left: 10px;
+  margin-bottom: 10px;
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #393939;
 }
@@ -48,7 +48,7 @@
 
 .questionBox {
   flex: 1;
-  margin: 10px 40px 5px 0px;
+  margin: 0px 40px 5px 0px;
 }
 
 .listBox {
@@ -61,7 +61,7 @@
   border-style: solid;
   border-color:#DEDEDE;
   border-width: 1px;
-  height: 600px;
+  height: 500px;
   background-color: #EFEFEF;
 }
 
@@ -91,16 +91,17 @@
 .cellBoxLeft{
   flex: 1;
   margin-top: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   padding-left: 20px;
   padding-right: 0px;
   margin-right: 0px;
 }
 
 .cellBoxRight{
-  padding: 0px 20px 5px 0px;
+  padding-right: 20px;
   display: flex;
   flex-flow: nowrap;
+  align-items: center;
 }
 
 .listTitle{
@@ -112,6 +113,16 @@
   border: none;
   color: #009DCD;
   padding: 0px;
+  margin-left: 25px;
+  font-size: 14px;
+}
+
+.noBorderButtonSmall{
+  border: none;
+  color: #009DCD;
+  padding: 0px;
+  font-size: 12px;
+  margin-left: 10px;
 }
 
 .introText {
@@ -119,7 +130,6 @@
   color: #898989;
   margin: 0px;
   font-family: -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-weight: bold;
   margin-right: 10px
 }
 
@@ -149,7 +159,7 @@
 .nameText{
   font-size: 14px;
   margin-top: 0px;
-  margin-bottom: 0px;
+  margin-bottom: 5px;
   padding-right: 10px;
   color: #8A8A8A;
   font-family: -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -158,7 +168,6 @@
 .button1{
   height: 30px;
   width: 30px;
-  margin-top: 30px;
   margin-left: 5px;
   margin-right: 5px;
   border-radius: 50%;

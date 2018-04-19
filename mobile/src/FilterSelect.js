@@ -182,7 +182,10 @@ const s = ReactNative.StyleSheet.create({
     color: '#9B9B9B'
   },
   closeButton: {
-    marginLeft: 20
+    marginLeft: 20,
+    color: client.primaryColor,
+    fontWeight: '900',
+    fontSize: 16
   },
   helpText: {
     marginRight: 20,

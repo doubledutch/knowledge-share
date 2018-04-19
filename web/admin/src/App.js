@@ -19,15 +19,13 @@ import './App.css'
 import client from '@doubledutch/admin-client'
 import FirebaseConnector from '@doubledutch/firebase-connector'
 import {
-  mapPerUserPushedDataToStateObjects,
-  mapPerUserPushedDataToObjectOfStateObjects,
-  reducePerUserDataToStateCount,
-  mapPerUserPrivatePushedDataToObjectOfStateObjects,
-  mapPerUserPrivatePushedDataToStateObjects
-} from './firebaseHelpersJS'
+  mapPerUserPublicPushedDataToStateObjects,
+  mapPerUserPublicPushedDataToObjectOfStateObjects,
+  mapPerUserPrivateAdminablePushedDataToStateObjects,
+  mapPerUserPrivateAdminablePushedDataToObjectOfStateObjects
+} from '@doubledutch/firebase-connector'
 import CustomButtons from './buttons'
 import CustomCell from './cell'
-import { Z_DEFAULT_COMPRESSION } from 'zlib';
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
 
@@ -55,9 +53,9 @@ export default class App extends Component {
     this.signin.then(() => {
       client.getUsers().then(users => {
         this.setState({allUsers: users})
-        mapPerUserPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
-        mapPerUserPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
-        mapPerUserPrivatePushedDataToStateObjects(fbc, 'reports', this, 'reports', (userId, key, value) => key)
+        mapPerUserPublicPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
+        mapPerUserPublicPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
+        mapPerUserPrivateAdminablePushedDataToObjectOfStateObjects(fbc, 'reports', this, 'reports', (userId, key, value) => key, (userId) => userId)
       })  
     })
   }
@@ -65,26 +63,34 @@ export default class App extends Component {
   render() {
     const content = Object.keys(this.state.reports)
     const contentVal = Object.values(this.state.reports)
-    const flagged = contentVal.filter(item => item.block === false)
-    const blocked = contentVal.filter(item => item.block === true)
+
+    // console.log(contentVal)
+    // console.log(this.state.reports)
+    // console.log(content)
+    // console.log(contentVal)
+    // console.log(this.state.questions)
+    // console.log(this.state.answersByQuestion)
+    // const flagged = contentVal.filter(item => item.block === false && item.approved === false)
+    // const blocked = contentVal.filter(item => item.block === true && item.approved === false)
+  
     const time = new Date().getTime()
-
-    console.log(this.state.reports)
-
     return (
       <div>
         <p className='bigBoxTitle'>Knowledge Share</p>
         <div className="App">
           <div className="questionBox">
             <div className="cellBoxTop">
-              <p className="listTitle">Flagged ({flagged.length || 0})</p>
-              <button className="noBorderButton" onClick={() => this.hideQuestion()}>Block All</button>
+              <p className="listTitle">Flagged ({(this.flaggedList ? this.flaggedList.children.length : "0")})</p>
+              <button className="noBorderButton" onClick={() => this.approveAll(content)}>Approve All</button>
+              <button className="noBorderButton" onClick={() => this.blockAll(content)}>Block All</button>
             </div>
-            <ul className='listBox'>
+            <ul className='listBox' ref={(input) => {this.flaggedList = input}}>
               { content.map((task, i) => {
                 const report = this.getReport(task)
+                const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
+                const singleReportFlagged = Object.values(report).find(item => item.block !== true && item.approved !== true)
                 const content = this.returnContent(report, task)
-                if (report.block === false) {
+                if (singleReportFlagged) {
                   return (
                     <li className='cellBox' key={i}>
                       <CustomCell
@@ -94,31 +100,36 @@ export default class App extends Component {
                         markBlock={this.markBlock}
                         unBlock={this.unBlock}
                         getUser={this.getUser}
-                        report = {report}
+                        report = {allReportsFlagged}
                         time = {time}
                         dateMath={this.doDateMath}
                         content = {content}
+                        singleReport = {singleReportFlagged}
+                        allReportsFlagged = {allReportsFlagged}
                       />
                     </li>
-                )
-              }
+                  )
+                }
               }) }
             </ul>
           </div>
           <div className="questionBox">
             <span>
-              <p className="listTitle">Blocked ({blocked.length || 0})</p>
+            <p className="listTitle">Blocked ({(this.blockedList ? this.blockedList.children.length : "0")})</p>
             </span>
-            <ul className='listBox'>
+            <ul className='listBox' ref={(input) => {this.blockedList = input}}>
               { content.map((task, i) => {
                 const report = this.getReport(task)
                 const content = this.returnContent(report, task)
-                if (report.block === true) {
+                const allReportsBlocked = Object.values(report).filter(item => item.block === true && item.approved !== true)
+                const singleReportBlocked = Object.values(report).find(item => item.block === true && item.approved !== true)
+                if (singleReportBlocked) {
                   return (
                     <li key={i}>
                       <CustomCell
                         currentKey = {task}
-                        report={report}
+                        report={allReportsBlocked}
+                        singleReport = {singleReportBlocked}
                         returnQuestion={this.returnQuestion}
                         returnContent={this.returnContent}
                         unBlock={this.unBlock}
@@ -131,7 +142,7 @@ export default class App extends Component {
                       />
                     </li>
                   )
-              }
+                }
               }) }
             </ul>
           </div>
@@ -140,25 +151,52 @@ export default class App extends Component {
     )
   }
 
-  markBlock = (task, key) => {
-    if (task.isQuestion) {
-      fbc.database.private.adminableUsersRef(task.userId).child("reports").child(key).update({block: true})
-      fbc.database.public.usersRef(task.userId).child("questions").child(key).update({block: true})
-    }
-    else {
-      fbc.database.private.adminableUsersRef(task.userId).child("reports").child(key).update({block: true})
-      fbc.database.public.usersRef(task.userId).child("answers").child(key).update({block: true})
+  blockAll = (content) => {
+    content.map((item, i) => {
+      const currentKey = item
+      const report = this.getReport(item)
+      const content = this.returnContent(report, item)
+      const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
+      this.markBlock(allReportsFlagged, currentKey, content.userId)
+    })
+
+  }
+
+  approveAll = (content) => {
+    content.map((item, i) => {
+      const currentKey = item
+      const report = this.getReport(item)
+      const content = this.returnContent(report, item)
+      const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
+      this.unBlock(allReportsFlagged, currentKey, content.userId)
+    })
+  }
+
+  markBlock = (reports, key, userId) => {
+    if (reports.length) {
+      reports.map((item) => {
+        fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: true})
+      })
+      if (reports[0].isQuestion) {
+        fbc.database.public.usersRef(userId).child("questions").child(key).update({block: true})
+      }
+      else {
+        fbc.database.public.usersRef(userId).child("answers").child(key).update({block: true})
+      }
     }
   }
 
-  unBlock = (task, key) => {
-    if (task.isQuestion) {
-      fbc.database.private.adminableUsersRef(task.userId).child("report").child(key).update({block: false, approved: true})
-      fbc.database.public.usersRef(task.userId).child("questions").child(key).update({block: false})
-    }
-    else {
-      fbc.database.private.adminableUsersRef(task.userId).child("reports").child(key).update({block: false, approved: true})
-      fbc.database.public.usersRef(task.userId).child("answers").child(key).update({block: false})
+  unBlock = (reports, key, userId) => {
+    if (reports.length) {
+      reports.map((item) => {
+        fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false, approved: true})
+      })
+      if (reports[0].isQuestion) {
+        fbc.database.public.usersRef(userId).child("questions").child(key).update({block: false})
+      }
+      else {
+        fbc.database.public.usersRef(userId).child("answers").child(key).update({block: false})
+      }
     }
   }
 
@@ -175,12 +213,13 @@ export default class App extends Component {
     return this.state.questions[key]
   }
 
-  returnContent = (task, key) => {
-    if (task.isQuestion) {
+  returnContent = (report, key) => {
+    const array = Object.values(report)
+    if (array[0].isQuestion) {
       return this.state.questions[key]
     }
     else {
-      const question = this.state.answersByQuestion[task.questionId]
+      const question = this.state.answersByQuestion[array[0].questionId]
       return question[key]
     }
   }

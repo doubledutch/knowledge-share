@@ -8,16 +8,10 @@ import client, { Color } from '@doubledutch/rn-client'
 export default class FilterCell extends Component {
   render() {
     const { item, handleReport, isReported } = this.props 
-
-    if (isReported) return (
-      <TouchableOpacity style={s.buttonContainer}>
-        <Text style={s.title}>Reported</Text>
-      </TouchableOpacity>
-    )
-  
-    else return (
+    
+    return (
       <TouchableOpacity style={s.buttonContainer} onPress={() => handleReport(item)}>
-        <Text style={s.title}>Report</Text>
+        <Text style={s.title}>{isReported ? "Reported" : "Report"}</Text>
       </TouchableOpacity>
     )
   }

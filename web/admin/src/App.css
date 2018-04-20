@@ -14,11 +14,161 @@
  * limitations under the License.
  */
 
+ :root {
+  font: 400 14px -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #4A4A4A;
+  background-color: white;
+}
+
  .App-intro {
   font-size: large;
   text-align: center;
 }
 
+.bigBoxTitle{
+  font-size: 18px;
+  display: flex;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #393939;
+}
+
+.App {
+  padding: 0px 10px 0px 10px;
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: row wrap;
+}
+
 .avatar {
   width: 40px;
+}
+
+.questionBox {
+  flex: 1;
+  margin: 0px 40px 5px 0px;
+}
+
+.listBox {
+  flex: 1;
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+  overflow-x:hidden; 
+  overflow-y:auto;
+  border-style: solid;
+  border-color:#DEDEDE;
+  border-width: 1px;
+  height: 500px;
+  background-color: #EFEFEF;
+}
+
+.cellBox {
+  box-sizing: border-box;
+  border-bottom: 1px;
+  min-height: 86px;
+  display: flex;
+  flex: 1;
+  flex-flow: nowrap;
+  border-bottom-style: solid;
+  border-bottom-color: #DEDEDE;
+  background-color: white;
+}
+
+ .cellContainer {
+  flex-flow: column wrap;
+  display: flex;
+  flex: 1;
+ }
+
+ .cellBoxTop {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.cellBoxLeft{
+  flex: 1;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 0px;
+  margin-right: 0px;
+}
+
+.cellBoxRight{
+  padding-right: 20px;
+  display: flex;
+  flex-flow: nowrap;
+  align-items: center;
+}
+
+.listTitle{
+  display: flex;
+  flex: 1;
+}
+
+.noBorderButton{
+  border: none;
+  color: #009DCD;
+  padding: 0px;
+  margin-left: 25px;
+  font-size: 14px;
+}
+
+.noBorderButtonSmall{
+  border: none;
+  color: #009DCD;
+  padding: 0px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.introText {
+  font-size: 12px;
+  color: #898989;
+  margin: 0px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-right: 10px
+}
+
+.timeText {
+  font-size: 12px;
+  color: #898989;
+  font-family: -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: thin;
+  margin-right: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+}
+
+.questionText{
+  font-size: 16px;
+  color: #364347;
+  font-family: -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-Top: 8px;
+  margin-Bottom: 5px;
+  margin-right: 5px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+.nameText{
+  font-size: 14px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  padding-right: 10px;
+  color: #8A8A8A;
+  font-family: -apple-system, BlinkMacSystemFont, 'Fira Sans', 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.button1{
+  height: 30px;
+  width: 30px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 50%;
 }

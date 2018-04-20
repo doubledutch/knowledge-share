@@ -4,110 +4,145 @@ import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import TableHeader from './TableHeader'
+import TableCell from './TableCell'
 
 
 export class MyList extends Component {
-    constructor(props){
-        super(props)
-        this.newVotes = this.newVotes.bind(this)
-        this.state = {
-          anom: false,
-          showMessage: false
-        }
-    }
 
   render() { 
-    let newQuestions = this.props.questions
+    const { newVote, showQuestion, showComments, handleReport, handleChange } = this.props
+    const data = this.verifyData()
     return (
       <View>
-        {this.renderHeader(newQuestions)}
+        {this.renderHeader(showQuestion)}
         <FlatList
-        data={newQuestions}
-        ListFooterComponent={<View style={{height: 100}}></View>}
-        renderItem={({item}) => {
-          return(
-            <View style={s.listContainer}>
-              <View style={s.leftContainer}>
-                {this.renderIcon(item)}
-                <Text style={s.subText}>{item.score}</Text>
-              </View>
-              <View style={s.rightContainer}>
-                <Text style={s.questionText}>{item.text}</Text>
-                <Text style={s.nameText}>
-                  -{item.creator.firstName} {item.creator.lastName}
-                </Text>
-              </View>
-            </View>
-          )
-        }}
-      />
-    </View>
-  )
-  }
-
-  renderHeader = (questions) => {
-    if (questions.length === 0) {
-      return (
-        <View>
-          <View style={{height:60}}>
-            <View style={s.buttonContainer}>
-              <View style={s.divider}/>
-              <TouchableOpacity style={s.button1}><Text style={s.dashboardButton}>Popular</Text></TouchableOpacity>
-              <View style={s.dividerSm}/>
-              <TouchableOpacity style={s.button2} onPress={this.props.findOrderDate}><Text style={s.dashboardButton}>Recent</Text></TouchableOpacity>
-              <View style={s.divider}/>
-            </View>
-          </View>
-          <View style={{marginTop: 96}}b>
-            <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Be the First to Ask a Question!</Text>
-            <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>Tap here to get started</Text></TouchableOpacity>
-          </View>
-        </View>
-      )
-    }
-
-    else {
-
-    if (this.props.showRecent === false) {
-      return (
-      <View style={{height: 60}}>
-        <View style={s.buttonContainer}>
-          <View style={s.divider}/>
-          <TouchableOpacity style={s.button1} ><Text style={s.dashboardButton}>Popular</Text></TouchableOpacity>
-          <View style={s.dividerSm}/>
-          <TouchableOpacity style={s.button2} onPress={this.props.findOrderDate}><Text style={s.dashboardButton}>Recent</Text></TouchableOpacity>
-          <View style={s.divider}/>
-        </View>
+          data={data}
+          ListFooterComponent={<View style={{height: 100}}></View>}
+          renderItem={({item}) => {
+            const isReported = this.isReported(item)
+            return (
+              <TableCell item={item} commentsTotal={this.totalComments(item.id)} newVote={newVote} votesByAnswer={this.props.votesByAnswer} votesByQuestion={this.props.votesByQuestion} showQuestion={showQuestion} showComments={showComments} handleReport={handleReport} isReported={isReported}/>
+            )
+          }}
+        />
       </View>
-      )
-    }
-    if (this.props.showRecent === true) {
-      return (
-      <View style={{height: 60}}>
-        <View style={s.buttonContainer}>
-          <View style={s.divider}/>
-          <TouchableOpacity style={s.button2} onPress={this.props.findOrder}><Text style={s.dashboardButton}>Popular</Text></TouchableOpacity>
-          <View style={s.dividerSm}/>
-          <TouchableOpacity style={s.button1}><Text style={s.dashboardButton}>Recent</Text></TouchableOpacity>
-          <View style={s.divider}/>
-        </View>
-      </View>
-      )
-    }
-  }
+    )
   }
 
-  renderIcon = (question) => {
-    if (question.myVote === true){
-      return <TouchableOpacity onPress={() => this.newVotes(question)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Active.png"}}/></TouchableOpacity>
+  isReported = (item) => {
+    const { reports } = this.props
+    if (item.questionId) {
+      return (
+        ((reports && reports.find(q => q === item.id)) ? true : false)
+      )
     }
     else {
-       return <TouchableOpacity onPress={() => this.newVotes(question)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
+      return (
+        ((reports && reports.find(q => q === item.id)) ? true : false)
+      )
     }
   }
 
-  newVotes(question){
-    this.props.newVote(question)
+  verifyData = () => {
+    var questions = Object.values(this.props.questions)
+    if (this.props.showQuestion) {
+      questions = questions.filter(question => question.block === false)
+      return this.originalOrder(questions)
+    }
+    else {
+      if (this.props.comments) {    
+        const comments = this.props.comments[this.props.question.id]
+        if (comments) {
+          return this.commentsOrder(comments)
+        }
+        else {
+          return []
+        }
+      }
+      else {
+        return []
+      }
+    }
+  }
+
+  totalComments = (key) => {
+    var total = 0
+    var comments = this.props.comments[key]
+    if (comments) {
+      comments = Object.values(comments)
+      comments = comments.filter(item => item.block === false)
+      total = comments.length
+    }
+    return total
+  }
+
+  commentsOrder = (comments) => {
+    const votes = this.props.votesByAnswer || 0
+    var sortComments = Object.values(comments)
+    sortComments = sortComments.filter(comment => comment.block === false )
+    sortComments.sort(function (a,b){
+      const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
+      const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )
+      return voteCount2 - voteCount
+    })
+    return sortComments
+  }
+
+  originalOrder = (questions) => {
+    const {currentSort, selectedFilters} = this.props
+    const votes = this.props.votesByQuestion || 0
+    if (questions) {
+      if (currentSort === 'My Questions') {
+        return questions.filter((item) => item.creator === client.currentUser)
+      } else {
+        if (currentSort === "Most Popular") {
+          this.dateSort(questions)
+            questions.sort(function (a,b){
+              const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
+              const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )
+              return voteCount2 - voteCount
+            })
+        }
+        else if (currentSort === "Most Recent") {
+          this.dateSort(questions)
+        }
+
+        if (selectedFilters.length > 0) {
+          const searchFilters = selectedFilters.map(f => f.title)
+          questions = questions.filter(q => q.filters && q.filters.some(f => searchFilters.includes(f)))
+        }
+
+        return questions
+      }
+    }
+    else {
+      return []
+    }
+  }
+
+  dateSort = (questions) => {
+    questions.sort(function (a,b){
+      return b.dateCreate - a.dateCreate
+    })
+  }
+
+ 
+
+  renderHeader = (showQuestion) => {
+    if (showQuestion){
+      return (
+        <TableHeader 
+          questions={this.props.questions} 
+          showRecent={this.props.showRecent}
+          showModal={this.props.showModal}
+          handleChange={this.props.handleChange}
+          organizeFilters={this.props.organizeFilters}
+          currentSort={this.props.currentSort}
+          selectedFilters={this.props.selectedFilters}
+        />
+      )
+    } 
   }
 
 }
@@ -116,81 +151,5 @@ export default MyList
 
 const fontSize = 18
 const s = ReactNative.StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#EFEFEF',
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  subText:{
-    fontSize: 12,
-    color: '#9B9B9B'
-  },
-  nameText:{
-    fontSize: 14,
-    color: '#9B9B9B',
-  },
-  button1: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    justifyContent: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: client.primaryColor
-  },
-  button2: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    justifyContent: 'center', 
-  },
-  divider: {
-    flex: 1
-  },
-  dividerSm: {
-    width: 30
-  },
-  questionText:{
-    fontSize: 16,
-    color: '#364247',
-    fontFamily: 'System',
-  },
-  listContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems:'center',
-    backgroundColor: 'white',
-    marginBottom: 2,
-  },
-  leftContainer: {
-    flexDirection: 'column',
-    paddingLeft: 10,
-    backgroundColor: 'white',
-    alignItems:'center',
-    height: '100%',
-    paddingTop: 15
-  },
-  rightContainer: {
-    flex: 1,
-    width: '80%',
-    paddingLeft: 15,
-    paddingRight: 20,
-    paddingTop: 15,
-    paddingBottom: 15,
-  },
-  checkmark: {
-    height: 16,
-    width: 16,
-    marginTop: 4
-  },
-  compose: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-  },
-  dashboardButton: {
-    fontSize: 18,
-    color: '#9B9B9B'
-  }
+
 })

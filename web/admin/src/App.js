@@ -62,7 +62,6 @@ export default class App extends Component {
 
   render() {
     const content = Object.keys(this.state.reports)
-    const contentVal = Object.values(this.state.reports)
     const time = new Date().getTime()
     return (
       <div>
@@ -70,7 +69,7 @@ export default class App extends Component {
         <div className="App">
           <div className="questionBox">
             <div className="cellBoxTop">
-              <p className="listTitle">Flagged ({(this.flaggedList ? this.flaggedList.children.length : "0")})</p>
+              <p className="listTitle">Reported ({(this.flaggedList ? this.flaggedList.children.length : "0")})</p>
               <button className="noBorderButton" onClick={() => this.approveAll(content)}>Approve All</button>
               <button className="noBorderButton" onClick={() => this.blockAll(content)}>Block All</button>
             </div>

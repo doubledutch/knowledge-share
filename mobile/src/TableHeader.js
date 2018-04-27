@@ -8,10 +8,10 @@ import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 export default class TableHeader extends Component {
 
   renderPrompt = (questions) => {
-    if (questions === 0) {
+    if (questions.length === 0) {
       return (
         <View style={{marginTop: 96}}>
-          <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Be the First to Ask a Question!</Text>
+          <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Get the Conversation Started!</Text>
           <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>Tap here to get started</Text></TouchableOpacity>
         </View>
       )

@@ -112,6 +112,7 @@
 .noBorderButton{
   border: none;
   color: #009DCD;
+  background-color: white;
   padding: 0px;
   margin-left: 25px;
   font-size: 14px;

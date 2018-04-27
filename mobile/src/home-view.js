@@ -46,7 +46,7 @@ class HomeView extends Component {
       showError: "white", 
       animation: "none",
       title: "Knowledge Share",
-      questionError: "Ask Question",
+      questionError: "Submit Question",
       topBorder: "#EFEFEF",
       showQuestion:true,
       showFilters: false,

@@ -94,7 +94,7 @@ export class MyList extends Component {
     const votes = this.props.votesByQuestion || 0
     if (questions) {
       if (currentSort === 'My Questions') {
-        return questions.filter((item) => item.creator === client.currentUser)
+        return questions.filter((item) => item.creator.id === client.currentUser.id)
       } else {
         if (currentSort === "Most Popular") {
           this.dateSort(questions)

@@ -8,7 +8,8 @@ import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 export default class TableHeader extends Component {
 
   renderPrompt = (questions) => {
-    if (questions.length === 0) {
+    const filteredQuestions = Object.values(questions).filter(item => item.block === false) || []
+    if (filteredQuestions.length === 0) {
       return (
         <View style={{marginTop: 96}}>
           <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Get the Conversation Started!</Text>

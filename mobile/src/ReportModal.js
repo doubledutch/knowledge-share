@@ -9,17 +9,12 @@ export default class ReportModal extends Component {
   render() {
     const { report, reportQuestion, handleChange} = this.props 
 
-    // if (isReported) return (
-    //   <TouchableOpacity style={s.buttonContainer}>
-    //     <Text style={s.title}>Reported</Text>
-    //   </TouchableOpacity>
-    // )
     return (
       <TouchableOpacity style={s.modalCover}
           onPress={() => {
             handleChange("showReportModal", false);
           }}>
-          <View style={s.modal}>
+          <TouchableOpacity style={s.modal}>
             <Text style={s.title}>Are you sure you want to report this content?</Text>
             <View style={s.buttonBox}>
               <TouchableOpacity style={s.buttonContainer} 
@@ -31,7 +26,7 @@ export default class ReportModal extends Component {
                 <Text style={s.buttonText}>Report Content</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
       </TouchableOpacity>
 
     )

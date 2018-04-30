@@ -40,7 +40,9 @@ export default class App extends Component {
     answersByQuestion: {},
     reportComments: {},
     location: 0,
-    questionKey: ''
+    questionKey: '',
+    totalFlagged: 0,
+    totalBlocked: 0
   }
     this.signin = fbc.signinAdmin()
       .then(user => this.user = user)
@@ -77,9 +79,9 @@ export default class App extends Component {
               { content.map((task, i) => {
                 const report = this.getReport(task)
                 const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
-                const singleReportFlagged = Object.values(report).find(item => item.block !== true && item.approved !== true)
-                const content = this.returnContent(report, task)
-                if (singleReportFlagged) {
+                const current = this.returnContent(report, task)
+                const questionUser = this.getUser(task)
+                if (allReportsFlagged.length) {
                   return (
                     <li className='cellBox' key={i}>
                       <CustomCell
@@ -92,8 +94,8 @@ export default class App extends Component {
                         report = {allReportsFlagged}
                         time = {time}
                         dateMath={this.doDateMath}
-                        content = {content}
-                        singleReport = {singleReportFlagged}
+                        content = {current}
+                        singleReport = {allReportsFlagged[0]}
                         allReportsFlagged = {allReportsFlagged}
                       />
                     </li>
@@ -102,6 +104,7 @@ export default class App extends Component {
               }) }
             </ul>
           </div>
+          
           <div className="questionBox">
             <span>
             <p className="listTitle">Blocked ({(this.blockedList ? this.blockedList.children.length : "0")})</p>
@@ -109,16 +112,15 @@ export default class App extends Component {
             <ul className='listBox' ref={(input) => {this.blockedList = input}}>
               { content.map((task, i) => {
                 const report = this.getReport(task)
-                const content = this.returnContent(report, task)
+                const current = this.returnContent(report, task)
                 const allReportsBlocked = Object.values(report).filter(item => item.block === true && item.approved !== true)
-                const singleReportBlocked = Object.values(report).find(item => item.block === true && item.approved !== true)
-                if (singleReportBlocked) {
+                if (allReportsBlocked.length) {
                   return (
                     <li key={i}>
                       <CustomCell
                         currentKey = {task}
                         report={allReportsBlocked}
-                        singleReport = {singleReportBlocked}
+                        singleReport = {allReportsBlocked[0]}
                         returnQuestion={this.returnQuestion}
                         returnContent={this.returnContent}
                         unBlock={this.unBlock}
@@ -127,7 +129,7 @@ export default class App extends Component {
                         location = {i}
                         time = {time}
                         dateMath={this.doDateMath}
-                        content={content}
+                        content={current}
                       />
                     </li>
                   )
@@ -148,8 +150,20 @@ export default class App extends Component {
       const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
       this.markBlock(allReportsFlagged, currentKey, content.userId)
     })
-
   }
+
+
+  renderMessage = () => {
+    return (
+      <div className="modTextBox">
+        <p className="bigModText">Moderation is turned off</p>
+        <p className="smallModText">All submitted questions will appear in the</p>
+        <p className="smallModText">approved questions list</p>
+      </div>
+    )
+  }
+
+
 
   approveAll = (content) => {
     content.map((item, i) => {
@@ -164,7 +178,7 @@ export default class App extends Component {
   markBlock = (reports, key, userId) => {
     if (reports.length) {
       reports.map((item) => {
-        fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: true})
+        fbc.database.private.adminableUsersRef(userId).child("reports").child(key).update({block: true})
       })
       if (reports[0].isQuestion) {
         fbc.database.public.usersRef(userId).child("questions").child(key).update({block: true})

@@ -109,6 +109,34 @@
   flex: 1;
 }
 
+.modTextBox{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.bigModText{
+  margin-top: 200px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: 24px;
+  color: #898989;
+  text-align: center;
+  font-family: 'Roboto', 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.smallModText{
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 300;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  text-align: center;
+  color: #898989;
+  font-family: 'Roboto', 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 .noBorderButton{
   border: none;
   color: #009DCD;

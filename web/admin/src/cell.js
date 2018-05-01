@@ -72,11 +72,11 @@ export default class CustomCell extends Component {
               </div>
             </div>
             <CustomButtons
+              currentUser={content.userId}
               report = {report}
               currentKey = {currentKey}
               markBlock={this.props.markBlock}
               unBlock={this.props.unBlock}
-              userId={content.userId}
             />
           </div>
         </div>
@@ -103,6 +103,7 @@ export default class CustomCell extends Component {
             currentKey = {currentKey}
             markBlock={this.props.markBlock}
             unBlock={this.props.unBlock}
+            currentUser={content.userId}
           />
         </div>
       )

@@ -81,6 +81,7 @@ export class MyList extends Component {
     const votes = this.props.votesByAnswer || 0
     var sortComments = Object.values(comments)
     sortComments = sortComments.filter(comment => comment.block === false )
+    this.dateSort(sortComments)
     sortComments.sort(function (a,b){
       const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
       const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )
@@ -94,7 +95,7 @@ export class MyList extends Component {
     const votes = this.props.votesByQuestion || 0
     if (questions) {
       if (currentSort === 'My Questions') {
-        return questions.filter((item) => item.creator === client.currentUser)
+        return questions.filter((item) => item.creator.id === client.currentUser.id)
       } else {
         if (currentSort === "Most Popular") {
           this.dateSort(questions)

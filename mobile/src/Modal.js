@@ -4,6 +4,7 @@ import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
 import TopicsModal from './TopicsModal'
+import { pencil } from './images'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 
 export default class CustomModal extends Component {
@@ -94,7 +95,7 @@ export default class CustomModal extends Component {
         <View style={{flex: 1}}>
           {this.renderQuestion()}
           <View style={[s.modal, borderStyle]}>
-              <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
+              {this.props.showQuestion ? <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity> : <Image style={s.pencilBox} source={pencil}/>}
               <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? "What is your question?" : "Add your own answer"}
                 value={this.state.question}
                 onChangeText={question => this.setState({question})} 
@@ -107,8 +108,8 @@ export default class CustomModal extends Component {
               <Text style={s.counter}>{250 - this.state.question.length} </Text>
           </View>
           <Text style={{color: this.props.showError, paddingTop: 2, fontSize: 12, marginLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a valid message</Text>
-          <View style={s.bottomButtons}>
-            <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity>
+          <View style={this.props.showQuestion ? s.bottomButtons : s.bottomButtonsRight}>
+            {this.props.showQuestion ? <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity> : null }
             <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion()}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
           </View>
           <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 
@@ -170,6 +171,16 @@ const s = ReactNative.StyleSheet.create({
     fontSize: 12,
     color: '#9B9B9B'
   },
+  pencilBox: {
+    marginTop:22,
+    marginRight: 10,
+    marginLeft: 10,
+    marginBottom: 20,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    width: 15,
+    height: 15,
+  },
   nameText:{
     fontSize: 14,
     color: '#9B9B9B',
@@ -197,6 +208,12 @@ const s = ReactNative.StyleSheet.create({
   bottomButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
+    backgroundColor: 'white',
+    height: 60
+  },
+  bottomButtonsRight: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     backgroundColor: 'white',
     height: 60
   },

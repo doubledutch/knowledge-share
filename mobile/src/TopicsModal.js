@@ -63,7 +63,7 @@ export default class TopicsModal extends Component {
           value={this.state.topic}
           onChangeText={topic => this.updateList(topic)} 
           maxLength={250}
-          autoFocus={true}
+          autoFocus={this.state.edit}
           multiline={true}
           placeholderTextColor="#9B9B9B"
           onContentSizeChange={(event) => this._handleSizeChange(event)}
@@ -104,7 +104,7 @@ export default class TopicsModal extends Component {
       if (currentList.length) {
       return (
         <View style={s.table2}>
-        <TouchableOpacity onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
+        <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
         <ScrollView horizontal={true}>
           { currentList.map((item, i) => {
           return (
@@ -118,7 +118,7 @@ export default class TopicsModal extends Component {
     else {
       return (
         <View style={s.table2}>
-          <TouchableOpacity onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
+          <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
         </View>
       )
     }

@@ -46,7 +46,7 @@ class HomeView extends Component {
       showError: "white", 
       animation: "none",
       title: "Knowledge Share",
-      questionError: "Ask Question",
+      questionError: "Submit Question",
       topBorder: "#EFEFEF",
       showQuestion:true,
       showFilters: false,
@@ -253,7 +253,7 @@ class HomeView extends Component {
   }
 
   closeAnswer = () => {
-    this.setState({showQuestion: true, questionError: "Ask Question"})
+    this.setState({showQuestion: true, questionError: "Submit Question"})
   }
 
 

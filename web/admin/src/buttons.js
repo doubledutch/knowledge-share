@@ -16,22 +16,24 @@
 
 import React, { Component } from 'react'
 import './App.css'
+import checkocircle from './icons/checkocircle.svg'
+import deleteocircle from './icons/deleteocircle.svg'
 
 export default class CustomButtons extends Component {
   render() {
-    const { markBlock, report, unBlock, currentKey, userId } = this.props
+    const { markBlock, report, unBlock, currentKey, currentUser} = this.props
     if (markBlock) {
       return (
         <span className='cellBoxRight'>
-          <img className='button1' onClick={() => markBlock(report, currentKey, userId)} src={require('./icons/deleteocircle.svg')} alt="block" />
-          <img className='button1' onClick={() => unBlock(report, currentKey, userId)} src={require('./icons/checkocircle.svg')} alt="check" />
+          <img className='button1' onClick={() => unBlock(report, currentKey, currentUser)} src={checkocircle} alt="check" />
+          <img className='button1' onClick={() => markBlock(report, currentKey, currentUser)} src={deleteocircle} alt="block" />
         </span>
       )
     }
     else {
       return (
         <span className='cellBoxRight'>
-          <img className='button1' onClick={() => unBlock(report, currentKey, userId)} src={require('./icons/checkocircle.svg')} alt="check" />
+          <img className='button1' onClick={() => unBlock(report, currentKey, currentUser)} src={checkocircle} alt="check" />
         </span>
       )
     }

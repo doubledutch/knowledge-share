@@ -8,10 +8,11 @@ import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 export default class TableHeader extends Component {
 
   renderPrompt = (questions) => {
-    if (questions === 0) {
+    const filteredQuestions = Object.values(questions).filter(item => item.block === false) || []
+    if (filteredQuestions.length === 0) {
       return (
         <View style={{marginTop: 96}}>
-          <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Be the First to Ask a Question!</Text>
+          <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Get the Conversation Started!</Text>
           <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>Tap here to get started</Text></TouchableOpacity>
         </View>
       )
@@ -26,7 +27,7 @@ export default class TableHeader extends Component {
             <View style={s.buttonContainer}>
               <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButton}>{"Sort: " + this.props.currentSort}</Text></TouchableOpacity>
               <View style={{flex: 1}}/>
-              <TouchableOpacity style={s.button2} onPress={this.getFilters}><Text style={s.dashboardButton}>{"Topics: " + this.props.selectedFilters.length}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.button3} onPress={this.getFilters}><Text style={s.dashboardButton}>{"Topics: " + this.props.selectedFilters.length}</Text></TouchableOpacity>
             </View>
           </View>
           {this.renderPrompt(questions)}
@@ -52,8 +53,15 @@ const s = ReactNative.StyleSheet.create({
     height: 40,
     paddingTop: 10,
     marginBottom: 10,
-    marginHorizontal: 40,
-    justifyContent: 'center', 
+    marginLeft: 40,
+    justifyContent: 'center',
+  },
+  button3: {
+    height: 40,
+    paddingTop: 10,
+    marginBottom: 10,
+    marginRight: 40,
+    justifyContent: 'center',
   },
   dividerSm: {
     width: 30

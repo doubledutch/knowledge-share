@@ -4,6 +4,7 @@ import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
 import TopicsModal from './TopicsModal'
+import { pencil } from './images'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 
 export default class CustomModal extends Component {
@@ -94,7 +95,7 @@ export default class CustomModal extends Component {
         <View style={{flex: 1}}>
           {this.renderQuestion()}
           <View style={[s.modal, borderStyle]}>
-              <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
+              {this.props.showQuestion ? <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity> : <Image style={s.pencilBox} source={pencil}/>}
               <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? "What is your question?" : "Add your own answer"}
                 value={this.state.question}
                 onChangeText={question => this.setState({question})} 
@@ -169,6 +170,16 @@ const s = ReactNative.StyleSheet.create({
   subText:{
     fontSize: 12,
     color: '#9B9B9B'
+  },
+  pencilBox: {
+    marginTop:22,
+    marginRight: 10,
+    marginLeft: 10,
+    marginBottom: 20,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    width: 15,
+    height: 15,
   },
   nameText:{
     fontSize: 14,

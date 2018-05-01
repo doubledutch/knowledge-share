@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
+import { pencil } from './images'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 import TableCell from './TableCell'
 import FilterCell from './FilterCell'
@@ -46,7 +47,7 @@ export default class HomeHeader extends Component {
         <View style={s.box}>
           {this.renderQuestion(this.props.question)}
           <View style={s.textBox}>
-            <TouchableOpacity style={s.circleBox} onPress={this.props.showModal}><Text style={s.whiteText}>?</Text></TouchableOpacity>
+            <Image style={s.pencilBox} source={pencil}/>
             <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder="Add your own answer"
               autoFocus={false}
               onFocus={this.props.showModal}
@@ -197,6 +198,16 @@ const s = ReactNative.StyleSheet.create({
     paddingRight: 8,
     height: 22,
     borderRadius: 50,
+  },
+  pencilBox: {
+    marginTop:22,
+    marginRight: 10,
+    marginLeft: 10,
+    marginBottom: 20,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    width: 15,
+    height: 15,
   },
   whiteText: {
     fontSize: 18,

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
+import {pencil} from './images'
 import client, { Color } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 

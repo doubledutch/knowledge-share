@@ -177,7 +177,7 @@ export default class App extends Component {
 
   markBlock = (reports, key, userId) => {
     if (reports.length) {
-      reports.map((item) => {
+      reports.forEach((item) => {
         fbc.database.private.adminableUsersRef(userId).child("reports").child(key).update({block: true})
       })
       if (reports[0].isQuestion) {
@@ -191,7 +191,7 @@ export default class App extends Component {
 
   approveQ = (reports, key, userId) => {
     if (reports.length) {
-      reports.map((item) => {
+      reports.forEach((item) => {
         fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false, approved: true})
       })
       if (reports[0].isQuestion) {
@@ -205,7 +205,7 @@ export default class App extends Component {
 
   unBlock = (reports, key, userId) => {
     if (reports.length) {
-      reports.map((item) => {
+      reports.forEach((item) => {
         fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false})
       })
       if (reports[0].isQuestion) {

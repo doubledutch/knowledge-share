@@ -89,7 +89,7 @@ export default class App extends Component {
                         returnQuestion={this.returnQuestion}
                         returnContent={this.returnContent}
                         markBlock={this.markBlock}
-                        unBlock={this.unBlock}
+                        unBlock={this.approveQ}
                         getUser={this.getUser}
                         report = {allReportsFlagged}
                         time = {time}
@@ -189,10 +189,24 @@ export default class App extends Component {
     }
   }
 
-  unBlock = (reports, key, userId) => {
+  approveQ = (reports, key, userId) => {
     if (reports.length) {
       reports.map((item) => {
         fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false, approved: true})
+      })
+      if (reports[0].isQuestion) {
+        fbc.database.public.usersRef(userId).child("questions").child(key).update({block: false})
+      }
+      else {
+        fbc.database.public.usersRef(userId).child("answers").child(key).update({block: false})
+      }
+    }
+  }
+
+  unBlock = (reports, key, userId) => {
+    if (reports.length) {
+      reports.map((item) => {
+        fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false})
       })
       if (reports[0].isQuestion) {
         fbc.database.public.usersRef(userId).child("questions").child(key).update({block: false})

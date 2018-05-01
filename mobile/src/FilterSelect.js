@@ -57,11 +57,16 @@ export default class FilterSelect extends Component {
       <View style={s.table}>
         { filters.map((item, i) => {
           return (
-            <FilterCell item={item} key={i} select={false} addFilter={this.props.addFilter}/>
+            <FilterCell item={item} key={i} select={false} addFilter={this.newFilterAdd}/>
           )
       }) }
       </View>
     )
+  }
+
+  newFilterAdd = (item) => {
+    this.props.addFilter(item)
+    this.updateList("")
   }
 
 

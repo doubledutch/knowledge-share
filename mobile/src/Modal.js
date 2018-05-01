@@ -107,8 +107,8 @@ export default class CustomModal extends Component {
               <Text style={s.counter}>{250 - this.state.question.length} </Text>
           </View>
           <Text style={{color: this.props.showError, paddingTop: 2, fontSize: 12, marginLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a valid message</Text>
-          <View style={s.bottomButtons}>
-            <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity>
+          <View style={this.props.showQuestion ? s.bottomButtons : s.bottomButtonsRight}>
+            {this.props.showQuestion ? <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity> : null }
             <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion()}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
           </View>
           <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 
@@ -197,6 +197,12 @@ const s = ReactNative.StyleSheet.create({
   bottomButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
+    backgroundColor: 'white',
+    height: 60
+  },
+  bottomButtonsRight: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     backgroundColor: 'white',
     height: 60
   },

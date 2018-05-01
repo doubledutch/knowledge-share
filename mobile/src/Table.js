@@ -81,6 +81,7 @@ export class MyList extends Component {
     const votes = this.props.votesByAnswer || 0
     var sortComments = Object.values(comments)
     sortComments = sortComments.filter(comment => comment.block === false )
+    this.dateSort(sortComments)
     sortComments.sort(function (a,b){
       const voteCount = ((votes[a.id] || 0) ? votes[a.id] : 0 )
       const voteCount2 = ((votes[b.id] || 0) ? votes[b.id] : 0 )

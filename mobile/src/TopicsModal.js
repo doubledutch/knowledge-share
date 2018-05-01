@@ -63,7 +63,7 @@ export default class TopicsModal extends Component {
           value={this.state.topic}
           onChangeText={topic => this.updateList(topic)} 
           maxLength={250}
-          autoFocus={true}
+          autoFocus={this.state.edit}
           multiline={true}
           placeholderTextColor="#9B9B9B"
           onContentSizeChange={(event) => this._handleSizeChange(event)}

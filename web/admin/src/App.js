@@ -62,16 +62,50 @@ export default class App extends Component {
     })
   }
 
+  returnTotal(isReport) {
+    var total = 0
+    const content = Object.keys(this.state.reports)
+    if (isReport) {
+      content.forEach((task, i) => {
+        const report = this.getReport(task)
+        const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
+        if (allReportsFlagged.length) {
+          total = total + 1
+        }
+      })
+    }
+    else {
+      content.forEach((task, i) => {
+        const report = this.getReport(task)
+        const allReportsBlocked= Object.values(report).filter(item => item.block === true && item.approved !== true)
+        if (allReportsBlocked.length) {
+          total = total + 1
+        }
+      })
+    }
+    return total
+  }
+
+  renderMessage = (m1, m2, m3) => (
+    <div className="modTextBox">
+      <p className="bigModText">{m1}</p>
+      <p className="smallModText">{m2}</p>
+      <p className="smallModText">{m3}</p>
+    </div>
+  )
+
   render() {
     const content = Object.keys(this.state.reports)
     const time = new Date().getTime()
+    const totalBlocked = this.returnTotal(false)
+    const totalReported = this.returnTotal(true)
     return (
       <div>
         <p className='bigBoxTitle'>Knowledge Share</p>
         <div className="App">
           <div className="questionBox">
             <div className="cellBoxTop">
-              <p className="listTitle">Reported ({(this.flaggedList ? this.flaggedList.children.length : "0")})</p>
+              <p className="listTitle">Reported ({totalReported})</p>
               <button className="noBorderButton" onClick={() => this.approveAll(content)}>Approve All</button>
               <button className="noBorderButton" onClick={() => this.blockAll(content)}>Block All</button>
             </div>
@@ -102,14 +136,15 @@ export default class App extends Component {
                   )
                 }
               }) }
+              {(totalReported) ? null : this.renderMessage("Reported Questions or Comments Will Display Here", "All Pending Reports will remain visible to", "attendees")}
             </ul>
           </div>
           
           <div className="questionBox">
             <span>
-            <p className="listTitle">Blocked ({(this.blockedList ? this.blockedList.children.length : "0")})</p>
+              <p className="listTitle">Blocked ({totalBlocked})</p>
             </span>
-            <ul className='listBox' ref={(input) => {this.blockedList = input}}>
+            <ul className='listBox2' ref={(input) => {this.blockedList = input}}>
               { content.map((task, i) => {
                 const report = this.getReport(task)
                 const current = this.returnContent(report, task)
@@ -135,6 +170,7 @@ export default class App extends Component {
                   )
                 }
               }) }
+              {(totalBlocked) ? null : this.renderMessage("Blocked Questions or Comments Will Display Here", "Any Blocked Comments or Questions will not", "be visible to attendees")}
             </ul>
           </div>
         </div>
@@ -153,18 +189,6 @@ export default class App extends Component {
   }
 
 
-  renderMessage = () => {
-    return (
-      <div className="modTextBox">
-        <p className="bigModText">Moderation is turned off</p>
-        <p className="smallModText">All submitted questions will appear in the</p>
-        <p className="smallModText">approved questions list</p>
-      </div>
-    )
-  }
-
-
-
   approveAll = (content) => {
     content.map((item, i) => {
       const currentKey = item
@@ -178,7 +202,7 @@ export default class App extends Component {
   markBlock = (reports, key, userId) => {
     if (reports.length) {
       reports.forEach((item) => {
-        fbc.database.private.adminableUsersRef(userId).child("reports").child(key).update({block: true})
+        fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: true})
       })
       if (reports[0].isQuestion) {
         fbc.database.public.usersRef(userId).child("questions").child(key).update({block: true})

@@ -65,6 +65,20 @@
   background-color: #EFEFEF;
 }
 
+.listBox2 {
+  flex: 1;
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+  overflow-x:hidden; 
+  overflow-y:auto;
+  border-style: solid;
+  border-color:#DEDEDE;
+  border-width: 1px;
+  height: 500px;
+  background-color: #EFEFEF;
+}
+
 .cellBox {
   box-sizing: border-box;
   border-bottom: 1px;

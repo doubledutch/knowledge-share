@@ -34,7 +34,7 @@ export default class CustomCell extends Component {
 
   renderButton = (report) => {
     if (this.state.isShowingQuestion) {
-      return <button className="noBorderButtonSmall" onClick={() => this.hideQuestion()}>Hide Question</button>
+      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.hideQuestion()}>Hide Question</button> : null)
     }
     else {
       return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.showButton(report.questionId)}>Show Question</button> : null)

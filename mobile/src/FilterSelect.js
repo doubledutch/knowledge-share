@@ -5,6 +5,7 @@ import ReactNative, {
 } from 'react-native'
 import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
+import { magnify } from './images'
 
 export default class FilterSelect extends Component {
   constructor(props){
@@ -120,7 +121,8 @@ export default class FilterSelect extends Component {
     }
     return (
       <View style={s.modal}>
-        <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
+       
+        <Image style={s.pencilBox} source={magnify}/>
         <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={"Search"}
           value={this.state.question}
           onChangeText={question => this.updateList(question)} 
@@ -162,19 +164,15 @@ const s = ReactNative.StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EFEFEF'
   },
-  circleBox: {
-    marginTop:20,
+  pencilBox: {
+    marginTop:22,
     marginRight: 10,
     marginLeft: 10,
     marginBottom: 20,
     justifyContent: 'center',
-    backgroundColor: '#9B9B9B',
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 8,
-    paddingRight: 8,
-    height: 22,
-    borderRadius: 50,
+    backgroundColor: '#FFFFFF',
+    width: 15,
+    height: 15,
   },
   whiteText: {
     fontSize: 18,

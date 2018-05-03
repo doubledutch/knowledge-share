@@ -53,6 +53,8 @@ export default class FilterSelect extends Component {
 
   selectTable = () => {
     var filters = this.props.filters
+    console.log(this.state.search)
+    console.log(filters)
     if (this.state.search) filters = this.state.newList
     return (
       <View style={s.table}>

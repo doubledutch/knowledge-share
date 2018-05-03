@@ -62,7 +62,7 @@ export default class TopicsModal extends Component {
         <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder="Begin typing to add topics"
           value={this.state.topic}
           onChangeText={topic => this.updateList(topic)} 
-          maxLength={250}
+          maxLength={25}
           autoFocus={this.state.edit}
           multiline={true}
           placeholderTextColor="#9B9B9B"

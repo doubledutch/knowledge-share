@@ -195,7 +195,7 @@ export default class App extends Component {
       const report = this.getReport(item)
       const content = this.returnContent(report, item)
       const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
-      this.unBlock(allReportsFlagged, currentKey, content.userId)
+      this.approveQ(allReportsFlagged, currentKey, content.userId)
     })
   }
 

@@ -163,6 +163,7 @@
 .noBorderButtonSmall{
   border: none;
   color: #009DCD;
+  background-color: white;
   padding: 0px;
   font-size: 12px;
   margin-left: 10px;

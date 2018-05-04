@@ -27,7 +27,7 @@ export default class TableHeader extends Component {
             <View style={s.buttonContainer}>
               <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButton}>{"Sort: " + this.props.currentSort}</Text></TouchableOpacity>
               <View style={{flex: 1}}/>
-              <TouchableOpacity style={s.button3} onPress={this.getFilters}><Text style={s.dashboardButton}>{"Topics: " + this.props.selectedFilters.length}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButton}>{"Topics: " + this.props.selectedFilters.length}</Text></TouchableOpacity>
             </View>
           </View>
           {this.renderPrompt(questions)}

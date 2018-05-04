@@ -30,7 +30,7 @@ export default class TableCell extends Component {
             <Text style={s.boldText}>{item.text}</Text>
             <View style={s.buttonContainer}>
               <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-              <Text style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
+              <Text numberOfLines={2} style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
               <View style={{flex:1}}></View>
               <Text style={s.voteText}>{voteCount + " Votes"}</Text>
               <Text style={s.subText}>{this.props.commentsTotal + " Answer" + ((this.props.commentsTotal === 1) ? "": "s")}</Text>
@@ -47,7 +47,7 @@ export default class TableCell extends Component {
             <Text style={s.questionText}>{item.text}</Text>
             <View style={s.buttonContainer}>
               <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-              <Text style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
+              <Text numberOfLines={2} style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
             </View>
             <View style={s.voteContainer}>
               <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{"Upvote | " + voteCount}</Text></TouchableOpacity>
@@ -124,6 +124,7 @@ const s = ReactNative.StyleSheet.create({
   nameText:{
     fontSize: 14,
     color: '#9B9B9B',
+    width: 100,
   },
   questionText:{
     fontSize: 16,

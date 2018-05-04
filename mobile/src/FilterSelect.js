@@ -82,7 +82,7 @@ export default class FilterSelect extends Component {
   }
 
   updateList = (value) => {
-    var queryText = value.toLowerCase()
+    var queryText = value.trim().toLowerCase()
     if (queryText.length > 0){
       var queryResult=[];
       this.props.filters.forEach(function(content){

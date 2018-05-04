@@ -106,16 +106,18 @@ class HomeView extends Component {
   }
 
   organizeFilters = () => {
-    var filters = []
-    Object.values(this.state.questions).map((item) => {
-      if (item.filters) {
-        item.filters.map((filter) => {
-          filters.push(filter)
-        })
-      }
-    })
-    filters.sort()
-    this.countFilters(filters)
+    var filters = this.state.filters
+    if (filters.length === 0) {
+      Object.values(this.state.questions).map((item) => {
+        if (item.filters) {
+          item.filters.map((filter) => {
+            filters.push(filter)
+          })
+        }
+      })
+      filters.sort()
+      this.countFilters(filters)
+    }
   }
 
   addFilter = (selected) => {
@@ -277,16 +279,16 @@ class HomeView extends Component {
     const reportTime = new Date().getTime()
     const isQuestion = ((question.questionId) ? false : true)
     const questionId = ((question.questionId) ? question.questionId : '')
-      ref('reports').child(question.id).set({
-        reportTime,
-        isQuestion,
-        questionId,
-        block: false,
-        approved: false
-      })
-      .then(() => {
-        this.setState({showReportModal: false})
-      })
+    ref('reports').child(question.id).set({
+      reportTime,
+      isQuestion,
+      questionId,
+      block: false,
+      approved: false
+    })
+    .then(() => {
+      this.setState({showReportModal: false})
+    })
   }
 
 

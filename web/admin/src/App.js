@@ -64,20 +64,20 @@ export default class App extends Component {
 
   returnTotal(isReport) {
     var total = 0
-    const content = Object.keys(this.state.reports)
+    const questionOrAnswerIds = Object.keys(this.state.reports)
     if (isReport) {
-      content.forEach((task, i) => {
-        const report = this.getReport(task)
-        const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
+      questionOrAnswerIds.forEach((task, i) => {
+        const questionOrAnswerReports = this.getReport(task)
+        const allReportsFlagged = Object.values(questionOrAnswerReports).filter(item => item.block !== true && item.approved !== true)
         if (allReportsFlagged.length) {
           total = total + 1
         }
       })
     }
     else {
-      content.forEach((task, i) => {
-        const report = this.getReport(task)
-        const allReportsBlocked= Object.values(report).filter(item => item.block === true && item.approved !== true)
+      questionOrAnswerIds.forEach((task, i) => {
+        const questionOrAnswerReports = this.getReport(task)
+        const allReportsBlocked= Object.values(questionOrAnswerReports).filter(item => item.block === true && item.approved !== true)
         if (allReportsBlocked.length) {
           total = total + 1
         }
@@ -95,7 +95,18 @@ export default class App extends Component {
   )
 
   render() {
-    const content = Object.keys(this.state.reports)
+    const questionOrAnswerIds = Object.keys(this.state.reports)
+    const questionsOrAnswersAndReports = questionOrAnswerIds.map(id => {
+      const reports = this.getReport(id)
+      const questionOrAnswer = this.returnContent(reports, id)
+      return { questionOrAnswer, reports }
+    }).sort((a, b) => {
+      function latestReportTimeFor(x) {
+        const reportsArray = Object.values(x.reports)
+        return reportsArray.reduce((latest, report) => Math.max(report.reportTime, latest), 0)
+      }
+      return latestReportTimeFor(b) - latestReportTimeFor(a)
+    })
     const time = new Date().getTime()
     const totalBlocked = this.returnTotal(false)
     const totalReported = this.returnTotal(true)
@@ -106,29 +117,26 @@ export default class App extends Component {
           <div className="questionBox">
             <div className="cellBoxTop">
               <p className="listTitle">Reported ({totalReported})</p>
-              <button className="noBorderButton" onClick={() => this.approveAll(content)}>Approve All</button>
-              <button className="noBorderButton" onClick={() => this.blockAll(content)}>Block All</button>
+              <button className="noBorderButton" onClick={() => this.approveAll(questionsOrAnswersAndReports)}>Approve All</button>
+              <button className="noBorderButton" onClick={() => this.blockAll(questionsOrAnswersAndReports)}>Block All</button>
             </div>
             <ul className='listBox' ref={(input) => {this.flaggedList = input}}>
-              { content.map((task, i) => {
-                const report = this.getReport(task)
-                const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
-                const current = this.returnContent(report, task)
-                const questionUser = this.getUser(task)
+              { questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {
+                const id = questionOrAnswerAndReport.questionOrAnswer.id
+                const allReportsFlagged = Object.values(questionOrAnswerAndReport.reports).filter(item => item.block !== true && item.approved !== true)
+                const questionUser = this.getUser(id)
                 if (allReportsFlagged.length) {
                   return (
-                    <li className='cellBox' key={i}>
+                    <li className='cellBox' key={id}>
                       <CustomCell
-                        currentKey = {task}
+                        currentKey={id}
                         returnQuestion={this.returnQuestion}
                         returnContent={this.returnContent}
                         markBlock={this.markBlock}
                         unBlock={this.approveQ}
                         getUser={this.getUser}
                         report = {allReportsFlagged}
-                        time = {time}
-                        dateMath={this.doDateMath}
-                        content = {current}
+                        content = {questionOrAnswerAndReport.questionOrAnswer}
                         singleReport = {allReportsFlagged[0]}
                         allReportsFlagged = {allReportsFlagged}
                       />
@@ -139,21 +147,20 @@ export default class App extends Component {
               {(totalReported) ? null : this.renderMessage("Reported Questions or Comments Will Display Here", "All Pending Reports will remain visible to", "attendees")}
             </ul>
           </div>
-          
           <div className="questionBox">
             <span>
               <p className="listTitle">Blocked ({totalBlocked})</p>
             </span>
             <ul className='listBox2' ref={(input) => {this.blockedList = input}}>
-              { content.map((task, i) => {
-                const report = this.getReport(task)
-                const current = this.returnContent(report, task)
-                const allReportsBlocked = Object.values(report).filter(item => item.block === true && item.approved !== true)
+              { questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {
+                const id = questionOrAnswerAndReport.questionOrAnswer.id
+                const allReportsBlocked = Object.values(questionOrAnswerAndReport.reports).filter(item => item.block === true && item.approved !== true)
+                const questionUser = this.getUser(id)
                 if (allReportsBlocked.length) {
                   return (
-                    <li key={i}>
+                    <li key={id}>
                       <CustomCell
-                        currentKey = {task}
+                        currentKey = {id}
                         report={allReportsBlocked}
                         singleReport = {allReportsBlocked[0]}
                         returnQuestion={this.returnQuestion}
@@ -161,10 +168,7 @@ export default class App extends Component {
                         unBlock={this.unBlock}
                         getUser={this.getUser}
                         getReport={this.getReport}
-                        location = {i}
-                        time = {time}
-                        dateMath={this.doDateMath}
-                        content={current}
+                        content={questionOrAnswerAndReport.questionOrAnswer}
                       />
                     </li>
                   )
@@ -178,24 +182,22 @@ export default class App extends Component {
     )
   }
 
-  blockAll = (content) => {
-    content.map((item, i) => {
-      const currentKey = item
-      const report = this.getReport(item)
-      const content = this.returnContent(report, item)
-      const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
-      this.markBlock(allReportsFlagged, currentKey, content.userId)
+  blockAll = (questionsOrAnswersAndReports) => {
+    questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {
+      const currentKey = questionOrAnswerAndReport.questionOrAnswer.id
+      const userId = questionOrAnswerAndReport.questionOrAnswer.userId
+      const allReportsFlagged = Object.values(questionOrAnswerAndReport.reports).filter(item => item.block !== true && item.approved !== true)
+      this.markBlock(allReportsFlagged, currentKey, questionOrAnswerAndReport.questionOrAnswer.userId)
     })
   }
 
 
-  approveAll = (content) => {
-    content.map((item, i) => {
-      const currentKey = item
-      const report = this.getReport(item)
-      const content = this.returnContent(report, item)
-      const allReportsFlagged = Object.values(report).filter(item => item.block !== true && item.approved !== true)
-      this.unBlock(allReportsFlagged, currentKey, content.userId)
+  approveAll = (questionsOrAnswersAndReports) => {
+    questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {
+      const currentKey = questionOrAnswerAndReport.questionOrAnswer.id
+      const userId = questionOrAnswerAndReport.questionOrAnswer.userId
+      const allReportsFlagged = Object.values(questionOrAnswerAndReport.reports).filter(item => item.block !== true && item.approved !== true)
+      this.approveQ(allReportsFlagged, currentKey, userId)
     })
   }
 

@@ -58,16 +58,17 @@ export default class TopicsModal extends Component {
     return (
       <View style={{flex: 1}}>
         <View style={[s.modal, borderStyle]}>
-        <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
-        <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder="Begin typing to add topics"
-          value={this.state.topic}
-          onChangeText={topic => this.updateList(topic)} 
-          maxLength={25}
-          autoFocus={this.state.edit}
-          multiline={true}
-          placeholderTextColor="#9B9B9B"
-          onContentSizeChange={(event) => this._handleSizeChange(event)}
-        />
+          <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
+          <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder="Begin typing to add topics"
+            value={this.state.topic}
+            onChangeText={topic => this.updateList(topic)} 
+            maxLength={25}
+            autoFocus={this.state.edit}
+            multiline={true}
+            placeholderTextColor="#9B9B9B"
+            onContentSizeChange={(event) => this._handleSizeChange(event)}
+          />
+          <Text style={s.counter}>{25 - this.state.topic.length} </Text>
         </View>
         {this.filtersTable()}
         <View style={s.bottomButtons}>
@@ -131,7 +132,7 @@ export default class TopicsModal extends Component {
   }
 
   addNewTopic = () => {
-    this.props.newFilter(this.state.topic)
+    this.props.newFilter(this.state.topic.trim())
     this.setState({topic: '', search: false})
   }
 
@@ -161,6 +162,16 @@ const s = ReactNative.StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EFEFEF',
+  },
+  counter: {
+    justifyContent: 'center',
+    marginTop:23,
+    width: 30,
+    fontSize: 14,
+    marginRight: 11,
+    height: 20,
+    color: '#9B9B9B', 
+    textAlign: 'center'
   },
   table2: {
     flexDirection: "row",

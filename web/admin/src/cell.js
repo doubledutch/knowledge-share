@@ -37,7 +37,7 @@ export default class CustomCell extends Component {
       return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.hideQuestion()}>Hide Question</button> : null)
     }
     else {
-      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.showButton(report.questionId)}>Show Question</button> : null)
+      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.showButton(report.questionId)}>View Question</button> : null)
     }
   }
 

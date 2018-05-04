@@ -53,8 +53,6 @@ export default class FilterSelect extends Component {
 
   selectTable = () => {
     var filters = this.props.filters
-    console.log(this.state.search)
-    console.log(filters)
     if (this.state.search) filters = this.state.newList
     return (
       <View style={s.table}>
@@ -84,7 +82,7 @@ export default class FilterSelect extends Component {
   }
 
   updateList = (value) => {
-    var queryText = value.toLowerCase()
+    var queryText = value.trim().toLowerCase()
     if (queryText.length > 0){
       var queryResult=[];
       this.props.filters.forEach(function(content){

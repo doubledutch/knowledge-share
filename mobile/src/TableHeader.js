@@ -25,9 +25,9 @@ export default class TableHeader extends Component {
         <View>
           <View style={{height: 50, marginTop: 10, marginBottom: 1}}>
             <View style={s.buttonContainer}>
-              <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButton}>{"Sort: " + this.props.currentSort}</Text></TouchableOpacity>
-              <View style={{flex: 1}}/>
-              <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButton}>{"Topics: " + this.props.selectedFilters.length}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButtonTitle}>Sort: </Text><Text style={s.dashboardButton}>{this.props.currentSort}</Text></TouchableOpacity>
+              
+              <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButtonTitle}>Filter: </Text><Text style={s.dashboardButton}>{this.props.selectedFilters.length} Topics</Text></TouchableOpacity>
             </View>
           </View>
           {this.renderPrompt(questions)}
@@ -48,26 +48,34 @@ const s = ReactNative.StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: "white",
+    justifyContent: "center"
   },
   button2: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    marginLeft: 40,
     justifyContent: 'center',
+    alignItems: "center",
+    flexDirection: 'row',
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#EFEFEF'
   },
   button3: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    marginRight: 40,
     justifyContent: 'center',
+    alignItems: "center",
+    flexDirection: 'row',
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#EFEFEF'
   },
   dividerSm: {
     width: 30
   },
   dashboardButton: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: "bold",
     color: client.primaryColor
+  },
+  dashboardButtonTitle: {
+    fontSize: 16,
+    color: '#9B9B9B'
   }
 })

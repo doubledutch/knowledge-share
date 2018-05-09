@@ -107,11 +107,11 @@ class HomeView extends Component {
 
   organizeFilters = () => {
     var filters = this.state.filters
-    var questions = Object.values(this.state.questions).filter(question => question.block === false)
+    const questions = Object.values(this.state.questions).filter(question => question.block === false)
     if (filters.length === 0) {
-      questions.map((item) => {
+      questions.forEach((item) => {
         if (item.filters) {
-          item.filters.map((filter) => {
+          item.filters.forEach((filter) => {
             filters.push(filter)
           })
         }

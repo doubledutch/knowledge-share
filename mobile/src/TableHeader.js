@@ -8,11 +8,17 @@ import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
 export default class TableHeader extends Component {
 
   renderPrompt = (questions) => {
-    const filteredQuestions = Object.values(questions).filter(item => item.block === false) || []
+    var questions = Object.values(questions)
+    if (this.props.currentSort === "My Questions") {
+      questions = questions.filter((item) => item.creator.id === client.currentUser.id
+    )}
+    const filteredQuestions = questions.filter(item => item.block === false) || []
     if (filteredQuestions.length === 0) {
       return (
         <View style={{marginTop: 96}}>
-          <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>Get the Conversation Started!</Text>
+          <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>
+            {(this.props.currentSort === "My Questions") ? "You Haven't Asked a Question Yet" : "Get the Conversation Started!"}
+          </Text>
           <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>Tap here to get started</Text></TouchableOpacity>
         </View>
       )
@@ -26,7 +32,6 @@ export default class TableHeader extends Component {
           <View style={{height: 50, marginTop: 10, marginBottom: 1}}>
             <View style={s.buttonContainer}>
               <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButtonTitle}>Sort: </Text><Text style={s.dashboardButton}>{this.props.currentSort}</Text></TouchableOpacity>
-              
               <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButtonTitle}>Filter: </Text><Text style={s.dashboardButton}>{this.props.selectedFilters.length} Topics</Text></TouchableOpacity>
             </View>
           </View>

@@ -107,10 +107,11 @@ class HomeView extends Component {
 
   organizeFilters = () => {
     var filters = this.state.filters
+    const questions = Object.values(this.state.questions).filter(question => question.block === false)
     if (filters.length === 0) {
-      Object.values(this.state.questions).map((item) => {
+      questions.forEach((item) => {
         if (item.filters) {
-          item.filters.map((filter) => {
+          item.filters.forEach((filter) => {
             filters.push(filter)
           })
         }
@@ -147,19 +148,19 @@ class HomeView extends Component {
     var current = null;
     var cnt = 0;
     for (var i = 0; i < filters.length; i++) {
-        if (filters[i] != current) {
-            if (cnt > 0) {
-              var filter = {title: current, count:cnt}
-              newFilters.push(filter)
-            }
-            current = filters[i];
-            cnt = 1;
-        } else {
-            cnt++;
-        }
+      if (filters[i] != current) {
+          if (cnt > 0) {
+            const filter = {title: current, count:cnt}
+            newFilters.push(filter)
+          }
+          current = filters[i];
+          cnt = 1;
+      } else {
+          cnt++;
+      }
     }
     if (cnt > 0) {
-      var filter = {title: current, count:cnt}
+      const filter = {title: current, count:cnt}
       newFilters.push(filter)
     }
     this.setState({filters: newFilters})
@@ -211,6 +212,7 @@ class HomeView extends Component {
             votesByAnswer = {this.state.votesByAnswer}
             organizeFilters={this.organizeFilters}
             currentSort={this.state.currentSort}
+            emptyStateTitle={this.state.emptyStateTitle}
             selectedFilters={this.state.selectedFilters}
             reportQuestion={this.reportQuestion}
             handleReport={this.handleReport}

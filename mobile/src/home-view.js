@@ -150,7 +150,7 @@ class HomeView extends Component {
     for (var i = 0; i < filters.length; i++) {
       if (filters[i] != current) {
           if (cnt > 0) {
-            var filter = {title: current, count:cnt}
+            const filter = {title: current, count:cnt}
             newFilters.push(filter)
           }
           current = filters[i];
@@ -160,7 +160,7 @@ class HomeView extends Component {
       }
     }
     if (cnt > 0) {
-      var filter = {title: current, count:cnt}
+      const filter = {title: current, count:cnt}
       newFilters.push(filter)
     }
     this.setState({filters: newFilters})
@@ -296,7 +296,6 @@ class HomeView extends Component {
 
 
   sortTopics = (currentSort) => {
-    // var title = 
     this.setState({currentSort, showSort: false})
   }
 

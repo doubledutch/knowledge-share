@@ -70,7 +70,7 @@ export default class HomeHeader extends Component {
             <Text style={s.boldText}>{question.text}</Text>
             <View style={s.buttonContainer}>
               <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-              <Text style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
+              <Text numberOfLines={2} style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
               <View style={{flex: 1}}/>
               <ReportButton report={this.props.reportQuestion} item={question} handleReport={this.props.handleReport} isReported={isReported}/>
             </View>
@@ -143,6 +143,7 @@ const s = ReactNative.StyleSheet.create({
   nameText:{
     fontSize: 14,
     color: '#9B9B9B',
+    width: 100
   },
   questionText:{
     fontSize: 16,

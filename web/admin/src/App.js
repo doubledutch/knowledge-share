@@ -117,8 +117,8 @@ export default class App extends Component {
           <div className="questionBox">
             <div className="cellBoxTop">
               <p className="listTitle">Reported ({totalReported})</p>
-              <button className="noBorderButton" onClick={() => this.approveAll(questionsOrAnswersAndReports)}>Approve All</button>
-              <button className="noBorderButton" onClick={() => this.blockAll(questionsOrAnswersAndReports)}>Block All</button>
+              <button className="noBorderButton" disabled={!allReportsFlagged.length} onClick={() => this.approveAll(questionsOrAnswersAndReports)}>Approve All</button>
+              <button className="noBorderButton" disabled={!allReportsFlagged.length} onClick={() => this.blockAll(questionsOrAnswersAndReports)}>Block All</button>
             </div>
             <ul className='listBox' ref={(input) => {this.flaggedList = input}}>
               { questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {

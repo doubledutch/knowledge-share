@@ -102,27 +102,19 @@ export default class TopicsModal extends Component {
       )
     }
     else {
-      if (currentList.length) {
       return (
         <View style={s.table2}>
         <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
-        <ScrollView horizontal={true}>
+        { currentList.length ? <ScrollView horizontal={true}>
           { currentList.map((item, i) => {
-          return (
-            <FilterCell item={item} key={i} select={false} addFilter={this.addFilter}/>
-          )
+            return (
+              <FilterCell item={item} key={i} select={false} addFilter={this.addFilter}/>
+            )
           }) }
-        </ScrollView>
+        </ScrollView> : <Text style={{color: '#9B9B9B'}}>No suggestions</Text>
+        }
         </View>
       )
-    }
-    else {
-      return (
-        <View style={s.table2}>
-          <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
-        </View>
-      )
-    }
     }
   }
 
@@ -132,8 +124,13 @@ export default class TopicsModal extends Component {
   }
 
   addNewTopic = () => {
-    this.props.newFilter(this.state.topic.trim())
-    this.setState({topic: '', search: false})
+    const topic = this.state.topic.trim()
+    const allFilter = (this.props.filters.find(item => item.title.toLowerCase() === topic.toLowerCase()) ? true : false)
+    const selectFilter = (this.props.selectedFilters.find(item => item.title.toLowerCase() === topic.toLowerCase()) ? true : false)
+    if (!allFilter && !selectFilter) {
+      this.props.newFilter(topic)
+      this.setState({topic: '', search: false})
+    }
   }
 
   updateList = (value) => {

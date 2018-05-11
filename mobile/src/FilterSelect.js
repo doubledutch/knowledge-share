@@ -76,7 +76,7 @@ export default class FilterSelect extends Component {
       <View style={s.buttonContainer}>
         <TouchableOpacity onPress={() => this.props.handleChange("showFilters", false)}><Text style={s.closeButton}>X</Text></TouchableOpacity>
         <Text style={s.title}>Topics</Text>
-        <TouchableOpacity><Text style={s.clearButton} onPress={() => this.props.resetFilters()}>Clear</Text></TouchableOpacity>
+        <TouchableOpacity><Text style={s.clearButton} onPress={() => this.resetFilters()}>Clear</Text></TouchableOpacity>
       </View>
     )
   }
@@ -98,6 +98,11 @@ export default class FilterSelect extends Component {
     else {
       this.setState({search: false, question: value})
     }
+  }
+
+  resetFilters = () => {
+    this.setState({question:""})
+    this.props.resetFilters()
   }
 
   searchBar = () => {

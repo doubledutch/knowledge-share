@@ -53,7 +53,7 @@ export default class CustomCell extends Component {
               </div>
               <p className="questionText">"{this.state.question.text}"</p>
               <p className="nameText">
-                -{this.state.question.creator.firstName || "Error"} {this.state.question.creator.lastName || "Error"}
+                {(this.state.question ? "-" + this.state.question.creator.firstName + " " + this.state.question.creator.lastName : "")}
               </p>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default class CustomCell extends Component {
               <p className="questionText">"{content.text}"</p>
               <div className="cellBoxTop">
                 <p className="nameText">
-                  {(content.creator ? "-" + content.creator.firstName + " " + content.creator.lastName : null)}
+                  {(content.creator ? "-" + content.creator.firstName + " " + content.creator.lastName : "")}
                 </p>
                 {this.returnUsers()}
               </div>
@@ -115,7 +115,8 @@ export default class CustomCell extends Component {
     var users = ""
     reports.map((item, i) => {
       var user = this.props.getUser(item)
-      users = users + (i > 0 ? ", " : " ") + user.firstName + " " + user.lastName
+      const name = (user ? user.firstName + " " + user.lastName : "")
+      users = users + (i > 0 ? ", " : " ") + name
     })
     return <p className="nameText">Flagged by: {users}</p>
   }

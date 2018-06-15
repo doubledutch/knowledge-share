@@ -100,7 +100,9 @@ export default class App extends Component {
       const reports = this.getReport(id)
       const questionOrAnswer = this.returnContent(reports, id)
       return { questionOrAnswer, reports }
-    }).sort((a, b) => {
+    })
+    .filter(x => x.questionOrAnswer)
+    .sort((a, b) => {
       function latestReportTimeFor(x) {
         const reportsArray = Object.values(x.reports)
         return reportsArray.reduce((latest, report) => Math.max(report.reportTime, latest), 0)

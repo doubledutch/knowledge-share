@@ -234,6 +234,7 @@ class HomeView extends Component {
           disable = {this.state.disable}
           question = {this.state.question}
           showError = {this.state.showError}
+          handleChange = {this.handleChange}
           hideModal = {this.hideModal}
           modalVisible = {this.state.modalVisible}
           questionError = {this.state.questionError}

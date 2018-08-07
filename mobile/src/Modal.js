@@ -98,7 +98,7 @@ export default class CustomModal extends Component {
               {this.props.showQuestion ? <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity> : <Image style={s.pencilBox} source={pencil}/>}
               <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? "What is your question?" : "Add your own answer"}
                 value={this.state.question}
-                onChangeText={question => this.setState({question})} 
+                onChangeText={question => this.updateQuestion(question)} 
                 maxLength={250}
                 autoFocus={true}
                 multiline={true}
@@ -120,6 +120,13 @@ export default class CustomModal extends Component {
         return (
           <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.props.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter}/>
         )
+      }
+    }
+
+    updateQuestion = (question) => {
+      this.setState({question})
+      if (this.props.showError === "red") {
+        this.props.handleChange("showError", "white")
       }
     }
 

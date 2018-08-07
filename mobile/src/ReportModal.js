@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import ReactNative, {
   TouchableOpacity, Text, View } from 'react-native'
-import client, { } from '@doubledutch/rn-client'
+import client from '@doubledutch/rn-client'
 
 export default class ReportModal extends Component {
   render() {
@@ -30,13 +30,6 @@ export default class ReportModal extends Component {
 
     )
   }
-
-  
-
-
-
-
-
 
 }
 

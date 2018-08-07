@@ -84,8 +84,8 @@
   border-bottom: 1px;
   min-height: 86px;
   display: flex;
-  flex: 1;
   flex-flow: nowrap;
+  width: 100%;
   border-bottom-style: solid;
   border-bottom-color: #DEDEDE;
   background-color: white;
@@ -103,12 +103,12 @@
 }
 
 .cellBoxLeft{
-  flex: 1;
   margin-top: 15px;
   margin-bottom: 10px;
   padding-left: 20px;
   padding-right: 0px;
   margin-right: 0px;
+  flex: 1;
 }
 
 .cellBoxRight{

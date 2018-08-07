@@ -43,7 +43,7 @@ class HomeView extends Component {
       reportedComments: [],
       reports: [],
       currentSort: "Most Popular",
-      showError: "white", 
+      showError: false, 
       animation: "none",
       title: "Knowledge Share",
       questionError: "Submit Question",
@@ -269,7 +269,7 @@ class HomeView extends Component {
   }
 
   hideModal = () => {
-    this.setState({modalVisible: false, animation: "slide", showError: "white"})
+    this.setState({modalVisible: false, animation: "slide", showError: false})
   }
 
   handleReport = (item) => {
@@ -314,7 +314,7 @@ class HomeView extends Component {
     var time = new Date().getTime()
     var questionName = question.trim()
     if (questionName.length === 0) {
-      this.setState({showError: "red"})
+      this.setState({showError: true})
     }
     if (this.user && questionName.length > 0) {
       ref('questions').push({
@@ -327,7 +327,7 @@ class HomeView extends Component {
         filters: filters
       })
       .then(() => {
-        this.setState({question: '', showError: "white"})
+        this.setState({question: '', showError: false})
         setTimeout(() => {
           this.hideModal()
           }
@@ -344,7 +344,7 @@ class HomeView extends Component {
     var time = new Date().getTime()
     var commentName = comment.trim()
     if (commentName.length === 0) {
-      this.setState({showError: "red"})
+      this.setState({showError: true})
     }
     if (this.user && commentName.length > 0) {
       ref('answers').push({
@@ -356,7 +356,7 @@ class HomeView extends Component {
         questionId: this.state.question.id
       })
       .then(() => {
-        this.setState({showError: "white"})
+        this.setState({showError: false})
         setTimeout(() => {
           this.hideModal()
           }

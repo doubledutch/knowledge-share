@@ -11,8 +11,7 @@ export default class CustomModal extends Component {
   constructor(props){
     super(props)
     this.state = {
-      question: '',
-      color: 'white',  
+      question: '', 
       borderColor: '#EFEFEF',
       inputHeight: 0,
       showTopics: false,
@@ -21,7 +20,6 @@ export default class CustomModal extends Component {
   }
 
   modalClose = () => {
-    this.setState({color: 'white'})
     this.props.hideModal()
   }
 
@@ -88,7 +86,7 @@ export default class CustomModal extends Component {
     }
 
       var borderColor = this.state.borderColor
-      if (this.props.showError === "red"){borderColor = "red"}
+      if (this.props.showError){borderColor = "red"}
       const borderStyle = {borderColor: borderColor}
       if (this.state.showTopics === false) {
         return (
@@ -98,7 +96,7 @@ export default class CustomModal extends Component {
               {this.props.showQuestion ? <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity> : <Image style={s.pencilBox} source={pencil}/>}
               <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? "What is your question?" : "Add your own answer"}
                 value={this.state.question}
-                onChangeText={question => this.setState({question})} 
+                onChangeText={this.updateQuestion} 
                 maxLength={250}
                 autoFocus={true}
                 multiline={true}
@@ -107,7 +105,7 @@ export default class CustomModal extends Component {
               />
               <Text style={s.counter}>{250 - this.state.question.length} </Text>
           </View>
-          <Text style={{color: this.props.showError, paddingTop: 2, fontSize: 12, paddingLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a valid message</Text>
+          <Text style={{color: this.props.showError ? "red" : "white", paddingTop: 2, fontSize: 12, paddingLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a valid message</Text>
           <View style={this.props.showQuestion ? s.bottomButtons : s.bottomButtonsRight}>
             {this.props.showQuestion ? <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity> : null }
             <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion()}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
@@ -120,6 +118,13 @@ export default class CustomModal extends Component {
         return (
           <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.props.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter}/>
         )
+      }
+    }
+
+    updateQuestion = (question) => {
+      this.setState({question})
+      if (this.props.showError) {
+        this.props.handleChange("showError", false)
       }
     }
 

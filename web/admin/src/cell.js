@@ -16,6 +16,7 @@
 
 import React, { Component } from 'react'
 import './App.css'
+import client, {translate as t, useStrings} from '@doubledutch/admin-client'
 import CustomButtons from './buttons'
 
 export default class CustomCell extends Component {
@@ -34,10 +35,10 @@ export default class CustomCell extends Component {
 
   renderButton = (report) => {
     if (this.state.isShowingQuestion) {
-      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.hideQuestion()}>Hide Question</button> : null)
+      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.hideQuestion()}>{t("hide_question")}</button> : null)
     }
     else {
-      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.showButton(report.questionId)}>View Question</button> : null)
+      return ((report.questionId) ? <button className="noBorderButtonSmall" onClick={() => this.showButton(report.questionId)}>{t("view_question")}</button> : null)
     }
   }
 
@@ -118,7 +119,7 @@ export default class CustomCell extends Component {
       const name = (user ? user.firstName + " " + user.lastName : "")
       users = users + (i > 0 ? ", " : " ") + name
     })
-    return <p className="nameText">Flagged by: {users}</p>
+    return <p className="nameText">{t("flagged", {users})}</p>
   }
 
   showButton = (currentKey) => {

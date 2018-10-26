@@ -121,7 +121,7 @@ export default class App extends Component {
         <div className="App">
           <div className="questionBox">
             <div className="cellBoxTop">
-              <p className="listTitle">{t("reported")} ({totalReported})</p>
+              <p className="listTitle">{t("reported", {totalReported})}</p>
               <button className="noBorderButton" disabled={!totalReported} onClick={() => this.approveAll(questionsOrAnswersAndReports)}>{t("approve_all")}</button>
               <button className="noBorderButton" disabled={!totalReported} onClick={() => this.blockAll(questionsOrAnswersAndReports)}>{t("block_all")}</button>
             </div>
@@ -154,7 +154,7 @@ export default class App extends Component {
           </div>
           <div className="questionBox">
             <span>
-              <p className="listTitle">{t("blocked")} ({totalBlocked})</p>
+              <p className="listTitle">{t("blocked", {totalBlocked})}</p>
             </span>
             <ul className='listBox2' ref={(input) => {this.blockedList = input}}>
               { questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {
@@ -179,7 +179,7 @@ export default class App extends Component {
                   )
                 }
               }) }
-              {(totalBlocked) ? null : this.renderMessage("Blocked Questions or Comments Will Display Here", "Any Blocked Comments or Questions will not", "be visible to attendees")}
+              {(totalBlocked) ? null : this.renderMessage(t("block_display"), t("block_display_sec"), t("block_display_three"))}
             </ul>
           </div>
         </div>

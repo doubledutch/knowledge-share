@@ -1,10 +1,15 @@
 {
   "approve_all": "Approve All",
   "block_all": "Block All",
-  "reported": "Reported",
+  "reported": "Reported (${totalReported})",
   "report_display": "Reported Questions or Comments Will Display Here",
   "pending_display": "All Pending Reports will remain visible to",
   "attendees": "attendees",
-  "blocked": "Blocked"
-
+  "blocked": "Blocked (${totalBlocked})",
+  "block_display": "Blocked Questions or Comments Will Display Here",
+  "block_display_sec": "Any Blocked Comments or Questions will not",
+  "block_display_three": "be visible to attendees",
+  "hide_question": "Hide Question",
+  "view_question": "View Question",
+  "flagged": "Flagged by: ${users}"
 }

@@ -230,11 +230,8 @@ const s = ReactNative.StyleSheet.create({
   },
   modalBottom: {
     flex: 1,
-    height: 40,
-    padding: 15,
-    backgroundColor: client.primaryColor
-    // backgroundColor: 'black',
-    // opacity: 0.5
+    backgroundColor: 'black',
+    opacity: 0.5
   },
   button: {
     width: '25%',

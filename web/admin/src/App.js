@@ -16,7 +16,8 @@
 
 import React, { Component } from 'react'
 import './App.css'
-import client from '@doubledutch/admin-client'
+import client, {translate as t, useStrings} from '@doubledutch/admin-client'
+import i18n from './i18n'
 import FirebaseConnector from '@doubledutch/firebase-connector'
 import {
   mapPerUserPublicPushedDataToStateObjects,
@@ -28,6 +29,8 @@ import CustomButtons from './buttons'
 import CustomCell from './cell'
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
+
+useStrings(i18n)
 
 export default class App extends Component {
   constructor() {
@@ -53,7 +56,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.signin.then(() => {
-      client.getUsers().then(users => {
+      client.getAttendees().then(users => {
         this.setState({allUsers: users})
         mapPerUserPublicPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
         mapPerUserPublicPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
@@ -118,9 +121,9 @@ export default class App extends Component {
         <div className="App">
           <div className="questionBox">
             <div className="cellBoxTop">
-              <p className="listTitle">Reported ({totalReported})</p>
-              <button className="noBorderButton" disabled={!totalReported} onClick={() => this.approveAll(questionsOrAnswersAndReports)}>Approve All</button>
-              <button className="noBorderButton" disabled={!totalReported} onClick={() => this.blockAll(questionsOrAnswersAndReports)}>Block All</button>
+              <p className="listTitle">{t("reported")} ({totalReported})</p>
+              <button className="noBorderButton" disabled={!totalReported} onClick={() => this.approveAll(questionsOrAnswersAndReports)}>{t("approve_all")}</button>
+              <button className="noBorderButton" disabled={!totalReported} onClick={() => this.blockAll(questionsOrAnswersAndReports)}>{t("block_all")}</button>
             </div>
             <ul className='listBox' ref={(input) => {this.flaggedList = input}}>
               { questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {
@@ -146,12 +149,12 @@ export default class App extends Component {
                   )
                 }
               }) }
-              {(totalReported) ? null : this.renderMessage("Reported Questions or Comments Will Display Here", "All Pending Reports will remain visible to", "attendees")}
+              {(totalReported) ? null : this.renderMessage(t("report_display"), t("pending_display"), t("attendees"))}
             </ul>
           </div>
           <div className="questionBox">
             <span>
-              <p className="listTitle">Blocked ({totalBlocked})</p>
+              <p className="listTitle">{t("blocked")} ({totalBlocked})</p>
             </span>
             <ul className='listBox2' ref={(input) => {this.blockedList = input}}>
               { questionsOrAnswersAndReports.map((questionOrAnswerAndReport) => {

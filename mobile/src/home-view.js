@@ -4,6 +4,7 @@ import ReactNative, {
   KeyboardAvoidingView, Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Image, Modal
 } from 'react-native'
 import client, { Avatar, TitleBar, Color, translate as t  } from '@doubledutch/rn-client'
+import i18n from './i18n'
 import FirebaseConnector from '@doubledutch/firebase-connector'
 import MyList  from './Table'
 import CustomModal from './Modal'

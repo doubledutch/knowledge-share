@@ -32,8 +32,8 @@ export default class TableCell extends Component {
               <Avatar user={item.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
               <Text numberOfLines={2} style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
               <View style={{flex:1}}></View>
-              <Text style={s.voteText}>{voteCount + " " + t("votes")}</Text>
-              <Text style={s.subText}>{this.props.commentsTotal + " " + ((this.props.commentsTotal === 1) ? t("answer") : t("answers"))}</Text>
+              <Text style={s.voteText}>{t("votes", {count: voteCount})}</Text>
+              <Text style={s.subText}>{((this.props.commentsTotal === 1) ? t("answer_count", {count: this.props.commentsTotal}) : t("answers_count", {count: this.props.commentsTotal}))}</Text>
             </View>
             {this.renderFilters(item)}
           </View>
@@ -50,7 +50,7 @@ export default class TableCell extends Component {
               <Text numberOfLines={2} style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
             </View>
             <View style={s.voteContainer}>
-              <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{t("upvote") + " | " + voteCount}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{t("upvote", {count: voteCount})}</Text></TouchableOpacity>
               <View style={{flex:1}}></View>
               <ReportButton report={this.props.reportQuestion} item={item} handleReport={this.props.handleReport} isReported={this.props.isReported}/> 
             </View>

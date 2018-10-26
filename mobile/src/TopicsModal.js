@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
-import client, { Color } from '@doubledutch/rn-client'
+import client, { Color, translate as t } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 
 export default class TopicsModal extends Component {
@@ -59,7 +59,7 @@ export default class TopicsModal extends Component {
       <View style={{flex: 1}}>
         <View style={[s.modal, borderStyle]}>
           <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity>
-          <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder="Begin typing to add topics"
+          <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={t("begin")}
             value={this.state.topic}
             onChangeText={topic => this.updateList(topic)} 
             maxLength={25}
@@ -72,8 +72,8 @@ export default class TopicsModal extends Component {
         </View>
         {this.filtersTable()}
         <View style={s.bottomButtons}>
-          <TouchableOpacity style={s.topicsButton} onPress={() => handleChange("showTopics", false)}><Text style={s.topicsButtonText}>Back to Question</Text></TouchableOpacity>
-          <TouchableOpacity style={s.sendButton} onPress={() => makeQuestion()}><Text style={s.sendButtonText}>Submit Question</Text></TouchableOpacity>
+          <TouchableOpacity style={s.topicsButton} onPress={() => handleChange("showTopics", false)}><Text style={s.topicsButtonText}>{t("back")}</Text></TouchableOpacity>
+          <TouchableOpacity style={s.sendButton} onPress={() => makeQuestion()}><Text style={s.sendButtonText}>{t("submitQ")}</Text></TouchableOpacity>
         </View>
         <TouchableOpacity style={s.modalBottom} onPress={modalClose}></TouchableOpacity> 
       </View>
@@ -104,14 +104,14 @@ export default class TopicsModal extends Component {
     else {
       return (
         <View style={s.table2}>
-        <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>Create New Topic</Text></TouchableOpacity>
+        <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>{t("create")}</Text></TouchableOpacity>
         { currentList.length ? <ScrollView horizontal={true}>
           { currentList.map((item, i) => {
             return (
               <FilterCell item={item} key={i} select={false} addFilter={this.addFilter}/>
             )
           }) }
-        </ScrollView> : <Text style={{color: '#9B9B9B'}}>No suggestions</Text>
+        </ScrollView> : <Text style={{color: '#9B9B9B'}}>{t("no_suggestions")}</Text>
         }
         </View>
       )

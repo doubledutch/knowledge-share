@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
-import client, { Color } from '@doubledutch/rn-client'
+import client, { Color, translate as t } from '@doubledutch/rn-client'
 
 export default class FilterCell extends Component {
   render() {
@@ -11,7 +11,7 @@ export default class FilterCell extends Component {
     if (item.creator.id !== client.currentUser.id){
       return (
         <TouchableOpacity style={s.buttonContainer} onPress={() => handleReport(item)}>
-          <Text style={s.title}>{isReported ? "Reported" : "Report"}</Text>
+          <Text style={s.title}>{isReported ? t("reported") : t("report")}</Text>
         </TouchableOpacity>
       )
     }

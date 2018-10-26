@@ -252,7 +252,7 @@ class HomeView extends Component {
   renderFooter = () => {
     if (this.state.showQuestion === false && this.state.modalVisible === false) {
       return (
-        <TouchableOpacity onPress={() => this.closeAnswer()} style={s.back}></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.closeAnswer()} style={s.back}><Text style={s.backText}>Close</Text></TouchableOpacity>
       )
     }
   }
@@ -423,11 +423,16 @@ const s = ReactNative.StyleSheet.create({
     backgroundColor: '#EFEFEF',
   },
   back: {
-    height: 75,
-    backgroundColor: 'black',
-    opacity: 0.5,
-    borderTopWidth: 1,
-    borderTopColor: '#EFEFEF'
+    height: 40,
+    margin: 15,
+    borderRadius: 5,
+    backgroundColor: client.primaryColor,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  backText: {
+    fontSize: 16,
+    color: "white"
   },
   textBox: {
     flexDirection: 'row',

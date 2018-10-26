@@ -4,7 +4,7 @@ import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
 import { pencil } from './images'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
 import TableCell from './TableCell'
 import FilterCell from './FilterCell'
 import ReportButton from './ReportButton'
@@ -33,7 +33,7 @@ export default class HomeHeader extends Component {
       return (
         <View style={s.textBox}>
           <TouchableOpacity style={s.circleBox} onPress={this.props.showModal}><Text style={s.whiteText}>?</Text></TouchableOpacity>
-          <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder="What is your question?"
+          <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder={t("what_question")}
             autoFocus={false}
             onFocus={this.props.showModal}
             multiline={true}
@@ -48,7 +48,7 @@ export default class HomeHeader extends Component {
           {this.renderQuestion(this.props.question)}
           <View style={s.textBox}>
             <Image style={s.pencilBox} source={pencil}/>
-            <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder="Add your own answer"
+            <TextInput  underlineColorAndroid='transparent' style={Platform.select({ios: newStyle, android: [newStyle, androidStyle]})} placeholder={t("add_answer")}
               autoFocus={false}
               onFocus={this.props.showModal}
               multiline={true}
@@ -77,7 +77,7 @@ export default class HomeHeader extends Component {
           </View>
         </View>
         <View style={s.filterContainer}>
-          <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(question)}><Text style={s.voteText}>{"Upvote | " + ((this.props.votesByQuestion[question.id]) ? this.props.votesByQuestion[question.id] : 0 )}</Text></TouchableOpacity>
+          <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(question)}><Text style={s.voteText}>{ t("upvote") + " | " + ((this.props.votesByQuestion[question.id]) ? this.props.votesByQuestion[question.id] : 0 )}</Text></TouchableOpacity>
           {this.renderFilters(question)}
         </View>
       </View>

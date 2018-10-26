@@ -5,7 +5,7 @@ import ReactNative, {
 } from 'react-native'
 import TopicsModal from './TopicsModal'
 import { pencil } from './images'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
 
 export default class CustomModal extends Component {
   constructor(props){
@@ -94,7 +94,7 @@ export default class CustomModal extends Component {
           {this.renderQuestion()}
           <View style={[s.modal, borderStyle]}>
               {this.props.showQuestion ? <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity> : <Image style={s.pencilBox} source={pencil}/>}
-              <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? "What is your question?" : "Add your own answer"}
+              <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? t("what_question") : t("add_answer")}
                 value={this.state.question}
                 onChangeText={this.updateQuestion} 
                 maxLength={250}
@@ -105,9 +105,9 @@ export default class CustomModal extends Component {
               />
               <Text style={s.counter}>{250 - this.state.question.length} </Text>
           </View>
-          <Text style={{color: this.props.showError ? "red" : "white", paddingTop: 2, fontSize: 12, paddingLeft: 10, backgroundColor: "#FFFFFF"}}>*Please enter a valid message</Text>
+          <Text style={{color: this.props.showError ? "red" : "white", paddingTop: 2, fontSize: 12, paddingLeft: 10, backgroundColor: "#FFFFFF"}}>{t("error")}</Text>
           <View style={this.props.showQuestion ? s.bottomButtons : s.bottomButtonsRight}>
-            {this.props.showQuestion ? <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>Add Topics</Text></TouchableOpacity> : null }
+            {this.props.showQuestion ? <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>{t("add_topics")}</Text></TouchableOpacity> : null }
             <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion()}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
           </View>
           <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 

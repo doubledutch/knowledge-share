@@ -3,14 +3,14 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
 
 export default class SortSelect extends Component {
   constructor(props){
     super(props)
     this.state = {
-      currentSort: 'Most Popular',
-      sortList: ["Most Popular", "Most Recent", "My Questions"],
+      currentSort: t("popular"),
+      sortList: [t("popular"), t("recent"), t("questions")],
       search: false
 
     }
@@ -41,7 +41,7 @@ export default class SortSelect extends Component {
     return (
       <View style={s.buttonContainer}>
         <TouchableOpacity onPress={() => this.props.handleChange("showSort", false)}><Text style={s.closeButton}>X</Text></TouchableOpacity>
-        <Text style={s.title}>Sort</Text>
+        <Text style={s.title}>{t("sort")}</Text>
         <Text style={{width: 25}}></Text>
       </View>
     )

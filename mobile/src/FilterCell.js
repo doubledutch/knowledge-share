@@ -1,9 +1,7 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Color } from '@doubledutch/rn-client'
+import ReactNative, { TouchableOpacity, Text } from 'react-native'
+import client, { translate as t } from '@doubledutch/rn-client'
 
 export default class FilterCell extends Component {
   render() {

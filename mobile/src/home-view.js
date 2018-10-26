@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import ReactNative, {
   KeyboardAvoidingView, Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Image, Modal
 } from 'react-native'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t  } from '@doubledutch/rn-client'
+import i18n from './i18n'
 import FirebaseConnector from '@doubledutch/firebase-connector'
 import MyList  from './Table'
 import CustomModal from './Modal'
@@ -42,11 +43,11 @@ class HomeView extends Component {
       reportedQuestions: [],
       reportedComments: [],
       reports: [],
-      currentSort: "Most Popular",
+      currentSort: t("popular"),
       showError: false, 
       animation: "none",
       title: "Knowledge Share",
-      questionError: "Submit Question",
+      questionError: t("submitQ"),
       topBorder: "#EFEFEF",
       showQuestion:true,
       showFilters: false,
@@ -252,13 +253,13 @@ class HomeView extends Component {
   renderFooter = () => {
     if (this.state.showQuestion === false && this.state.modalVisible === false) {
       return (
-        <TouchableOpacity onPress={() => this.closeAnswer()} style={s.back}><Text style={s.backText}>Close</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.closeAnswer()} style={s.back}><Text style={s.backText}>{t("close")}</Text></TouchableOpacity>
       )
     }
   }
 
   closeAnswer = () => {
-    this.setState({showQuestion: true, questionError: "Submit Question"})
+    this.setState({showQuestion: true, questionError: t("submitQ")})
   }
 
 
@@ -301,7 +302,7 @@ class HomeView extends Component {
   }
 
   showComments = (question) => {
-    this.setState({question, showQuestion: false, questionError: "Submit Answer"})
+    this.setState({question, showQuestion: false, questionError: t("submitA")})
   }
 
   handleChange = (prop, value) => {
@@ -333,7 +334,7 @@ class HomeView extends Component {
           }
           ,250)
       })
-      .catch(error => this.setState({questionError: "Retry"}))
+      .catch(error => this.setState({questionError: t("retry")}))
     }
   }
 
@@ -362,7 +363,7 @@ class HomeView extends Component {
           }
           ,250)
       })
-      .catch(error => this.setState({questionError: "Retry"}))
+      .catch(error => this.setState({questionError: t("retry")}))
     }
   }
 

@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import ReactNative, {
   TouchableOpacity, Text, View } from 'react-native'
-import client from '@doubledutch/rn-client'
+import client, {translate as t} from '@doubledutch/rn-client'
 
 export default class ReportModal extends Component {
   render() {
@@ -14,15 +14,15 @@ export default class ReportModal extends Component {
             handleChange("showReportModal", false);
           }}>
           <TouchableOpacity style={s.modal}>
-            <Text style={s.title}>Are you sure you want to report this content?</Text>
+            <Text style={s.title}>{t("confirm_report")}</Text>
             <View style={s.buttonBox}>
               <TouchableOpacity style={s.buttonContainer} 
                 onPress={() => { handleChange("showReportModal", false);}}>
-                <Text style={s.buttonTextColor}>Cancel</Text>
+                <Text style={s.buttonTextColor}>{t("cancel")}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={s.buttonContainerColor}
                 onPress={() => { reportQuestion(report)}}>
-                <Text style={s.buttonText}>Report Content</Text>
+                <Text style={s.buttonText}>{t("report_content")}</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

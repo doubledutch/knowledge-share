@@ -3,13 +3,13 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
 
 export default class TableHeader extends Component {
 
   renderPrompt = (questions) => {
     var questions = Object.values(questions)
-    if (this.props.currentSort === "My Questions") {
+    if (this.props.currentSort === t("questions")) {
       questions = questions.filter((item) => item.creator.id === client.currentUser.id
     )}
     const filteredQuestions = questions.filter(item => item.block === false) || []
@@ -17,9 +17,9 @@ export default class TableHeader extends Component {
       return (
         <View style={{marginTop: 96}}>
           <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>
-            {(this.props.currentSort === "My Questions") ? "You Haven't Asked a Question Yet" : "Get the Conversation Started!"}
+            {(this.props.currentSort === t("questions")) ? t("no_question") : t("conversation")}
           </Text>
-          <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>Tap here to get started</Text></TouchableOpacity>
+          <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>{t("tap")}</Text></TouchableOpacity>
         </View>
       )
     }
@@ -31,8 +31,8 @@ export default class TableHeader extends Component {
         <View>
           <View style={{height: 50, marginTop: 10, marginBottom: 1}}>
             <View style={s.buttonContainer}>
-              <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButtonTitle}>Sort: </Text><Text style={s.dashboardButton}>{this.props.currentSort}</Text></TouchableOpacity>
-              <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButtonTitle}>Filter: </Text><Text style={s.dashboardButton}>{this.props.selectedFilters.length} Topics</Text></TouchableOpacity>
+              <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButtonTitle}>{t("sort")}: </Text><Text style={s.dashboardButton}>{this.props.currentSort}</Text></TouchableOpacity>
+              <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButtonTitle}>{t("filters")}: </Text><Text style={s.dashboardButton}>{this.props.selectedFilters.length} {t("topics")}</Text></TouchableOpacity>
             </View>
           </View>
           {this.renderPrompt(questions)}

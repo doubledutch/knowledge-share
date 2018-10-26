@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import ReactNative, {
   Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
 } from 'react-native'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 import { magnify } from './images'
 
@@ -33,7 +33,7 @@ export default class FilterSelect extends Component {
     if (this.state.search && this.state.newList.length === 0){
       return (
         <View style={{marginTop: 25, marginHorizontal: 10}}>
-          <Text style={s.helpText}>Bummer! This search isn't returning any results</Text>
+          <Text style={s.helpText}>{t("bummer")}</Text>
         </View>
       )
     }
@@ -75,8 +75,8 @@ export default class FilterSelect extends Component {
     return (
       <View style={s.buttonContainer}>
         <TouchableOpacity onPress={() => this.props.handleChange("showFilters", false)}><Text style={s.closeButton}>X</Text></TouchableOpacity>
-        <Text style={s.title}>Topics</Text>
-        <TouchableOpacity><Text style={s.clearButton} onPress={() => this.resetFilters()}>Clear</Text></TouchableOpacity>
+        <Text style={s.title}>{t("topics")}</Text>
+        <TouchableOpacity><Text style={s.clearButton} onPress={() => this.resetFilters()}>{t("clear")}</Text></TouchableOpacity>
       </View>
     )
   }
@@ -128,7 +128,7 @@ export default class FilterSelect extends Component {
       <View style={s.modal}>
        
         <Image style={s.pencilBox} source={magnify}/>
-        <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={"Search"}
+        <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={t("search")}
           value={this.state.question}
           onChangeText={question => this.updateList(question)} 
           maxLength={250}

@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import ReactNative, {
   KeyboardAvoidingView, Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Image, Modal
 } from 'react-native'
-import client, { Avatar, TitleBar, Color, translate as t  } from '@doubledutch/rn-client'
+import client, { Avatar, TitleBar, Color, translate as t, useStrings } from '@doubledutch/rn-client'
 import i18n from './i18n'
 import FirebaseConnector from '@doubledutch/firebase-connector'
 import MyList  from './Table'
@@ -21,6 +21,8 @@ import {
 
 const fbc = FirebaseConnector(client, 'knowledgeshare')
 fbc.initializeAppWithSimpleBackend()
+
+useStrings(i18n)
 
 const topSpaceHeight = 21
 const barHeight = 43

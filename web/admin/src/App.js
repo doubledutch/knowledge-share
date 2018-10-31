@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import './App.css'
 import client, {translate as t, useStrings} from '@doubledutch/admin-client'
 import i18n from './i18n'
-import FirebaseConnector from '@doubledutch/firebase-connector'
 import {
+  provideFirebaseConnectorToReactComponent,
   mapPerUserPublicPushedDataToStateObjects,
   mapPerUserPublicPushedDataToObjectOfStateObjects,
-  mapPerUserPrivateAdminablePushedDataToStateObjects,
   mapPerUserPrivateAdminablePushedDataToObjectOfStateObjects
 } from '@doubledutch/firebase-connector'
-import CustomButtons from './buttons'
 import CustomCell from './cell'
-const fbc = FirebaseConnector(client, 'knowledgeshare')
-fbc.initializeAppWithSimpleBackend()
 
 useStrings(i18n)
 
-export default class App extends Component {
-  constructor() {
-    super()
+class App extends PureComponent {
+  constructor(props) {
+    super(props)
     this.state = { reports: {},
     allUsers: [],
     reportedQuestions: [],
@@ -47,14 +43,13 @@ export default class App extends Component {
     totalFlagged: 0,
     totalBlocked: 0
   }
-    this.signin = fbc.signinAdmin()
+    this.signin = props.fbc.signinAdmin()
       .then(user => this.user = user)
       .catch(err => console.error(err))
   }
 
-  
-
   componentDidMount() {
+    const {fbc} = this.props
     this.signin.then(() => {
       client.getAttendees().then(users => {
         this.setState({allUsers: users})
@@ -207,6 +202,7 @@ export default class App extends Component {
   }
 
   markBlock = (reports, key, userId) => {
+    const {fbc} = this.props
     if (reports.length && key && userId) {
       reports.forEach((item) => {
         fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: true})
@@ -221,6 +217,7 @@ export default class App extends Component {
   }
 
   approveQ = (reports, key, userId) => {
+    const {fbc} = this.props
     if (reports.length && key && userId) {
       reports.forEach((item) => {
         fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false, approved: true})
@@ -235,6 +232,7 @@ export default class App extends Component {
   }
 
   unBlock = (reports, key, userId) => {
+    const {fbc} = this.props
     if (reports.length && key && userId) {
       reports.forEach((item) => {
         fbc.database.private.adminableUsersRef(item.userId).child("reports").child(key).update({block: false})
@@ -303,3 +301,5 @@ export default class App extends Component {
     }
   }
 }
+
+export default provideFirebaseConnectorToReactComponent(client, 'knowledgeshare', (props, fbc) => <App {...props} fbc={fbc} />, PureComponent)

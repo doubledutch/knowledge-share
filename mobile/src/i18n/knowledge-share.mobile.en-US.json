@@ -21,10 +21,10 @@
   "recent": "Most Recent",
   "questions": "My Questions",
   "sort": "Sort",
-  "votes": "\"${count}\" Votes",
+  "votes": "${count} Votes",
   "answer": "Answer",
   "answers": "Answers",
-  "answer_count": "${count} Answer",
+  "one_answer": "1 Answer",
   "answers_count": "${count} Answers",
   "conversation": "Get the Conversation Started!",
   "no_question": "You Haven't Asked a Question Yet",
@@ -34,7 +34,4 @@
   "back": "Back to Question",
   "create": "Create New Topic",
   "no_suggestions": "No Suggestions"
-
-
-
 }

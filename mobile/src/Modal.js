@@ -1,11 +1,9 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, Text, TextInput, View, Image } from 'react-native'
 import TopicsModal from './TopicsModal'
 import { pencil } from './images'
-import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
+import { Avatar, translate as t } from '@doubledutch/rn-client'
 
 export default class CustomModal extends Component {
   constructor(props){
@@ -51,10 +49,10 @@ export default class CustomModal extends Component {
         </View>
       )
     }
-
   }
 
   render() {
+    const {primaryColor} = this.props
     const newStyle = {
       flex: 1,
       fontSize: 18,
@@ -76,13 +74,8 @@ export default class CustomModal extends Component {
       marginBottom: 10,
     }
     
-    var newColor = "#9B9B9B"
     if (this.props.session){
-      newColor = client.primaryColor
-    }
-
-    const colorStyle = {
-      backgroundColor: newColor
+      newColor = primaryColor
     }
 
       var borderColor = this.state.borderColor
@@ -107,8 +100,8 @@ export default class CustomModal extends Component {
           </View>
           <Text style={{color: this.props.showError ? "red" : "white", paddingTop: 2, fontSize: 12, paddingLeft: 10, backgroundColor: "#FFFFFF"}}>{t("error")}</Text>
           <View style={this.props.showQuestion ? s.bottomButtons : s.bottomButtonsRight}>
-            {this.props.showQuestion ? <TouchableOpacity style={s.topicsButton} onPress={() => this.handleChange("showTopics", true)}><Text style={s.topicsButtonText}>{t("add_topics")}</Text></TouchableOpacity> : null }
-            <TouchableOpacity style={s.sendButton} onPress={() => this.makeQuestion()}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
+            {this.props.showQuestion ? <TouchableOpacity style={[s.topicsButton, {borderColor: primaryColor}]} onPress={() => this.handleChange("showTopics", true)}><Text style={[s.topicsButtonText, {color: primaryColor}]}>{t("add_topics")}</Text></TouchableOpacity> : null }
+            <TouchableOpacity style={[s.sendButton, {backgroundColor: primaryColor}]} onPress={this.makeQuestion}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
           </View>
           <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 
         </View>
@@ -116,7 +109,7 @@ export default class CustomModal extends Component {
       }
       else {
         return (
-          <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.props.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter}/>
+          <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.props.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
         )
       }
     }
@@ -162,7 +155,7 @@ export default class CustomModal extends Component {
 
 }
 
-const s = ReactNative.StyleSheet.create({
+const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EFEFEF',
@@ -272,21 +265,18 @@ const s = ReactNative.StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10,
     width: 124,
-    borderColor: client.primaryColor,
     height: 42,
     borderRadius: 4,
     borderWidth: 1
   },
   topicsButtonText: {
     fontSize: 14,
-    color: client.primaryColor,
     textAlign: 'center'
   },
   sendButton: {
     justifyContent: 'center',
     marginRight: 10,
     width: 124,
-    backgroundColor: client.primaryColor,
     height: 42,
     borderRadius: 4,
   },

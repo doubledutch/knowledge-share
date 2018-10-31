@@ -1,17 +1,13 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Avatar, TitleBar, Color } from '@doubledutch/rn-client'
+import { View, FlatList } from 'react-native'
 import TableHeader from './TableHeader'
 import TableCell from './TableCell'
 
-
+const getId = item => item.id
 export class MyList extends Component {
-
   render() { 
-    const { newVote, showQuestion, showComments, handleReport, handleChange } = this.props
+    const { newVote, showQuestion, showComments, handleReport, primaryColor, currentUser } = this.props
     const data = this.verifyData()
     return (
       <View>
@@ -19,10 +15,11 @@ export class MyList extends Component {
         <FlatList
           data={data}
           ListFooterComponent={<View style={{height: 100}}></View>}
+          keyExtractor={getId}
           renderItem={({item}) => {
             const isReported = this.isReported(item)
             return (
-              <TableCell item={item} commentsTotal={this.totalComments(item.id)} newVote={newVote} votesByAnswer={this.props.votesByAnswer} votesByQuestion={this.props.votesByQuestion} showQuestion={showQuestion} showComments={showComments} handleReport={handleReport} isReported={isReported}/>
+              <TableCell item={item} commentsTotal={this.totalComments(item.id)} newVote={newVote} votesByAnswer={this.props.votesByAnswer} votesByQuestion={this.props.votesByQuestion} showQuestion={showQuestion} showComments={showComments} handleReport={handleReport} isReported={isReported} primaryColor={primaryColor} currentUser={currentUser} />
             )
           }}
         />
@@ -30,18 +27,9 @@ export class MyList extends Component {
     )
   }
 
-  isReported = (item) => {
+  isReported = item => {
     const { reports } = this.props
-    if (item.questionId) {
-      return (
-        ((reports && reports.find(q => q === item.id)) ? true : false)
-      )
-    }
-    else {
-      return (
-        ((reports && reports.find(q => q === item.id)) ? true : false)
-      )
-    }
+    return !!(reports && reports.find(q => q === item.id))
   }
 
   verifyData = () => {
@@ -66,13 +54,11 @@ export class MyList extends Component {
     }
   }
 
-  totalComments = (key) => {
-    var total = 0
-    var comments = this.props.comments[key]
+  totalComments = key => {
+    let total = 0
+    let comments = this.props.comments[key]
     if (comments) {
-      comments = Object.values(comments)
-      comments = comments.filter(item => item.block === false)
-      total = comments.length
+      total = Object.values(comments).filter(item => !item.block).length
     }
     return total
   }
@@ -91,11 +77,11 @@ export class MyList extends Component {
   }
 
   originalOrder = (questions) => {
-    const {currentSort, selectedFilters} = this.props
+    const {currentSort, selectedFilters, currentUser} = this.props
     const votes = this.props.votesByQuestion || 0
     if (questions) {
       if (currentSort === 'My Questions') {
-        return questions.filter((item) => item.creator.id === client.currentUser.id)
+        return questions.filter((item) => item.creator.id === currentUser.id)
       } else {
         if (currentSort === "Most Popular") {
           this.dateSort(questions)
@@ -141,6 +127,8 @@ export class MyList extends Component {
           organizeFilters={this.props.organizeFilters}
           currentSort={this.props.currentSort}
           selectedFilters={this.props.selectedFilters}
+          currentUser={this.props.currentUser}
+          primaryColor={this.props.primaryColor}
         />
       )
     } 
@@ -149,8 +137,3 @@ export class MyList extends Component {
 }
 
 export default MyList
-
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
-
-})

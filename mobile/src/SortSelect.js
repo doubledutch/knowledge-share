@@ -1,9 +1,7 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
+import client, { translate as t } from '@doubledutch/rn-client'
 
 export default class SortSelect extends Component {
   constructor(props){
@@ -12,7 +10,6 @@ export default class SortSelect extends Component {
       currentSort: t("popular"),
       sortList: [t("popular"), t("recent"), t("questions")],
       search: false
-
     }
   }
 
@@ -26,11 +23,12 @@ export default class SortSelect extends Component {
   }
 
   sortTable = () => {
-   return (
+    const {primaryColor} = this.props
+    return (
       <View style={s.table}>
         {this.state.sortList.map((item, i) => {
           return (
-            <TouchableOpacity style={s.row} key={i} onPress={((item === this.props.currentSort) ? null : () => this.props.sortTopics(item))}><Text style={((item === this.props.currentSort) ? s.rowTextHighlight: s.rowText)}>{item}</Text></TouchableOpacity>
+            <TouchableOpacity style={s.row} key={i} onPress={((item === this.props.currentSort) ? null : () => this.props.sortTopics(item))}><Text style={[s.rowText, item === this.props.currentSort ? {color: primaryColor} : null]}>{item}</Text></TouchableOpacity>
           )
         })}
       </View>
@@ -46,13 +44,9 @@ export default class SortSelect extends Component {
       </View>
     )
   }
-
-
 }
 
-const fontSize = 18
-color: 
-const s = ReactNative.StyleSheet.create({
+const s = StyleSheet.create({
   table: {
     flexDirection: "column",
   },
@@ -67,10 +61,6 @@ const s = ReactNative.StyleSheet.create({
   rowText: {
     fontSize: 20,
     color: "#404040"
-  },
-  rowTextHighlight: {
-    fontSize: 20,
-    color: client.primaryColor
   },
   buttonContainer: {
     flexDirection: 'row',

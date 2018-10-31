@@ -1,16 +1,12 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, Text, TextInput, View, Image } from 'react-native'
 import { pencil } from './images'
-import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
-import TableCell from './TableCell'
+import client, { Avatar, translate as t } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 import ReportButton from './ReportButton'
 
 export default class HomeHeader extends Component {
-
   render() {
     const newStyle = {
       flex: 1,
@@ -61,8 +57,9 @@ export default class HomeHeader extends Component {
   }
 
   renderQuestion = (question) => {
+    const {primaryColor, currentUser} = this.props
     const reports = this.props.reports
-    const isReported = ((reports && reports.find(q => q === question.id)) ? true : false)
+    const isReported = !!(reports && reports.find(q => q === question.id))
     return (
       <View style={{flexDirection: 'column'}}>
         <View style={s.listContainer}>
@@ -72,12 +69,12 @@ export default class HomeHeader extends Component {
               <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
               <Text numberOfLines={2} style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
               <View style={{flex: 1}}/>
-              <ReportButton report={this.props.reportQuestion} item={question} handleReport={this.props.handleReport} isReported={isReported}/>
+              <ReportButton report={this.props.reportQuestion} item={question} handleReport={this.props.handleReport} isReported={isReported} currentUser={currentUser} />
             </View>
           </View>
         </View>
         <View style={s.filterContainer}>
-          <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(question)}><Text style={s.voteText}>{ t("upvote") + " | " + ((this.props.votesByQuestion[question.id]) ? this.props.votesByQuestion[question.id] : 0 )}</Text></TouchableOpacity>
+          <TouchableOpacity style={[s.upVoteButton, {backgroundColor: primaryColor}]} onPress={()=> this.props.newVote(question)}><Text style={s.voteText}>{t("upvote", {count: this.props.votesByQuestion[question.id] || 0})}</Text></TouchableOpacity>
           {this.renderFilters(question)}
         </View>
       </View>
@@ -91,19 +88,15 @@ export default class HomeHeader extends Component {
         <View style={s.filterTable}>
           { filters.map((item, i) => {
             return (
-              <FilterCell item={item} key={i} state={true}/>
+              <FilterCell item={item} key={i} state={true} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
             )
           }) }
         </View>
       )
   }
-
-
-
 }
 
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
+const s = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     marginTop: 2,
@@ -125,7 +118,6 @@ const s = ReactNative.StyleSheet.create({
     flexWrap: 'wrap'
   },
   upVoteButton: {
-    backgroundColor: client.primaryColor, 
     alignContent:'center', 
     height: 30,
     paddingHorizontal: 10, 

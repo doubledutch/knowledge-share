@@ -13,7 +13,8 @@ export default class CustomModal extends Component {
       borderColor: '#EFEFEF',
       inputHeight: 0,
       showTopics: false,
-      selectedFilters : []
+      selectedFilters : [],
+      filters: this.props.filters
     }
   }
 
@@ -109,7 +110,7 @@ export default class CustomModal extends Component {
       }
       else {
         return (
-          <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.props.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
+          <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
         )
       }
     }
@@ -131,7 +132,7 @@ export default class CustomModal extends Component {
     this.setState({[prop]: value})
   }
   addFilter = (selected) => {
-    var filters = this.props.filters
+    var filters = this.state.filters
     var index = filters.indexOf(selected)
     var filter = filters.splice(index, 1)
     const selectedFilters = this.state.selectedFilters.concat(filter)
@@ -142,7 +143,7 @@ export default class CustomModal extends Component {
     var selectedFilters = this.state.selectedFilters
     var index = selectedFilters.indexOf(selected)
     var filter = selectedFilters.splice(index, 1)
-    const filters = this.props.filters.concat(filter)
+    const filters = this.state.filters.concat(filter)
     this.setState({filters, selectedFilters})
   }
 

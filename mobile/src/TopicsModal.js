@@ -88,14 +88,21 @@ export default class TopicsModal extends Component {
     const {currentUser, primaryColor} = this.props
     var currentList = this.props.filters
     if (this.state.search) currentList = this.state.newList
-    if (this.props.selectedFilters.length && this.state.search === false) {
+    if (this.state.search === false) {
       return (
         <View style={s.table2}>
+        <ScrollView horizontal={true}>
           { this.props.selectedFilters.map((item, i) => {
           return (
             <FilterCell item={item} key={i} select={true} removeFilter={this.props.removeFilter} primaryColor={primaryColor} currentUser={currentUser} />
           )
           }) }
+          { currentList.map((item, i) => {
+            return (
+              <FilterCell item={item} key={i} select={false} addFilter={this.addFilter} primaryColor={this.props.primaryColor} currentUser={currentUser} />
+            )
+          }) }
+        </ScrollView>
         </View>
       )
     }

@@ -1,9 +1,7 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
+import { Platform, StyleSheet, TouchableOpacity, Text, TextInput, View, Image } from 'react-native'
+import { translate as t } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 import { magnify } from './images'
 
@@ -15,6 +13,7 @@ export default class FilterSelect extends Component {
       newList: [],
       search: false
     }
+    this.s = createStyles(props)
   }
 
   render() { 
@@ -33,7 +32,7 @@ export default class FilterSelect extends Component {
     if (this.state.search && this.state.newList.length === 0){
       return (
         <View style={{marginTop: 25, marginHorizontal: 10}}>
-          <Text style={s.helpText}>{t("bummer")}</Text>
+          <Text style={this.s.helpText}>{t("bummer")}</Text>
         </View>
       )
     }
@@ -41,10 +40,10 @@ export default class FilterSelect extends Component {
 
   currentTable = () => {
     if (this.props.selectedFilters.length) return (
-      <View style={s.table}>
+      <View style={this.s.table}>
         { this.props.selectedFilters.map((item, i) => {
          return (
-          <FilterCell item={item} key={i} select={true} removeFilter={this.props.removeFilter}/>
+          <FilterCell item={item} key={i} select={true} removeFilter={this.props.removeFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
          )
         }) }
       </View>
@@ -55,10 +54,10 @@ export default class FilterSelect extends Component {
     var filters = this.props.filters
     if (this.state.search) filters = this.state.newList
     return (
-      <View style={s.table}>
+      <View style={this.s.table}>
         { filters.map((item, i) => {
           return (
-            <FilterCell item={item} key={i} select={false} addFilter={this.newFilterAdd}/>
+            <FilterCell item={item} key={i} select={false} addFilter={this.newFilterAdd} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
           )
       }) }
       </View>
@@ -73,10 +72,10 @@ export default class FilterSelect extends Component {
 
   topicsHeader = () => {
     return (
-      <View style={s.buttonContainer}>
-        <TouchableOpacity onPress={() => this.props.handleChange("showFilters", false)}><Text style={s.closeButton}>X</Text></TouchableOpacity>
-        <Text style={s.title}>{t("topics")}</Text>
-        <TouchableOpacity><Text style={s.clearButton} onPress={() => this.resetFilters()}>{t("clear")}</Text></TouchableOpacity>
+      <View style={this.s.buttonContainer}>
+        <TouchableOpacity onPress={() => this.props.handleChange("showFilters", false)}><Text style={this.s.closeButton}>X</Text></TouchableOpacity>
+        <Text style={this.s.title}>{t("topics")}</Text>
+        <TouchableOpacity><Text style={this.s.clearButton} onPress={() => this.resetFilters()}>{t("clear")}</Text></TouchableOpacity>
       </View>
     )
   }
@@ -125,9 +124,9 @@ export default class FilterSelect extends Component {
       marginBottom: 10,
     }
     return (
-      <View style={s.modal}>
+      <View style={this.s.modal}>
        
-        <Image style={s.pencilBox} source={magnify}/>
+        <Image style={this.s.pencilBox} source={magnify}/>
         <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={t("search")}
           value={this.state.question}
           onChangeText={question => this.updateList(question)} 
@@ -148,8 +147,7 @@ export default class FilterSelect extends Component {
   };
 }
 
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
+const createStyles = props => StyleSheet.create({
   table: {
     flexDirection: "row",
     flexWrap: 'wrap',
@@ -191,7 +189,7 @@ const s = ReactNative.StyleSheet.create({
   },
   closeButton: {
     marginLeft: 20,
-    color: client.primaryColor,
+    color: props.primaryColor,
     fontWeight: '900',
     fontSize: 16
   },
@@ -201,7 +199,7 @@ const s = ReactNative.StyleSheet.create({
   },
   clearButton: {
     marginRight: 20,
-    color: client.primaryColor
+    color: props.primaryColor
   },
   button1: {
     height: 40,
@@ -209,7 +207,7 @@ const s = ReactNative.StyleSheet.create({
     marginBottom: 10,
     justifyContent: 'center',
     borderBottomWidth: 2,
-    borderBottomColor: client.primaryColor
+    borderBottomColor: props.primaryColor
   },
   button2: {
     height: 40,

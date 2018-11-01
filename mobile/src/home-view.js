@@ -1,11 +1,8 @@
 'use strict'
-import React, { Component } from 'react'
-import ReactNative, {
-  KeyboardAvoidingView, Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Image, Modal
-} from 'react-native'
-import client, { Avatar, TitleBar, Color, translate as t, useStrings } from '@doubledutch/rn-client'
+import React, { PureComponent } from 'react'
+import { KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, Text, View, Modal } from 'react-native'
+import client, { TitleBar, Color, translate as t, useStrings } from '@doubledutch/rn-client'
 import i18n from './i18n'
-import FirebaseConnector from '@doubledutch/firebase-connector'
 import MyList  from './Table'
 import CustomModal from './Modal'
 import HomeHeader from './HomeHeader'
@@ -13,23 +10,21 @@ import FilterSelect from './FilterSelect'
 import SortSelect from './SortSelect'
 import ReportModal from './ReportModal'
 import {
+  provideFirebaseConnectorToReactComponent,
   mapPerUserPublicPushedDataToStateObjects,
   mapPerUserPublicPushedDataToObjectOfStateObjects,
   reducePerUserPublicDataToStateCount,
   mapPushedDataToStateObjects
 } from '@doubledutch/firebase-connector'
 
-const fbc = FirebaseConnector(client, 'knowledgeshare')
-fbc.initializeAppWithSimpleBackend()
-
 useStrings(i18n)
 
 const topSpaceHeight = 21
 const barHeight = 43
 
-class HomeView extends Component {
-  constructor() {
-    super()
+class HomeView extends PureComponent {
+  constructor(props) {
+    super(props)
     this.state = {
       question: '',
       report: '',
@@ -58,28 +53,35 @@ class HomeView extends Component {
       showReportModal: false,
       modalVisible: false
     }
-    this.signin = fbc.signin()
+    this.signin = props.fbc.signin()
       .then(user => this.user = user)
 
     this.signin.catch(err => console.error(err))
   }
 
   componentDidMount(){
-    this.signin.then(() => {
-      mapPerUserPublicPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
-      mapPushedDataToStateObjects(fbc.database.public.userRef('questionVotes'), this, 'myVotesByQuestion')
-      mapPushedDataToStateObjects(fbc.database.public.userRef('answerVotes'), this, 'myVotesByAnswer')
-      mapPerUserPublicPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
-      reducePerUserPublicDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
-      reducePerUserPublicDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
-      const reportRef = fbc.database.private.adminableUserRef('reports')
-      reportRef.on('child_added', data => {
-        this.setState({ reports: [...this.state.reports, data.key ] })
+    const {fbc} = this.props
+    client.getPrimaryColor().then(primaryColor => this.setState({primaryColor}))
+    client.getCurrentUser().then(currentUser => {
+      this.setState({currentUser})
+      this.signin.then(() => {
+        mapPerUserPublicPushedDataToStateObjects(fbc, 'questions', this, 'questions', (userId, key, value) => key)
+        mapPushedDataToStateObjects(fbc.database.public.userRef('questionVotes'), this, 'myVotesByQuestion')
+        mapPushedDataToStateObjects(fbc.database.public.userRef('answerVotes'), this, 'myVotesByAnswer')
+        mapPerUserPublicPushedDataToObjectOfStateObjects(fbc, 'answers', this, 'answersByQuestion', (userId, key, value) => value.questionId, (userId, key, value) => key)
+        reducePerUserPublicDataToStateCount(fbc, 'questionVotes', this, 'votesByQuestion', (userId, key, value) => key)
+        reducePerUserPublicDataToStateCount(fbc, 'answerVotes', this, 'votesByAnswer', (userId, key, value) => key)
+        const reportRef = fbc.database.private.adminableUserRef('reports')
+        reportRef.on('child_added', data => {
+          this.setState({ reports: [...this.state.reports, data.key] })
+        })
       })
     })
   }
 
   render() {
+    const {currentUser, primaryColor} = this.state
+    if (!currentUser || !primaryColor) return null
     return (
       <KeyboardAvoidingView style={s.container} behavior={Platform.select({ios: "padding", android: null})}>
         <TitleBar title={this.state.title} client={client} signin={this.signin} />
@@ -89,9 +91,6 @@ class HomeView extends Component {
       </KeyboardAvoidingView> 
     )
   }
-
-
-
 
   modalControl = () => {
     return (
@@ -173,7 +172,7 @@ class HomeView extends Component {
     if (this.state.showFilters) {
       return(
         <View style={{flex:1}}>
-          <FilterSelect handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} resetFilters={this.resetFilters}/>
+          <FilterSelect handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} resetFilters={this.resetFilters} primaryColor={this.state.primaryColor} currentUser={this.state.currentUser} />
         </View>
       )
     }
@@ -200,6 +199,8 @@ class HomeView extends Component {
           handleReport={this.handleReport}
           reportedQuestions={this.state.reportedQuestions}
           reports={this.state.reports}
+          primaryColor={this.state.primaryColor}
+          currentUser={this.state.currentUser}
         />
         <View style={{flex:1}}>
           <MyList 
@@ -222,6 +223,8 @@ class HomeView extends Component {
             reportedQuestions={this.state.reportedQuestions}
             reportedComments={this.state.reportedComments}
             reports={this.state.reports}
+            primaryColor={this.state.primaryColor}
+            currentUser={this.state.currentUser}
           />
         </View>
       </View>
@@ -247,15 +250,18 @@ class HomeView extends Component {
           organizeFilters={this.organizeFilters}
           votesByAnswer={this.state.votesByAnswer}
           votesByQuestion={this.state.votesByQuestion}
+          primaryColor={this.state.primaryColor}
+          currentUser={this.state.currentUser}
         />
       )
     }
   }
 
   renderFooter = () => {
+    const {primaryColor} = this.state
     if (this.state.showQuestion === false && this.state.modalVisible === false) {
       return (
-        <TouchableOpacity onPress={() => this.closeAnswer()} style={s.back}><Text style={s.backText}>{t("close")}</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => this.closeAnswer()} style={[s.back, {backgroundColor: primaryColor}]}><Text style={s.backText}>{t("close")}</Text></TouchableOpacity>
       )
     }
   }
@@ -275,11 +281,11 @@ class HomeView extends Component {
     this.setState({modalVisible: false, animation: "slide", showError: false})
   }
 
-  handleReport = (item) => {
+  handleReport = item => {
     this.setState({showReportModal: true, report: item})
   }
 
-  reportQuestion = (question) => this.createReport(fbc.database.private.adminableUserRef, question)
+  reportQuestion = question => this.createReport(this.props.fbc.database.private.adminableUserRef, question)
 
   createReport = (ref, question) => {
     const reportTime = new Date().getTime()
@@ -311,7 +317,7 @@ class HomeView extends Component {
     this.setState({[prop]: value})
   }
 
-  createSharedQuestion = (question, filters) => this.createQuestion(fbc.database.public.userRef, question, filters)
+  createSharedQuestion = (question, filters) => this.createQuestion(this.props.fbc.database.public.userRef, question, filters)
 
   createQuestion = (ref, question, filters) => {
     var time = new Date().getTime()
@@ -322,7 +328,7 @@ class HomeView extends Component {
     if (this.user && questionName.length > 0) {
       ref('questions').push({
         text: questionName,
-        creator: client.currentUser,
+        creator: this.state.currentUser,
         comments: [],
         dateCreate: time,
         block: false,
@@ -341,7 +347,7 @@ class HomeView extends Component {
   }
 
     
-  createSharedComment = (comment) => this.createComment(fbc.database.public.userRef, comment)
+  createSharedComment = (comment) => this.createComment(this.props.fbc.database.public.userRef, comment)
 
   createComment = (ref, comment) => {
     var time = new Date().getTime()
@@ -352,7 +358,7 @@ class HomeView extends Component {
     if (this.user && commentName.length > 0) {
       ref('answers').push({
         text: commentName,
-        creator: client.currentUser,
+        creator: this.state.currentUser,
         dateCreate: time,
         block: false,
         lastEdit: time,
@@ -370,6 +376,7 @@ class HomeView extends Component {
   }
 
   newVote = (c) => {
+    const {fbc} = this.props
     const answerVotes = Object.keys(this.state.myVotesByAnswer)
     const questionVotes = Object.keys(this.state.myVotesByQuestion)
     if (c.questionId) {
@@ -395,10 +402,9 @@ class HomeView extends Component {
 
 }
 
-export default HomeView
+export default provideFirebaseConnectorToReactComponent(client, 'knowledgeshare', (props, fbc) => <HomeView {...props} fbc={fbc} />, PureComponent)
 
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
+const s = StyleSheet.create({
   wholeBarEmulator: {
     backgroundColor: new Color().rgbString(),
     opacity: 0.9,
@@ -429,7 +435,6 @@ const s = ReactNative.StyleSheet.create({
     height: 40,
     margin: 15,
     borderRadius: 5,
-    backgroundColor: client.primaryColor,
     alignItems: "center",
     justifyContent: "center"
   },

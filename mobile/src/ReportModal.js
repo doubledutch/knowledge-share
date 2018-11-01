@@ -1,12 +1,11 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  TouchableOpacity, Text, View } from 'react-native'
-import client, {translate as t} from '@doubledutch/rn-client'
+import ReactNative, { TouchableOpacity, Text, View } from 'react-native'
+import {translate as t} from '@doubledutch/rn-client'
 
 export default class ReportModal extends Component {
   render() {
-    const { report, reportQuestion, handleChange} = this.props 
+    const { report, reportQuestion, handleChange, primaryColor } = this.props 
 
     return (
       <TouchableOpacity style={s.modalCover}
@@ -16,21 +15,19 @@ export default class ReportModal extends Component {
           <TouchableOpacity style={s.modal}>
             <Text style={s.title}>{t("confirm_report")}</Text>
             <View style={s.buttonBox}>
-              <TouchableOpacity style={s.buttonContainer} 
+              <TouchableOpacity style={[s.buttonContainer, {borderColor: primaryColor}]} 
                 onPress={() => { handleChange("showReportModal", false);}}>
-                <Text style={s.buttonTextColor}>{t("cancel")}</Text>
+                <Text style={[s.buttonTextColor, {color: primaryColor}]}>{t("cancel")}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={s.buttonContainerColor}
+              <TouchableOpacity style={[s.buttonContainerColor, {backgroundColor: primaryColor}]}
                 onPress={() => { reportQuestion(report)}}>
                 <Text style={s.buttonText}>{t("report_content")}</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
       </TouchableOpacity>
-
     )
   }
-
 }
 
 const s = ReactNative.StyleSheet.create({
@@ -41,7 +38,6 @@ const s = ReactNative.StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: client.primaryColor,
     alignContent: 'center',
     justifyContent: 'center'
   },
@@ -49,7 +45,6 @@ const s = ReactNative.StyleSheet.create({
     height: 40,
     padding: 10,
     margin: 10,
-    backgroundColor: client.primaryColor,
     borderRadius: 5,
     alignContent: 'center',
     justifyContent: 'center'
@@ -59,7 +54,6 @@ const s = ReactNative.StyleSheet.create({
     fontSize: 14
   },
   buttonTextColor: {
-    color: client.primaryColor,
     fontSize: 18
   },
   buttonBox: {
@@ -85,6 +79,5 @@ const s = ReactNative.StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5
-  }
-  
+  }  
 })

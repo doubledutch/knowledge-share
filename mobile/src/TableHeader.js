@@ -1,16 +1,13 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
+import { StyleSheet, TouchableOpacity, Text, View, } from 'react-native'
+import client, { translate as t } from '@doubledutch/rn-client'
 
 export default class TableHeader extends Component {
-
-  renderPrompt = (questions) => {
+  renderPrompt = questions => {
     var questions = Object.values(questions)
     if (this.props.currentSort === t("questions")) {
-      questions = questions.filter((item) => item.creator.id === client.currentUser.id
+      questions = questions.filter((item) => item.creator.id === this.props.currentUser.id
     )}
     const filteredQuestions = questions.filter(item => item.block === false) || []
     if (filteredQuestions.length === 0) {
@@ -19,36 +16,35 @@ export default class TableHeader extends Component {
           <Text style={{marginTop: 30, textAlign: "center", fontSize: 20, color: '#9B9B9B', marginBottom: 5, height: 25}}>
             {(this.props.currentSort === t("questions")) ? t("no_question") : t("conversation")}
           </Text>
-          <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: client.primaryColor}}>{t("tap")}</Text></TouchableOpacity>
+          <TouchableOpacity style={{marginTop: 5, height: 25}} onPress={this.props.showModal}><Text style={{textAlign: "center", fontSize: 18, color: this.props.primaryColor}}>{t("tap")}</Text></TouchableOpacity>
         </View>
       )
     }
   }
 
   render() { 
-    const questions = this.props.questions
-      return (
-        <View>
-          <View style={{height: 50, marginTop: 10, marginBottom: 1}}>
-            <View style={s.buttonContainer}>
-              <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={s.dashboardButtonTitle}>{t("sort")}: </Text><Text style={s.dashboardButton}>{this.props.currentSort}</Text></TouchableOpacity>
-              <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={s.dashboardButtonTitle}>{t("filters")}: </Text><Text style={s.dashboardButton}>{this.props.selectedFilters.length} {t("topics")}</Text></TouchableOpacity>
-            </View>
+    const {questions, primaryColor} = this.props
+    const pc = {color: primaryColor}
+    return (
+      <View>
+        <View style={{height: 50, marginTop: 10, marginBottom: 1}}>
+          <View style={s.buttonContainer}>
+            <TouchableOpacity style={s.button2} onPress={() => this.props.handleChange("showSort", true)}><Text style={[s.dashboardButtonTitle, pc]}>{t("sort")}: </Text><Text style={s.dashboardButton}>{this.props.currentSort}</Text></TouchableOpacity>
+            <TouchableOpacity style={s.button3} disabled={!questions} onPress={this.getFilters}><Text style={[s.dashboardButtonTitle, pc]}>{t("filters")}: </Text><Text style={s.dashboardButton}>{this.props.selectedFilters.length} {t("topics")}</Text></TouchableOpacity>
           </View>
-          {this.renderPrompt(questions)}
         </View>
-      )
+        {this.renderPrompt(questions)}
+      </View>
+    )
   }
 
   getFilters = () => {
     this.props.handleChange("showFilters", true)
     this.props.organizeFilters()
   }
-
 }
 
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
+const s = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -77,7 +73,6 @@ const s = ReactNative.StyleSheet.create({
   dashboardButton: {
     fontSize: 16,
     fontWeight: "bold",
-    color: client.primaryColor
   },
   dashboardButtonTitle: {
     fontSize: 16,

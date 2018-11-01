@@ -1,9 +1,7 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Color, translate as t } from '@doubledutch/rn-client'
+import ReactNative, { Platform, TouchableOpacity, Text, TextInput, View, ScrollView } from 'react-native'
+import client, { translate as t } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 
 export default class TopicsModal extends Component {
@@ -42,7 +40,7 @@ export default class TopicsModal extends Component {
     
     var newColor = "#9B9B9B"
     if (this.props.session){
-      newColor = client.primaryColor
+      newColor = this.props.primaryColor
     }
 
     const colorStyle = {
@@ -53,7 +51,7 @@ export default class TopicsModal extends Component {
     if (this.props.showError === "red"){borderColor = "red"}
     const borderStyle = {borderColor: borderColor}
 
-    const { modalClose, makeQuestion, handleChange, filters } = this.props
+    const { modalClose, makeQuestion, handleChange, primaryColor } = this.props
 
     return (
       <View style={{flex: 1}}>
@@ -72,22 +70,22 @@ export default class TopicsModal extends Component {
         </View>
         {this.filtersTable()}
         <View style={s.bottomButtons}>
-          <TouchableOpacity style={s.topicsButton} onPress={() => handleChange("showTopics", false)}><Text style={s.topicsButtonText}>{t("back")}</Text></TouchableOpacity>
-          <TouchableOpacity style={s.sendButton} onPress={() => makeQuestion()}><Text style={s.sendButtonText}>{t("submitQ")}</Text></TouchableOpacity>
+          <TouchableOpacity style={[s.topicsButton, {borderColor: primaryColor}]} onPress={() => handleChange("showTopics", false)}><Text style={[s.topicsButtonText, {color: primaryColor}]}>{t("back")}</Text></TouchableOpacity>
+          <TouchableOpacity style={[s.sendButton, {backgroundColor: primaryColor}]} onPress={() => makeQuestion()}><Text style={s.sendButtonText}>{t("submitQ")}</Text></TouchableOpacity>
         </View>
         <TouchableOpacity style={s.modalBottom} onPress={modalClose}></TouchableOpacity> 
       </View>
     )
-
   }
+
   _handleSizeChange = event => {
     this.setState({
       inputHeight: event.nativeEvent.contentSize.height
     });
   }
 
-
   filtersTable = () => {
+    const {currentUser, primaryColor} = this.props
     var currentList = this.props.filters
     if (this.state.search) currentList = this.state.newList
     if (this.props.selectedFilters.length && this.state.search === false) {
@@ -95,7 +93,7 @@ export default class TopicsModal extends Component {
         <View style={s.table2}>
           { this.props.selectedFilters.map((item, i) => {
           return (
-            <FilterCell item={item} key={i} select={true} removeFilter={this.props.removeFilter}/>
+            <FilterCell item={item} key={i} select={true} removeFilter={this.props.removeFilter} primaryColor={primaryColor} currentUser={currentUser} />
           )
           }) }
         </View>
@@ -104,11 +102,11 @@ export default class TopicsModal extends Component {
     else {
       return (
         <View style={s.table2}>
-        <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={s.topicsButtonText}>{t("create")}</Text></TouchableOpacity>
+        <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}><Text style={[s.topicsButtonText, {color: primaryColor}]}>{t("create")}</Text></TouchableOpacity>
         { currentList.length ? <ScrollView horizontal={true}>
           { currentList.map((item, i) => {
             return (
-              <FilterCell item={item} key={i} select={false} addFilter={this.addFilter}/>
+              <FilterCell item={item} key={i} select={false} addFilter={this.addFilter} primaryColor={this.props.primaryColor} currentUser={currentUser} />
             )
           }) }
         </ScrollView> : <Text style={{color: '#9B9B9B'}}>{t("no_suggestions")}</Text>
@@ -256,7 +254,6 @@ const s = ReactNative.StyleSheet.create({
   topicsButton: {
     justifyContent: 'center',
     marginRight: 10,
-    borderColor: client.primaryColor,
     height: 42,
     borderRadius: 4,
     borderWidth: 1
@@ -264,13 +261,11 @@ const s = ReactNative.StyleSheet.create({
   topicsButtonText: {
     fontSize: 14,
     marginHorizontal: 10,
-    color: client.primaryColor,
     textAlign: 'center'
   },
   sendButton: {
     justifyContent: 'center',
     marginRight: 10,
-    backgroundColor: client.primaryColor,
     height: 42,
     borderRadius: 4,
   },

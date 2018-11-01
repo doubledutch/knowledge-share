@@ -1,9 +1,7 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, {
-  Platform, TouchableOpacity, Text, TextInput, View, ScrollView, FlatList, Modal, Image
-} from 'react-native'
-import client, { Avatar, TitleBar, Color, translate as t } from '@doubledutch/rn-client'
+import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native'
+import { Avatar, translate as t } from '@doubledutch/rn-client'
 import FilterCell from './FilterCell'
 import ReportButton from './ReportButton'
 
@@ -19,6 +17,7 @@ export default class TableCell extends Component {
   }
 
   renderCell = (item) => {
+    const {primaryColor, currentUser} = this.props
     const voteCount = item.questionId
       ? (this.props.votesByAnswer[item.id] || 0)
       : (this.props.votesByQuestion[item.id] || 0)
@@ -33,7 +32,7 @@ export default class TableCell extends Component {
               <Text numberOfLines={2} style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
               <View style={{flex:1}}></View>
               <Text style={s.voteText}>{t("votes", {count: voteCount})}</Text>
-              <Text style={s.subText}>{((this.props.commentsTotal === 1) ? t("answer_count", {count: this.props.commentsTotal}) : t("answers_count", {count: this.props.commentsTotal}))}</Text>
+              <Text style={s.subText}>{((this.props.commentsTotal === 1) ? t("one_answer") : t("answers_count", {count: this.props.commentsTotal}))}</Text>
             </View>
             {this.renderFilters(item)}
           </View>
@@ -50,9 +49,9 @@ export default class TableCell extends Component {
               <Text numberOfLines={2} style={s.nameText}>{item.creator.firstName} {item.creator.lastName}</Text>
             </View>
             <View style={s.voteContainer}>
-              <TouchableOpacity style={s.upVoteButton} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{t("upvote", {count: voteCount})}</Text></TouchableOpacity>
+              <TouchableOpacity style={[s.upVoteButton, {backgroundColor: primaryColor}]} onPress={()=> this.props.newVote(item)}><Text style={s.upVoteText}>{t("upvote", {count: voteCount})}</Text></TouchableOpacity>
               <View style={{flex:1}}></View>
-              <ReportButton report={this.props.reportQuestion} item={item} handleReport={this.props.handleReport} isReported={this.props.isReported}/> 
+              <ReportButton report={this.props.reportQuestion} item={item} handleReport={this.props.handleReport} isReported={this.props.isReported} currentUser={currentUser} /> 
             </View>
           </View>
         </View>
@@ -60,28 +59,25 @@ export default class TableCell extends Component {
     }
   }
 
-  renderFilters = (item) => {
+  renderFilters = item => {
+    const {primaryColor} = this.props
     var filters = []
     if (item.filters) filters = item.filters
-      return (
-        <View style={s.table2}>
-          { filters.map((item, i) => {
-            return (
-            <FilterCell item={item} key={i} state={true}/>
-            )
-          }) }
-        </View>
-      )
+    return (
+      <View style={s.table2}>
+        { filters.map((item, i) => (
+          <FilterCell item={item} key={i} state={true} primaryColor={primaryColor} currentUser={this.props.currentUser} />
+        ))}
+      </View>
+    )
   }
-
 
   renderIcon = (item) => {
     return <TouchableOpacity onPress={() => this.props.newVotes(item)}><Image style={s.checkmark} source={{uri: "https://dml2n2dpleynv.cloudfront.net/extensions/question-and-answer/Inactive.png"}}/></TouchableOpacity>
   }
 }
 
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
+const s = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -95,7 +91,6 @@ const s = ReactNative.StyleSheet.create({
     alignItems: 'center'
   },
   upVoteButton: {
-    backgroundColor: client.primaryColor, 
     alignContent:'center', 
     height: 30,
     paddingHorizontal: 10, 

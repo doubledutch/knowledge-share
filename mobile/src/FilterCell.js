@@ -1,35 +1,32 @@
 'use strict'
 import React, { Component } from 'react'
-import ReactNative, { TouchableOpacity, Text } from 'react-native'
-import client, { translate as t } from '@doubledutch/rn-client'
+import { StyleSheet, TouchableOpacity, Text } from 'react-native'
 
 export default class FilterCell extends Component {
+  constructor(props) {
+    super(props)
+    this.s = createStyles(props)
+  }
   render() {
     const { item, select, state } = this.props 
 
     if (state) return (
-      <TouchableOpacity style={s.buttonContainerMargin}>
-        <Text style={s.title}>{item}</Text>
+      <TouchableOpacity style={this.s.buttonContainerMargin}>
+        <Text style={this.s.title}>{item}</Text>
       </TouchableOpacity>
     )
 
     if (select) return (
-      <TouchableOpacity onPress={ () => this.props.removeFilter(item) } style={s.buttonContainerColor}>
-        <Text style={s.titleColor}>{item.title}</Text>
+      <TouchableOpacity onPress={ () => this.props.removeFilter(item) } style={this.s.buttonContainerColor}>
+        <Text style={this.s.titleColor}>{item.title}</Text>
       </TouchableOpacity>
     )
     else return (
-      <TouchableOpacity onPress={ () => this.props.addFilter(item)} style={s.buttonContainer}>
-        <Text style={s.title}>{item.title}</Text>
+      <TouchableOpacity onPress={ () => this.props.addFilter(item)} style={this.s.buttonContainer}>
+        <Text style={this.s.title}>{item.title}</Text>
       </TouchableOpacity>
     )
   }
-
-
-
-
-
-
 }
 
 function hexToRgb(hex) {
@@ -41,8 +38,7 @@ function hexToRgb(hex) {
   return r + "," + g + "," + b;
 }
 
-const fontSize = 18
-const s = ReactNative.StyleSheet.create({
+const createStyles = props => StyleSheet.create({
   buttonContainer: {
     height: 25,
     paddingHorizontal: 20,
@@ -50,7 +46,7 @@ const s = ReactNative.StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 5,
     borderRadius: 25,
-    backgroundColor: 'rgba('+ hexToRgb(client.primaryColor) + ',0.1)',
+    backgroundColor: 'rgba('+ hexToRgb(props.primaryColor) + ',0.1)',
   },
   buttonContainerMargin: {
     height: 25,
@@ -59,15 +55,15 @@ const s = ReactNative.StyleSheet.create({
     marginVertical: 5,
     marginRight: 10,
     borderRadius: 25,
-    backgroundColor: 'rgba('+ hexToRgb(client.primaryColor) + ',0.1)',
+    backgroundColor: 'rgba('+ hexToRgb(props.primaryColor) + ',0.1)',
   },
   title: {
     fontSize: 14,
     fontWeight: "bold",
-    color: client.primaryColor
+    color: props.primaryColor
   },
   buttonContainerColor: {
-    backgroundColor: client.primaryColor,
+    backgroundColor: props.primaryColor,
     height: 25,
     paddingHorizontal: 20,
     justifyContent: 'center',
@@ -80,6 +76,4 @@ const s = ReactNative.StyleSheet.create({
     fontWeight: "bold",
     color: "white"
   }
-
-  
 })

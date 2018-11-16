@@ -1,20 +1,20 @@
-'use strict'
+
 import React, { Component } from 'react'
 import { Platform, StyleSheet, TouchableOpacity, Text, TextInput, View, Image } from 'react-native'
+import { Avatar, translate as t } from '@doubledutch/rn-client'
 import TopicsModal from './TopicsModal'
 import { pencil } from './images'
-import { Avatar, translate as t } from '@doubledutch/rn-client'
 
 export default class CustomModal extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      question: '', 
+      question: '',
       borderColor: '#EFEFEF',
       inputHeight: 0,
       showTopics: false,
-      selectedFilters : [],
-      filters: this.props.filters
+      selectedFilters: [],
+      filters: this.props.filters,
     }
   }
 
@@ -23,15 +23,16 @@ export default class CustomModal extends Component {
   }
 
   makeQuestion = () => {
-    var newFilters = []
-    this.state.selectedFilters.map((item) => { newFilters.push(item.title) })
+    let newFilters = []
+    this.state.selectedFilters.map(item => {
+      newFilters.push(item.title)
+    })
     if (this.props.showQuestion) {
       this.props.createSharedQuestion(this.state.question, newFilters)
-      this.setState({question: '', showTopics: false})
-    }
-    else {
+      this.setState({ question: '', showTopics: false })
+    } else {
       this.props.createSharedComment(this.state.question, newFilters)
-      this.setState({question: '', showTopics: false})
+      this.setState({ question: '', showTopics: false })
     }
   }
 
@@ -43,8 +44,10 @@ export default class CustomModal extends Component {
           <View style={s.rightContainer}>
             <Text style={s.questionText}>{question.text}</Text>
             <View style={s.buttonContainer}>
-              <Avatar user={question.creator} size={20} style={{marginRight: 8, marginLeft: 5}} />
-              <Text numberOfLines={2} style={s.nameText}>{question.creator.firstName} {question.creator.lastName}</Text>
+              <Avatar user={question.creator} size={20} style={{ marginRight: 8, marginLeft: 5 }} />
+              <Text numberOfLines={2} style={s.nameText}>
+                {question.creator.firstName} {question.creator.lastName}
+              </Text>
             </View>
           </View>
         </View>
@@ -108,52 +111,52 @@ export default class CustomModal extends Component {
         </View>
         )
       }
-      else {
+      
         return (
           <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
         )
-      }
+      
     }
+  }
 
-    updateQuestion = (question) => {
-      this.setState({question})
-      if (this.props.showError) {
-        this.props.handleChange("showError", false)
-      }
+  updateQuestion = question => {
+    this.setState({ question })
+    if (this.props.showError) {
+      this.props.handleChange('showError', false)
     }
+  }
 
   _handleSizeChange = event => {
     this.setState({
-      inputHeight: event.nativeEvent.contentSize.height
-    });
-  };
+      inputHeight: event.nativeEvent.contentSize.height,
+    })
+  }
 
   handleChange = (prop, value) => {
-    this.setState({[prop]: value})
-  }
-  addFilter = (selected) => {
-    var filters = this.state.filters
-    var index = filters.indexOf(selected)
-    var filter = filters.splice(index, 1)
-    const selectedFilters = this.state.selectedFilters.concat(filter)
-    this.setState({filters, selectedFilters})
+    this.setState({ [prop]: value })
   }
 
-  removeFilter = (selected) => {
-    var selectedFilters = this.state.selectedFilters
-    var index = selectedFilters.indexOf(selected)
-    var filter = selectedFilters.splice(index, 1)
+  addFilter = selected => {
+    let filters = this.state.filters
+    let index = filters.indexOf(selected)
+    let filter = filters.splice(index, 1)
+    const selectedFilters = this.state.selectedFilters.concat(filter)
+    this.setState({ filters, selectedFilters })
+  }
+
+  removeFilter = selected => {
+    let selectedFilters = this.state.selectedFilters
+    let index = selectedFilters.indexOf(selected)
+    let filter = selectedFilters.splice(index, 1)
     const filters = this.state.filters.concat(filter)
-    this.setState({filters, selectedFilters})
+    this.setState({ filters, selectedFilters })
   }
 
-  newFilter = (selected) => {
-    var filter = {title: selected, count: 1}
+  newFilter = selected => {
+    let filter = { title: selected, count: 1 }
     const selectedFilters = this.state.selectedFilters.concat(filter)
-    this.setState({selectedFilters})
-
+    this.setState({ selectedFilters })
   }
-
 }
 
 const s = StyleSheet.create({
@@ -166,12 +169,12 @@ const s = StyleSheet.create({
     marginTop: 2,
     marginBottom: 2,
   },
-  subText:{
+  subText: {
     fontSize: 12,
-    color: '#9B9B9B'
+    color: '#9B9B9B',
   },
   pencilBox: {
-    marginTop:22,
+    marginTop: 22,
     marginRight: 10,
     marginLeft: 10,
     marginBottom: 20,
@@ -180,20 +183,20 @@ const s = StyleSheet.create({
     width: 15,
     height: 15,
   },
-  nameText:{
+  nameText: {
     fontSize: 14,
     color: '#9B9B9B',
-    width: 100
+    width: 100,
   },
-  questionText:{
+  questionText: {
     fontSize: 16,
-    color: "#404040",
+    color: '#404040',
     fontFamily: 'System',
-    marginBottom: 5
+    marginBottom: 5,
   },
   listContainer: {
     flexDirection: 'row',
-    alignItems:'center',
+    alignItems: 'center',
     backgroundColor: 'white',
     marginBottom: 1,
   },
@@ -209,13 +212,13 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     backgroundColor: 'white',
-    height: 60
+    height: 60,
   },
   bottomButtonsRight: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     backgroundColor: 'white',
-    height: 60
+    height: 60,
   },
   modal: {
     flexDirection: 'row',
@@ -225,7 +228,7 @@ const s = StyleSheet.create({
   modalBottom: {
     flex: 1,
     backgroundColor: 'black',
-    opacity: 0.5
+    opacity: 0.5,
   },
   button: {
     width: '25%',
@@ -239,7 +242,7 @@ const s = StyleSheet.create({
     flexDirection: 'column',
   },
   circleBox: {
-    marginTop:20,
+    marginTop: 20,
     marginRight: 10,
     marginLeft: 10,
     marginBottom: 20,
@@ -254,13 +257,13 @@ const s = StyleSheet.create({
   },
   counter: {
     justifyContent: 'center',
-    marginTop:23,
+    marginTop: 23,
     width: 30,
     fontSize: 14,
     marginRight: 11,
     height: 20,
-    color: '#9B9B9B', 
-    textAlign: 'center'
+    color: '#9B9B9B',
+    textAlign: 'center',
   },
   topicsButton: {
     justifyContent: 'center',
@@ -268,11 +271,11 @@ const s = StyleSheet.create({
     width: 124,
     height: 42,
     borderRadius: 4,
-    borderWidth: 1
+    borderWidth: 1,
   },
   topicsButtonText: {
     fontSize: 14,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   sendButton: {
     justifyContent: 'center',
@@ -284,10 +287,10 @@ const s = StyleSheet.create({
   sendButtonText: {
     fontSize: 14,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   whiteText: {
     fontSize: 18,
     color: 'white',
-  }
+  },
 })

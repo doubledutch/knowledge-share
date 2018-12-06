@@ -119,6 +119,7 @@ class HomeView extends PureComponent {
   }
 
   render() {
+    const { suggestedTitle } = this.props
     const { currentUser, primaryColor } = this.state
     if (!currentUser || !primaryColor) return null
     return (
@@ -126,7 +127,7 @@ class HomeView extends PureComponent {
         style={s.container}
         behavior={Platform.select({ ios: 'padding', android: null })}
       >
-        <TitleBar title={this.state.title} client={client} signin={this.signin} />
+        <TitleBar title={suggestedTitle || this.state.title} client={client} signin={this.signin} />
         {this.modalControl()}
         {this.renderHome()}
         {this.renderFooter()}

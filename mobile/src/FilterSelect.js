@@ -1,4 +1,3 @@
-'use strict'
 import React, { Component } from 'react'
 import { Platform, StyleSheet, TouchableOpacity, Text, TextInput, View, Image } from 'react-native'
 import { translate as t } from '@doubledutch/rn-client'
@@ -6,19 +5,19 @@ import FilterCell from './FilterCell'
 import { magnify } from './images'
 
 export default class FilterSelect extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       question: '',
       newList: [],
-      search: false
+      search: false,
     }
     this.s = createStyles(props)
   }
 
-  render() { 
+  render() {
     return (
-      <View style={{flex:1, backgroundColor: 'white'}}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         {this.topicsHeader()}
         {this.searchBar()}
         {this.currentTable()}
@@ -29,78 +28,91 @@ export default class FilterSelect extends Component {
   }
 
   renderText = () => {
-    if (this.state.search && this.state.newList.length === 0){
+    if (this.state.search && this.state.newList.length === 0) {
       return (
-        <View style={{marginTop: 25, marginHorizontal: 10}}>
-          <Text style={this.s.helpText}>{t("bummer")}</Text>
+        <View style={{ marginTop: 25, marginHorizontal: 10 }}>
+          <Text style={this.s.helpText}>{t('bummer')}</Text>
         </View>
       )
     }
   }
 
   currentTable = () => {
-    if (this.props.selectedFilters.length) return (
-      <View style={this.s.table}>
-        { this.props.selectedFilters.map((item, i) => {
-         return (
-          <FilterCell item={item} key={i} select={true} removeFilter={this.props.removeFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
-         )
-        }) }
-      </View>
-    )
+    if (this.props.selectedFilters.length)
+      return (
+        <View style={this.s.table}>
+          {this.props.selectedFilters.map((item, i) => (
+            <FilterCell
+              item={item}
+              key={i}
+              select
+              removeFilter={this.props.removeFilter}
+              primaryColor={this.props.primaryColor}
+              currentUser={this.props.currentUser}
+            />
+          ))}
+        </View>
+      )
   }
 
   selectTable = () => {
-    var filters = this.props.filters
+    let filters = this.props.filters
     if (this.state.search) filters = this.state.newList
     return (
       <View style={this.s.table}>
-        { filters.map((item, i) => {
-          return (
-            <FilterCell item={item} key={i} select={false} addFilter={this.newFilterAdd} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
-          )
-      }) }
+        {filters.map((item, i) => (
+          <FilterCell
+            item={item}
+            key={i}
+            select={false}
+            addFilter={this.newFilterAdd}
+            primaryColor={this.props.primaryColor}
+            currentUser={this.props.currentUser}
+          />
+        ))}
       </View>
     )
   }
 
-  newFilterAdd = (item) => {
+  newFilterAdd = item => {
     this.props.addFilter(item)
-    this.updateList("")
+    this.updateList('')
   }
 
+  topicsHeader = () => (
+    <View style={this.s.buttonContainer}>
+      <TouchableOpacity onPress={() => this.props.handleChange('showFilters', false)}>
+        <Text style={this.s.closeButton}>X</Text>
+      </TouchableOpacity>
+      <Text style={this.s.title}>{t('topics')}</Text>
+      <TouchableOpacity>
+        <Text style={this.s.clearButton} onPress={() => this.resetFilters()}>
+          {t('clear')}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  )
 
-  topicsHeader = () => {
-    return (
-      <View style={this.s.buttonContainer}>
-        <TouchableOpacity onPress={() => this.props.handleChange("showFilters", false)}><Text style={this.s.closeButton}>X</Text></TouchableOpacity>
-        <Text style={this.s.title}>{t("topics")}</Text>
-        <TouchableOpacity><Text style={this.s.clearButton} onPress={() => this.resetFilters()}>{t("clear")}</Text></TouchableOpacity>
-      </View>
-    )
-  }
-
-  updateList = (value) => {
-    var queryText = value.trim().toLowerCase()
-    if (queryText.length > 0){
-      var queryResult=[];
-      this.props.filters.forEach(function(content){
-        var title = content.title
+  updateList = value => {
+    const queryText = value.trim().toLowerCase()
+    if (queryText.length > 0) {
+      const queryResult = []
+      this.props.filters.forEach(content => {
+        const title = content.title
         if (title) {
-          if (title.toLowerCase().indexOf(queryText)!== -1){
-            queryResult.push(content);
+          if (title.toLowerCase().indexOf(queryText) !== -1) {
+            queryResult.push(content)
           }
         }
-      });
-      this.setState({search: true, newList: queryResult, question: value})
-    }
-    else {
-      this.setState({search: false, question: value})
+      })
+      this.setState({ search: true, newList: queryResult, question: value })
+    } else {
+      this.setState({ search: false, question: value })
     }
   }
 
   resetFilters = () => {
-    this.setState({question:""})
+    this.setState({ question: '' })
     this.props.resetFilters()
   }
 
@@ -108,7 +120,7 @@ export default class FilterSelect extends Component {
     const newStyle = {
       flex: 1,
       fontSize: 18,
-      color: "#404040",
+      color: '#404040',
       textAlignVertical: 'top',
       maxHeight: 100,
       height: Math.max(35, this.state.inputHeight),
@@ -117,7 +129,7 @@ export default class FilterSelect extends Component {
     const androidStyle = {
       paddingLeft: 0,
       marginTop: 17,
-      marginBottom: 10
+      marginBottom: 10,
     }
     const iosStyle = {
       marginTop: 20,
@@ -125,16 +137,17 @@ export default class FilterSelect extends Component {
     }
     return (
       <View style={this.s.modal}>
-       
-        <Image style={this.s.pencilBox} source={magnify}/>
-        <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={t("search")}
+        <Image style={this.s.pencilBox} source={magnify} />
+        <TextInput
+          style={Platform.select({ ios: [newStyle, iosStyle], android: [newStyle, androidStyle] })}
+          placeholder={t('search')}
           value={this.state.question}
-          onChangeText={question => this.updateList(question)} 
+          onChangeText={question => this.updateList(question)}
           maxLength={250}
           autoFocus={false}
-          multiline={true}
+          multiline
           placeholderTextColor="#9B9B9B"
-          onContentSizeChange={(event) => this._handleSizeChange(event)}
+          onContentSizeChange={event => this._handleSizeChange(event)}
         />
       </View>
     )
@@ -142,93 +155,94 @@ export default class FilterSelect extends Component {
 
   _handleSizeChange = event => {
     this.setState({
-      inputHeight: event.nativeEvent.contentSize.height
-    });
-  };
+      inputHeight: event.nativeEvent.contentSize.height,
+    })
+  }
 }
 
-const createStyles = props => StyleSheet.create({
-  table: {
-    flexDirection: "row",
-    flexWrap: 'wrap',
-    marginTop: 10
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    height: 60,
-    alignItems: "center"
-  },
-  box: {
-    marginBottom: 25
-  },
-  textBox: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#EFEFEF'
-  },
-  pencilBox: {
-    marginTop:22,
-    marginRight: 10,
-    marginLeft: 10,
-    marginBottom: 20,
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-    width: 15,
-    height: 15,
-  },
-  whiteText: {
-    fontSize: 18,
-    color: 'white',
-  },
-  title: {
-    fontSize: 24,
-    flex: 1,
-    textAlign: 'center',
-    color: '#9B9B9B'
-  },
-  closeButton: {
-    marginLeft: 20,
-    color: props.primaryColor,
-    fontWeight: '900',
-    fontSize: 16
-  },
-  helpText: {
-    marginRight: 20,
-    color: '#9B9B9B'
-  },
-  clearButton: {
-    marginRight: 20,
-    color: props.primaryColor
-  },
-  button1: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    justifyContent: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: props.primaryColor
-  },
-  button2: {
-    height: 40,
-    paddingTop: 10,
-    marginBottom: 10,
-    justifyContent: 'center', 
-  },
-  divider: {
-    flex: 1
-  },
-  modal: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#EFEFEF'
-  },
-  dividerSm: {
-    width: 30
-  },
-  dashboardButton: {
-    fontSize: 18,
-    color: '#9B9B9B'
-  }
-})
+const createStyles = props =>
+  StyleSheet.create({
+    table: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      marginTop: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      height: 60,
+      alignItems: 'center',
+    },
+    box: {
+      marginBottom: 25,
+    },
+    textBox: {
+      flexDirection: 'row',
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: '#EFEFEF',
+    },
+    pencilBox: {
+      marginTop: 22,
+      marginRight: 10,
+      marginLeft: 10,
+      marginBottom: 20,
+      justifyContent: 'center',
+      backgroundColor: '#FFFFFF',
+      width: 15,
+      height: 15,
+    },
+    whiteText: {
+      fontSize: 18,
+      color: 'white',
+    },
+    title: {
+      fontSize: 24,
+      flex: 1,
+      textAlign: 'center',
+      color: '#9B9B9B',
+    },
+    closeButton: {
+      marginLeft: 20,
+      color: props.primaryColor,
+      fontWeight: '900',
+      fontSize: 16,
+    },
+    helpText: {
+      marginRight: 20,
+      color: '#9B9B9B',
+    },
+    clearButton: {
+      marginRight: 20,
+      color: props.primaryColor,
+    },
+    button1: {
+      height: 40,
+      paddingTop: 10,
+      marginBottom: 10,
+      justifyContent: 'center',
+      borderBottomWidth: 2,
+      borderBottomColor: props.primaryColor,
+    },
+    button2: {
+      height: 40,
+      paddingTop: 10,
+      marginBottom: 10,
+      justifyContent: 'center',
+    },
+    divider: {
+      flex: 1,
+    },
+    modal: {
+      flexDirection: 'row',
+      backgroundColor: 'white',
+      borderWidth: 1,
+      borderColor: '#EFEFEF',
+    },
+    dividerSm: {
+      width: 30,
+    },
+    dashboardButton: {
+      fontSize: 18,
+      color: '#9B9B9B',
+    },
+  })

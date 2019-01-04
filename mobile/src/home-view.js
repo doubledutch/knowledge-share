@@ -102,7 +102,7 @@ class HomeView extends PureComponent {
         alert('Modal has been closed.');
       }}
       >
-      <ReportModal handleChange={this.handleChange} reportQuestion={this.reportQuestion} report={this.state.report}/>
+      <ReportModal handleChange={this.handleChange} reportQuestion={this.reportQuestion} report={this.state.report} primaryColor={this.state.primaryColor}/>
     </Modal>
     )
   }

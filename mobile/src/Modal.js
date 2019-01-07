@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react'
 import { Platform, StyleSheet, TouchableOpacity, Text, TextInput, View, Image } from 'react-native'
 import { Avatar, translate as t } from '@doubledutch/rn-client'
@@ -23,7 +22,7 @@ export default class CustomModal extends Component {
   }
 
   makeQuestion = () => {
-    let newFilters = []
+    const newFilters = []
     this.state.selectedFilters.map(item => {
       newFilters.push(item.title)
     })
@@ -56,7 +55,7 @@ export default class CustomModal extends Component {
   }
 
   render() {
-    const {primaryColor} = this.props
+    const { primaryColor } = this.props
     const newStyle = {
       flex: 1,
       fontSize: 18,
@@ -66,55 +65,101 @@ export default class CustomModal extends Component {
       height: Math.max(35, this.state.inputHeight),
       paddingTop: 0,
     }
-    
+
     const androidStyle = {
       paddingLeft: 0,
       marginTop: 17,
-      marginBottom: 10
+      marginBottom: 10,
     }
 
     const iosStyle = {
       marginTop: 20,
       marginBottom: 10,
     }
-    
-    if (this.props.session){
+
+    if (this.props.session) {
       newColor = primaryColor
     }
 
-      var borderColor = this.state.borderColor
-      if (this.props.showError){borderColor = "red"}
-      const borderStyle = {borderColor: borderColor}
-      if (this.state.showTopics === false) {
-        return (
-        <View style={{flex: 1}}>
+    let borderColor = this.state.borderColor
+    if (this.props.showError) {
+      borderColor = 'red'
+    }
+    const borderStyle = { borderColor }
+    if (this.state.showTopics === false) {
+      return (
+        <View style={{ flex: 1 }}>
           {this.renderQuestion()}
           <View style={[s.modal, borderStyle]}>
-              {this.props.showQuestion ? <TouchableOpacity style={s.circleBox}><Text style={s.whiteText}>?</Text></TouchableOpacity> : <Image style={s.pencilBox} source={pencil}/>}
-              <TextInput style={Platform.select({ios: [newStyle, iosStyle], android: [newStyle, androidStyle]})} placeholder={this.props.showQuestion ? t("what_question") : t("add_answer")}
-                value={this.state.question}
-                onChangeText={this.updateQuestion} 
-                maxLength={250}
-                autoFocus={true}
-                multiline={true}
-                placeholderTextColor="#9B9B9B"
-                onContentSizeChange={(event) => this._handleSizeChange(event)}
-              />
-              <Text style={s.counter}>{250 - this.state.question.length} </Text>
+            {this.props.showQuestion ? (
+              <TouchableOpacity style={s.circleBox}>
+                <Text style={s.whiteText}>?</Text>
+              </TouchableOpacity>
+            ) : (
+              <Image style={s.pencilBox} source={pencil} />
+            )}
+            <TextInput
+              style={Platform.select({
+                ios: [newStyle, iosStyle],
+                android: [newStyle, androidStyle],
+              })}
+              placeholder={this.props.showQuestion ? t('what_question') : t('add_answer')}
+              value={this.state.question}
+              onChangeText={this.updateQuestion}
+              maxLength={250}
+              autoFocus
+              multiline
+              placeholderTextColor="#9B9B9B"
+              onContentSizeChange={event => this._handleSizeChange(event)}
+            />
+            <Text style={s.counter}>{250 - this.state.question.length} </Text>
           </View>
-          <Text style={{color: this.props.showError ? "red" : "white", paddingTop: 2, fontSize: 12, paddingLeft: 10, backgroundColor: "#FFFFFF"}}>{t("error")}</Text>
+          <Text
+            style={{
+              color: this.props.showError ? 'red' : 'white',
+              paddingTop: 2,
+              fontSize: 12,
+              paddingLeft: 10,
+              backgroundColor: '#FFFFFF',
+            }}
+          >
+            {t('error')}
+          </Text>
           <View style={this.props.showQuestion ? s.bottomButtons : s.bottomButtonsRight}>
-            {this.props.showQuestion ? <TouchableOpacity style={[s.topicsButton, {borderColor: primaryColor}]} onPress={() => this.handleChange("showTopics", true)}><Text style={[s.topicsButtonText, {color: primaryColor}]}>{t("add_topics")}</Text></TouchableOpacity> : null }
-            <TouchableOpacity style={[s.sendButton, {backgroundColor: primaryColor}]} onPress={this.makeQuestion}><Text style={s.sendButtonText}>{this.props.questionError}</Text></TouchableOpacity>
+            {this.props.showQuestion ? (
+              <TouchableOpacity
+                style={[s.topicsButton, { borderColor: primaryColor }]}
+                onPress={() => this.handleChange('showTopics', true)}
+              >
+                <Text style={[s.topicsButtonText, { color: primaryColor }]}>{t('add_topics')}</Text>
+              </TouchableOpacity>
+            ) : null}
+            <TouchableOpacity
+              style={[s.sendButton, { backgroundColor: primaryColor }]}
+              onPress={this.makeQuestion}
+            >
+              <Text style={s.sendButtonText}>{this.props.questionError}</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 
+          <TouchableOpacity style={s.modalBottom} onPress={this.modalClose} />
         </View>
-        )
-      }   
-      return (
-        <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
       )
     }
+    return (
+      <TopicsModal
+        modalClose={this.modalClose}
+        makeQuestion={this.makeQuestion}
+        handleChange={this.handleChange}
+        filters={this.state.filters}
+        selectedFilters={this.state.selectedFilters}
+        addFilter={this.addFilter}
+        removeFilter={this.removeFilter}
+        newFilter={this.newFilter}
+        primaryColor={this.props.primaryColor}
+        currentUser={this.props.currentUser}
+      />
+    )
+  }
 
   updateQuestion = question => {
     this.setState({ question })
@@ -134,23 +179,23 @@ export default class CustomModal extends Component {
   }
 
   addFilter = selected => {
-    let filters = this.state.filters
-    let index = filters.indexOf(selected)
-    let filter = filters.splice(index, 1)
+    const { filters } = this.state
+    const index = filters.indexOf(selected)
+    const filter = filters.splice(index, 1)
     const selectedFilters = this.state.selectedFilters.concat(filter)
     this.setState({ filters, selectedFilters })
   }
 
   removeFilter = selected => {
-    let selectedFilters = this.state.selectedFilters
-    let index = selectedFilters.indexOf(selected)
-    let filter = selectedFilters.splice(index, 1)
+    const { selectedFilters } = this.state
+    const index = selectedFilters.indexOf(selected)
+    const filter = selectedFilters.splice(index, 1)
     const filters = this.state.filters.concat(filter)
     this.setState({ filters, selectedFilters })
   }
 
   newFilter = selected => {
-    let filter = { title: selected, count: 1 }
+    const filter = { title: selected, count: 1 }
     const selectedFilters = this.state.selectedFilters.concat(filter)
     this.setState({ selectedFilters })
   }
@@ -226,17 +271,6 @@ const s = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     opacity: 0.5,
-  },
-  button: {
-    width: '25%',
-    height: 40,
-    paddingTop: 10,
-    paddingBottom: 5,
-    justifyContent: 'center',
-  },
-  rightBox: {
-    flex: 1,
-    flexDirection: 'column',
   },
   circleBox: {
     marginTop: 20,

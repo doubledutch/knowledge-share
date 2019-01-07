@@ -110,14 +110,11 @@ export default class CustomModal extends Component {
           <TouchableOpacity style={s.modalBottom} onPress={this.modalClose}></TouchableOpacity> 
         </View>
         )
-      }
-      
-        return (
-          <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
-        )
-      
+      }   
+      return (
+        <TopicsModal modalClose={this.modalClose} makeQuestion={this.makeQuestion} handleChange={this.handleChange} filters={this.state.filters} selectedFilters={this.state.selectedFilters} addFilter={this.addFilter} removeFilter={this.removeFilter} newFilter={this.newFilter} primaryColor={this.props.primaryColor} currentUser={this.props.currentUser} />
+      )
     }
-  }
 
   updateQuestion = question => {
     this.setState({ question })

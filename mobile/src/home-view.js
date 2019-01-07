@@ -148,6 +148,7 @@ class HomeView extends PureComponent {
         handleChange={this.handleChange}
         reportQuestion={this.reportQuestion}
         report={this.state.report}
+        primaryColor={this.state.primaryColor}
       />
     </Modal>
   )

@@ -261,7 +261,7 @@ class App extends PureComponent {
         Creator: `${question.creator.firstName} ${question.creator.lastName}`,
         Blocked: question.block ? 'Yes' : 'N/A',
         Question: question.text,
-        Tags: question.filters,
+        Tags: question.filters ? question.filters : 'None',
       }
       if (this.state.answersByQuestion[question.id]) {
         Object.values(this.state.answersByQuestion[question.id]).forEach((item, i) => {
@@ -270,9 +270,7 @@ class App extends PureComponent {
             item.creator.lastName
           }`
         })
-        return exportObject
-      }
-      exportObject.Responses = 'None'
+      } else exportObject.Responses = 'None'
       return exportObject
     })
     this.setState({ exportList, isExporting: true })

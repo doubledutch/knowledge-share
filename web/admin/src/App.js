@@ -257,28 +257,23 @@ class App extends PureComponent {
   formatDataForExport = () => {
     const questions = Object.values(this.state.questions)
     const exportList = questions.map(question => {
+      const exportObject = {
+        Creator: `${question.creator.firstName} ${question.creator.lastName}`,
+        Blocked: question.block ? 'Yes' : 'N/A',
+        Question: question.text,
+        Tags: question.filters,
+      }
       if (this.state.answersByQuestion[question.id]) {
-        const exportObject = {
-          creator: `${question.creator.firstName} ${question.creator.lastName}`,
-          Blocked: question.block ? 'Yes' : 'N/A',
-          Question: question.text,
-          Tags: question.filters,
-        }
         Object.values(this.state.answersByQuestion[question.id]).forEach((item, i) => {
           exportObject[`Response_${i + 1}`] = item.text
-          exportObject[`Response_${i + 1}_creator`] = `${item.creator.firstName} ${
+          exportObject[`Response_${i + 1}_Creator`] = `${item.creator.firstName} ${
             item.creator.lastName
           }`
         })
         return exportObject
       }
-      return {
-        creator: `${question.creator.firstName} ${question.creator.lastName}`,
-        Blocked: question.block ? 'Yes' : 'N/A',
-        Responses: 'None',
-        Question: question.text,
-        Tags: question.filters,
-      }
+      exportObject.Responses = 'None'
+      return exportObject
     })
     this.setState({ exportList, isExporting: true })
     setTimeout(() => this.setState({ isExporting: false }), 3000)

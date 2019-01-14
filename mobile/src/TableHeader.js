@@ -96,9 +96,9 @@ const s = StyleSheet.create({
   dashboardButton: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#364247',
   },
   dashboardButtonTitle: {
     fontSize: 16,
-    color: '#9B9B9B',
   },
 })

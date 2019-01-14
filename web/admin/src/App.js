@@ -16,6 +16,7 @@
 
 import React, { PureComponent } from 'react'
 import './App.css'
+import { CSVDownload } from 'react-csv'
 import client, { translate as t, useStrings } from '@doubledutch/admin-client'
 import {
   provideFirebaseConnectorToReactComponent,
@@ -25,6 +26,7 @@ import {
 } from '@doubledutch/firebase-connector'
 import i18n from './i18n'
 import CustomCell from './cell'
+import '@doubledutch/react-components/lib/base.css'
 
 useStrings(i18n)
 
@@ -43,6 +45,8 @@ class App extends PureComponent {
       questionKey: '',
       totalFlagged: 0,
       totalBlocked: 0,
+      isExporting: false,
+      exportList: [],
     }
     this.signin = props.fbc
       .signinAdmin()
@@ -133,7 +137,7 @@ class App extends PureComponent {
         }
         return latestReportTimeFor(b) - latestReportTimeFor(a)
       })
-    const time = new Date().getTime()
+
     const totalBlocked = this.returnTotal(false)
     const totalReported = this.returnTotal(true)
     return (
@@ -238,8 +242,39 @@ class App extends PureComponent {
             </ul>
           </div>
         </div>
+        <div className="csvLinkBox">
+          <button className="csvButton" onClick={this.formatDataForExport}>
+            Export Data
+          </button>
+          {this.state.isExporting ? (
+            <CSVDownload data={this.state.exportList} target="_blank" />
+          ) : null}
+        </div>
       </div>
     )
+  }
+
+  formatDataForExport = () => {
+    const questions = Object.values(this.state.questions)
+    const exportList = questions.map(question => {
+      const exportObject = {
+        Creator: `${question.creator.firstName} ${question.creator.lastName}`,
+        Blocked: question.block ? 'Yes' : 'N/A',
+        Question: question.text,
+        Tags: question.filters ? question.filters : 'None',
+      }
+      if (this.state.answersByQuestion[question.id]) {
+        Object.values(this.state.answersByQuestion[question.id]).forEach((item, i) => {
+          exportObject[`Response_${i + 1}`] = item.text
+          exportObject[`Response_${i + 1}_Creator`] = `${item.creator.firstName} ${
+            item.creator.lastName
+          }`
+        })
+      } else exportObject.Responses = 'None'
+      return exportObject
+    })
+    this.setState({ exportList, isExporting: true })
+    setTimeout(() => this.setState({ isExporting: false }), 3000)
   }
 
   blockAll = questionsOrAnswersAndReports => {

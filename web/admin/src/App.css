@@ -26,12 +26,32 @@
 }
 
 .bigBoxTitle{
-  font-size: 18px;
+  font-size: 22px;
   display: flex;
   margin-left: 10px;
   margin-bottom: 10px;
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #393939;
+}
+
+.csvButton{
+  float: right;
+  text-decoration: none;
+  border: 1px solid #73aaf3;
+  color: #73aaf3;
+  border-radius: 5px;
+  padding: 10px;
+  margin-left: 20px;
+  background-color: white;
+}
+
+.csvLinkBox{
+  flex-direction: row;
+  align-items: flex-end; 
+  justify-content: flex-end;
+  display: flex;
+  margin-top: 10px;
+  margin-right: 50px;
 }
 
 .App {

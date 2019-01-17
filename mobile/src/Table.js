@@ -133,7 +133,6 @@ export class MyList extends Component {
           showRecent={this.props.showRecent}
           showModal={this.props.showModal}
           handleChange={this.props.handleChange}
-          organizeFilters={this.props.organizeFilters}
           currentSort={this.props.currentSort}
           selectedFilters={this.props.selectedFilters}
           currentUser={this.props.currentUser}

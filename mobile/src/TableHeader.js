@@ -63,7 +63,6 @@ export default class TableHeader extends Component {
 
   getFilters = () => {
     this.props.handleChange('showFilters', true)
-    this.props.organizeFilters()
   }
 }
 

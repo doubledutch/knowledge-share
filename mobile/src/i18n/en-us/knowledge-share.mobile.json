@@ -33,5 +33,6 @@
   "begin": "Begin typing to add topics",
   "back": "Back to Question",
   "create": "Create New Topic",
-  "no_suggestions": "No Suggestions"
+  "no_suggestions": "No Suggestions",
+  "error_connecting": "Error connecting to database"
 }

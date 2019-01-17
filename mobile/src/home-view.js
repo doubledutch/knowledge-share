@@ -23,6 +23,7 @@ import HomeHeader from './HomeHeader'
 import FilterSelect from './FilterSelect'
 import SortSelect from './SortSelect'
 import ReportModal from './ReportModal'
+import LoadingView from "./LoadingView"
 
 useStrings(i18n)
 
@@ -114,8 +115,17 @@ class HomeView extends PureComponent {
         reportRef.on('child_added', data => {
           this.setState({ reports: [...this.state.reports, data.key] })
         })
+        this.hideLogInScreen = setTimeout(() => {
+          this.setState( {isLoggedIn: true})
+        }, 500)
       })
-    })
+    }).catch(e => this.setState({logInFailed: true}))
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if (Object.keys(this.state.questions).length !== Object.keys(prevState.questions).length){
+      this.organizeFilters()
+    }
   }
 
   render() {
@@ -128,10 +138,19 @@ class HomeView extends PureComponent {
         behavior={Platform.select({ ios: 'padding', android: null })}
       >
         <TitleBar title={suggestedTitle || this.state.title} client={client} signin={this.signin} />
+        {this.state.isLoggedIn ? 
+        this.masterRender() : <LoadingView logInFailed={this.state.logInFailed}/>}
+      </KeyboardAvoidingView>
+    )
+  }
+
+  masterRender = () => {
+    return (
+      <View style={{ flex: 1 }}>
         {this.modalControl()}
         {this.renderHome()}
         {this.renderFooter()}
-      </KeyboardAvoidingView>
+      </View>
     )
   }
 
@@ -275,7 +294,6 @@ class HomeView extends PureComponent {
               showComments={this.showComments}
               comments={this.state.answersByQuestion}
               votesByAnswer={this.state.votesByAnswer}
-              organizeFilters={this.organizeFilters}
               currentSort={this.state.currentSort}
               emptyStateTitle={this.state.emptyStateTitle}
               selectedFilters={this.state.selectedFilters}
@@ -308,7 +326,6 @@ class HomeView extends PureComponent {
         style={{ flex: 1 }}
         showQuestion={this.state.showQuestion}
         filters={this.state.filters}
-        organizeFilters={this.organizeFilters}
         votesByAnswer={this.state.votesByAnswer}
         votesByQuestion={this.state.votesByQuestion}
         primaryColor={this.state.primaryColor}
@@ -337,8 +354,6 @@ class HomeView extends PureComponent {
 
   showModal = () => {
     this.setState({ modalVisible: true, animation: 'none' })
-    // move to the listener
-    this.organizeFilters()
   }
 
   hideModal = () => {

@@ -173,11 +173,10 @@ class HomeView extends PureComponent {
   )
 
   organizeFilters = () => {
-    const filters = this.state.filters
+    const filters = []
     const questions = Object.values(this.state.questions).filter(
       question => question.block === false,
     )
-    if (filters.length === 0) {
       questions.forEach(item => {
         if (item.filters) {
           item.filters.forEach(filter => {
@@ -187,7 +186,6 @@ class HomeView extends PureComponent {
       })
       filters.sort()
       this.countFilters(filters)
-    }
   }
 
   addFilter = selected => {

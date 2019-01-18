@@ -17,7 +17,7 @@ export default class FilterCell extends Component {
         </TouchableOpacity>
       )
 
-    if (select)
+    else if (select)
       return (
         <TouchableOpacity
           onPress={() => this.props.removeFilter(item)}

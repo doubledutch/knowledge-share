@@ -297,8 +297,6 @@ const s = ReactNative.StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'center',
     backgroundColor: '#9B9B9B',
-    paddingTop: 8,
-    paddingBottom: 8,
     paddingLeft: 8,
     paddingRight: 8,
     height: 22,

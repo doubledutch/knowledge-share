@@ -16,7 +16,7 @@
 
 import React, { PureComponent } from 'react'
 import './App.css'
-import { CSVDownload } from 'react-csv'
+import { CSVDownload } from '@doubledutch/react-csv'
 import client, { translate as t, useStrings } from '@doubledutch/admin-client'
 import {
   provideFirebaseConnectorToReactComponent,
@@ -247,7 +247,7 @@ class App extends PureComponent {
             Export Data
           </button>
           {this.state.isExporting ? (
-            <CSVDownload data={this.state.exportList} target="_blank" />
+            <CSVDownload data={this.state.exportList} filename="results.csv" target="_blank" />
           ) : null}
         </div>
       </div>

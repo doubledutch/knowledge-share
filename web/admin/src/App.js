@@ -244,7 +244,7 @@ class App extends PureComponent {
         </div>
         <div className="csvLinkBox">
           <button className="csvButton" onClick={this.formatDataForExport}>
-            Export Data
+            {t('export')}
           </button>
           {this.state.isExporting ? (
             <CSVDownload data={this.state.exportList} filename="results.csv" target="_blank" />

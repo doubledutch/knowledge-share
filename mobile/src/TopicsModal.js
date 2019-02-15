@@ -154,10 +154,11 @@ export default class TopicsModal extends Component {
               <FilterCell
                 item={item}
                 key={i}
-                select={false}
+                select={this.props.selectedFilters.find(filter => filter === item)}
                 addFilter={this.addFilter}
                 primaryColor={this.props.primaryColor}
                 currentUser={currentUser}
+                removeFilter={this.props.removeFilter}
               />
             ))}
           </ScrollView>
@@ -188,10 +189,11 @@ export default class TopicsModal extends Component {
   }
 
   updateList = value => {
+    const list = this.props.filters.concat(this.props.selectedFilters)
     const queryText = value.toLowerCase()
     if (queryText.length > 0) {
       const queryResult = []
-      this.props.filters.forEach(content => {
+      list.forEach(content => {
         const title = content.title
         if (title) {
           if (title.toLowerCase().indexOf(queryText) !== -1) {

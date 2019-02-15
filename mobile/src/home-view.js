@@ -61,8 +61,8 @@ class HomeView extends PureComponent {
       showReportModal: false,
       modalVisible: false,
     }
-    this.signin = props.fbc.signin().then(user => (this.user = user))
 
+    this.signin = props.fbc.signin()
     this.signin.catch(err => console.error(err))
   }
 

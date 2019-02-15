@@ -154,7 +154,7 @@ export default class TopicsModal extends Component {
               <FilterCell
                 item={item}
                 key={i}
-                select={this.props.selectedFilters.find(filter => filter === item)}
+                select={this.props.selectedFilters.includes(item)}
                 addFilter={this.addFilter}
                 primaryColor={this.props.primaryColor}
                 currentUser={currentUser}

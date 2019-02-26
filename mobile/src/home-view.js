@@ -404,7 +404,7 @@ class HomeView extends PureComponent {
     if (questionName.length === 0) {
       this.setState({ showError: true })
     }
-    if (this.user && questionName.length > 0) {
+    if (questionName.length > 0) {
       ref('questions')
         .push({
           text: questionName,
@@ -434,7 +434,7 @@ class HomeView extends PureComponent {
     if (commentName.length === 0) {
       this.setState({ showError: true })
     }
-    if (this.user && commentName.length > 0) {
+    if (commentName.length > 0) {
       ref('answers')
         .push({
           text: commentName,

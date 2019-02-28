@@ -1,0 +1,15 @@
+{
+  "approve_all" : "Alles genehmigen",
+  "block_all" : "Alles blockieren",
+  "reported" : "Berichtet (${totalReported})",
+  "report_display" : "Berichtete Fragen oder Kommentare werden hier angezeigt",
+  "pending_display" : "Alle unerledigten Berichte bleiben sichtbar für",
+  "attendees" : "Teilnehmer",
+  "blocked" : "Blockiert (${totalBlocked})",
+  "block_display" : "Blockierte Fragen oder Kommentare werden hier angezeigt",
+  "block_display_sec" : "Blockierte Kommentare oder Fragen sind nicht",
+  "block_display_three" : "sichtbar für die Teilnehmer",
+  "hide_question" : "Frage ausblenden",
+  "view_question" : "Frage anzeigen",
+  "flagged" : "Markiert von ${users}"
+}

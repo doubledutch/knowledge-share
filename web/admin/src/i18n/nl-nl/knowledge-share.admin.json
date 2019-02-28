@@ -1,0 +1,15 @@
+{
+  "approve_all" : "Alles goedkeuren",
+  "block_all" : "Alles blokkeren",
+  "reported" : "Gemeld (${totalReported})",
+  "report_display" : "Gemelde vragen of commentaren worden hier weergegeven",
+  "pending_display" : "Alle openstaande meldingen blijven zichtbaar voor",
+  "attendees" : "Deelnemers",
+  "blocked" : "Geblokkeerd (${totalBlocked})",
+  "block_display" : "Geblokkeerde vragen of commentaren worden hier weergegeven",
+  "block_display_sec" : "Geblokkeerde commentaren of vragen zijn niet",
+  "block_display_three" : "zichtbaar voor deelnemers",
+  "hide_question" : "Vraag verbergen",
+  "view_question" : "Vraag weergeven",
+  "flagged" : "Gemarkeerd door ${users}"
+}

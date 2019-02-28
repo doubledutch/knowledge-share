@@ -1,0 +1,15 @@
+{
+  "approve_all" : "Tout approuver",
+  "block_all" : "Tout bloquer",
+  "reported" : "Signalé (${totalReported})",
+  "report_display" : "Les questions ou commentaires sur des signalements seront affichés ici",
+  "pending_display" : "Tous les objets signalés resteront visibles des",
+  "attendees" : "participants",
+  "blocked" : "Bloqué (${totalBlocked})",
+  "block_display" : "Les questions ou commentaires bloqués seront affichés ici",
+  "block_display_sec" : "Les questions ou commentaires bloqués ne seront pas",
+  "block_display_three" : "visibles pour les participants",
+  "hide_question" : "Masquer la question",
+  "view_question" : "Voir la question",
+  "flagged" : "Signalé par ${users}"
+}

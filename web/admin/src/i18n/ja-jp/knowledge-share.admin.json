@@ -1,0 +1,15 @@
+{
+  "approve_all" : "すべてを承認",
+  "block_all" : "すべてブロック",
+  "reported" : "報告済：（${totalReported}）",
+  "report_display" : "報告された質問またはコメントがここに表示されます",
+  "pending_display" : "保留中のすべてのレポートは公開されます。対象：",
+  "attendees" : "参加者",
+  "blocked" : "ブロック：（${totalBlocked}）",
+  "block_display" : "ブロックされた質問またはコメントがここに表示されます",
+  "block_display_sec" : "ブロックされたコメントまたは質問は",
+  "block_display_three" : "出席者に公開されません",
+  "hide_question" : "質問を非表示",
+  "view_question" : "質問を見る",
+  "flagged" : "フラグ：${users}"
+}

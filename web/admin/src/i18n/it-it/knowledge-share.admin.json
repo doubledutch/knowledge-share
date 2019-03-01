@@ -1,0 +1,15 @@
+{
+  "approve_all" : "Approva tutto",
+  "block_all" : "Blocca tutto",
+  "reported" : "Segnalato (${totalReported})",
+  "report_display" : "Qui verranno visualizzate domande o commenti segnalati",
+  "pending_display" : "Tutti i rapporti in sospeso rimarranno visibili ai",
+  "attendees" : "partecipanti",
+  "blocked" : "Bloccato (${totalBlocked})",
+  "block_display" : "Qui verranno visualizzate domande o commenti bloccati",
+  "block_display_sec" : "Eventuali commenti o domande bloccati non saranno",
+  "block_display_three" : "visibili ai partecipanti",
+  "hide_question" : "Nascondi domanda",
+  "view_question" : "Visualizza domanda",
+  "flagged" : "Segnalato da ${users}"
+}

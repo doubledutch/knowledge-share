@@ -1,0 +1,15 @@
+{
+  "approve_all" : "الموافقة على الجميع",
+  "block_all" : "حظر الجميع",
+  "reported" : "تم الإبلاغ عنه (${totalReported})",
+  "report_display" : "سوف تظهر الأسئلة أو التعليقات المعروضة هنا",
+  "pending_display" : "ستبقى جميع التقارير المعلقة مرئية",
+  "attendees" : "الحضور",
+  "blocked" : "محظور (${totalBlocked})",
+  "block_display" : "سوف تظهر الأسئلة أو التعليقات المحظورة هنا",
+  "block_display_sec" : "لن تكون أي تعليقات أو أسئلة محظورة",
+  "block_display_three" : "مرئية للحضور",
+  "hide_question" : "إخفاء السؤال",
+  "view_question" : "عرض السؤال",
+  "flagged" : "تميزت بواسطة ${users}"
+}

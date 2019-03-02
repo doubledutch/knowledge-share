@@ -6,7 +6,7 @@ import esES from './es-es/knowledge-share.mobile.json'
 import frFR from './fr-fr/knowledge-share.mobile.json'
 import itIT from './it-it/knowledge-share.mobile.json'
 import jaJP from './ja-jp/knowledge-share.mobile.json'
-import nlNL from './nl-nl/assassins.mobile.json'
+import nlNL from './nl-nl/knowledge-share.mobile.json'
 
 export default {
   '': enUS,

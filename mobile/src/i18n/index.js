@@ -1,12 +1,12 @@
-import enUS from './en-us/knowledge-share.admin.json'
+import enUS from './en-us/knowledge-share.mobile.json'
 
-import arINT from './ar-int/knowledge-share.admin.json'
-import deDE from './de-de/knowledge-share.admin.json'
-import esES from './es-es/knowledge-share.admin.json'
-import frFR from './fr-fr/knowledge-share.admin.json'
-import itIT from './it-it/knowledge-share.admin.json'
-import jaJP from './ja-jp/knowledge-share.admin.json'
-import nlNL from './nl-nl/assassins.admin.json'
+import arINT from './ar-int/knowledge-share.mobile.json'
+import deDE from './de-de/knowledge-share.mobile.json'
+import esES from './es-es/knowledge-share.mobile.json'
+import frFR from './fr-fr/knowledge-share.mobile.json'
+import itIT from './it-it/knowledge-share.mobile.json'
+import jaJP from './ja-jp/knowledge-share.mobile.json'
+import nlNL from './nl-nl/assassins.mobile.json'
 
 export default {
   '': enUS,

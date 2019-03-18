@@ -13,6 +13,7 @@ export class MyList extends Component {
       handleReport,
       primaryColor,
       currentUser,
+      comments
     } = this.props
     const data = this.verifyData()
     return (
@@ -20,6 +21,7 @@ export class MyList extends Component {
         {this.renderHeader(showQuestion)}
         <FlatList
           data={data}
+          extraData={comments}
           ListFooterComponent={<View style={{ height: 100 }} />}
           keyExtractor={getId}
           renderItem={({ item }) => {

@@ -8,9 +8,10 @@ export default class FilterSelect extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      question: '',
+      search: '',
       newList: [],
       search: false,
+      inputHeight: 0
     }
     this.s = createStyles(props)
   }
@@ -105,14 +106,14 @@ export default class FilterSelect extends Component {
           }
         }
       })
-      this.setState({ search: true, newList: queryResult, question: value })
+      this.setState({ newList: queryResult, search: value })
     } else {
-      this.setState({ search: false, question: value })
+      this.setState({ search: value })
     }
   }
 
   resetFilters = () => {
-    this.setState({ question: '' })
+    this.setState({ search: '' })
     this.props.resetFilters()
   }
 
@@ -141,8 +142,8 @@ export default class FilterSelect extends Component {
         <TextInput
           style={Platform.select({ ios: [newStyle, iosStyle], android: [newStyle, androidStyle] })}
           placeholder={t('search')}
-          value={this.state.question}
-          onChangeText={question => this.updateList(question)}
+          value={this.state.search}
+          onChangeText={search => this.updateList(search)}
           maxLength={250}
           autoFocus={false}
           multiline

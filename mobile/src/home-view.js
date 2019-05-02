@@ -60,6 +60,10 @@ class HomeView extends PureComponent {
       showRecent: false,
       showReportModal: false,
       modalVisible: false,
+      questionPrompt: "",
+      answerPrompt: "",
+      buttonPrompt: "",
+      answerButtonPrompt: ""
     }
 
     this.signin = props.fbc.signin()
@@ -114,6 +118,26 @@ class HomeView extends PureComponent {
         const reportRef = fbc.database.private.adminableUserRef('reports')
         reportRef.on('child_added', data => {
           this.setState({ reports: [...this.state.reports, data.key] })
+        })
+        fbc.database.public
+        .adminRef('questionPrompt')
+        .on('value', data => this.setState({ questionPrompt: data.val() || '' }))
+        fbc.database.public
+        .adminRef('answerPrompt')
+        .on('value', data => this.setState({ answerPrompt: data.val() || '' }))
+        fbc.database.public
+        .adminRef('buttonPrompt')
+        .on('value', data => {
+          if (data.val()){
+            this.setState({ buttonPrompt: data.val(), questionError: "Submit " + data.val()  })
+          }
+        })
+        fbc.database.public
+        .adminRef('answerButtonPrompt')
+        .on('value', data => {
+          if (data.val()){
+            this.setState({ answerButtonPrompt: data.val() })
+          }
         })
         this.hideLogInScreen = setTimeout(() => {
           this.setState( {isLoggedIn: true})
@@ -257,6 +281,7 @@ class HomeView extends PureComponent {
             handleChange={this.handleChange}
             sortTopics={this.sortTopics}
             currentSort={this.state.currentSort}
+            lastSort={this.state.buttonPrompt ? `My ${this.state.buttonPrompt}` : t("questions")}
           />
         </View>
       )
@@ -279,6 +304,9 @@ class HomeView extends PureComponent {
             reports={this.state.reports}
             primaryColor={this.state.primaryColor}
             currentUser={this.state.currentUser}
+            questionPrompt={this.state.questionPrompt}
+            answerPrompt={this.state.answerPrompt}
+            buttonPrompt={this.state.buttonPrompt}
           />
           <View style={{ flex: 1 }}>
             <MyList
@@ -302,6 +330,7 @@ class HomeView extends PureComponent {
               reports={this.state.reports}
               primaryColor={this.state.primaryColor}
               currentUser={this.state.currentUser}
+              buttonPrompt={this.state.buttonPrompt}
             />
           </View>
         </View>
@@ -328,6 +357,8 @@ class HomeView extends PureComponent {
         votesByQuestion={this.state.votesByQuestion}
         primaryColor={this.state.primaryColor}
         currentUser={this.state.currentUser}
+        questionPrompt={this.state.questionPrompt}
+        answerPrompt={this.state.answerPrompt}
       />
     )
   }
@@ -347,7 +378,7 @@ class HomeView extends PureComponent {
   }
 
   closeAnswer = () => {
-    this.setState({ showQuestion: true, questionError: t('submitQ') })
+    this.setState({ showQuestion: true, questionError: this.state.buttonPrompt })
   }
 
   showModal = () => {
@@ -388,7 +419,7 @@ class HomeView extends PureComponent {
   }
 
   showComments = question => {
-    this.setState({ question, showQuestion: false, questionError: t('submitA') })
+    this.setState({ question, showQuestion: false, questionError: "Submit " + this.state.answerButtonPrompt || t('submitA') })
   }
 
   handleChange = (prop, value) => {

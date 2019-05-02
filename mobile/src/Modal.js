@@ -103,7 +103,7 @@ export default class CustomModal extends Component {
                 ios: [newStyle, iosStyle],
                 android: [newStyle, androidStyle],
               })}
-              placeholder={this.props.showQuestion ? t('what_question') : t('add_answer')}
+              placeholder={this.props.showQuestion ? this.props.questionPrompt || t('what_question') : this.props.answerPrompt || t('add_answer')}
               value={this.state.question}
               onChangeText={this.updateQuestion}
               maxLength={250}

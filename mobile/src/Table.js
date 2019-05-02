@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, FlatList } from 'react-native'
 import TableHeader from './TableHeader'
 import TableCell from './TableCell'
+import client, { translate as t } from '@doubledutch/rn-client'
 
 const getId = item => item.id
 export class MyList extends Component {
@@ -97,17 +98,17 @@ export class MyList extends Component {
     const { currentSort, selectedFilters, currentUser } = this.props
     const votes = this.props.votesByQuestion || 0
     if (questions) {
-      if (currentSort === 'My Questions') {
+      if (currentSort === this.props.buttonPrompt ? `My ${this.props.buttonPrompt}` : t("questions")){
         return questions.filter(item => item.creator.id === currentUser.id)
       }
-      if (currentSort === 'Most Popular') {
+      if (currentSort === t("popular")) {
         this.dateSort(questions)
         questions.sort((a, b) => {
           const voteCount = votes[a.id] || 0 ? votes[a.id] : 0
           const voteCount2 = votes[b.id] || 0 ? votes[b.id] : 0
           return voteCount2 - voteCount
         })
-      } else if (currentSort === 'Most Recent') {
+      } else if (currentSort === t("recent")) {
         this.dateSort(questions)
       }
 

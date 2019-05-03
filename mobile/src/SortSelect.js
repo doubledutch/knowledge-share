@@ -7,7 +7,7 @@ export default class SortSelect extends Component {
     super(props)
     this.state = {
       currentSort: t('popular'),
-      sortList: [t('popular'), t('recent'), t('questions')],
+      sortList: [t('popular'), t('recent'), props.lastSort],
       search: false,
     }
   }

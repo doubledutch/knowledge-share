@@ -32,7 +32,7 @@ export default class HomeHeader extends Component {
           <TextInput
             underlineColorAndroid="transparent"
             style={Platform.select({ ios: newStyle, android: [newStyle, androidStyle] })}
-            placeholder={t('what_question')}
+            placeholder={this.props.questionPrompt || t('what_question')}
             autoFocus={false}
             onFocus={this.props.showModal}
             multiline
@@ -50,7 +50,7 @@ export default class HomeHeader extends Component {
           <TextInput
             underlineColorAndroid="transparent"
             style={Platform.select({ ios: newStyle, android: [newStyle, androidStyle] })}
-            placeholder={t('add_answer')}
+            placeholder={this.props.answerPrompt || t('add_answer')}
             autoFocus={false}
             onFocus={this.props.showModal}
             multiline

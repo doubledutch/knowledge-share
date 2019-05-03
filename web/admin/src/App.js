@@ -25,6 +25,7 @@ import {
   mapPerUserPrivateAdminablePushedDataToObjectOfStateObjects,
 } from '@doubledutch/firebase-connector'
 import i18n from './i18n'
+import CustomInputs from './CustomInputs'
 import CustomCell from './cell'
 import '@doubledutch/react-components/lib/base.css'
 
@@ -47,6 +48,10 @@ class App extends PureComponent {
       totalBlocked: 0,
       isExporting: false,
       exportList: [],
+      questionPrompt: '',
+      answerPrompt: '',
+      buttonPrompt: '',
+      answerButtonPrompt: '',
     }
     this.signin = props.fbc
       .signinAdmin()
@@ -82,6 +87,18 @@ class App extends PureComponent {
           (userId, key, value) => key,
           userId => userId,
         )
+        fbc.database.public
+          .adminRef('questionPrompt')
+          .on('value', data => this.setState({ questionPrompt: data.val() || '' }))
+        fbc.database.public
+          .adminRef('answerPrompt')
+          .on('value', data => this.setState({ answerPrompt: data.val() || '' }))
+        fbc.database.public
+          .adminRef('buttonPrompt')
+          .on('value', data => this.setState({ buttonPrompt: data.val() || '' }))
+        fbc.database.public
+          .adminRef('answerButtonPrompt')
+          .on('value', data => this.setState({ answerButtonPrompt: data.val() || '' }))
       })
     })
   }
@@ -143,8 +160,16 @@ class App extends PureComponent {
     return (
       <div>
         <p className="bigBoxTitle">Knowledge Share</p>
-        <div className="App">
+        <CustomInputs
+          fbc={this.props.fbc}
+          questionPrompt={this.state.questionPrompt}
+          answerPrompt={this.state.answerPrompt}
+          buttonPrompt={this.state.buttonPrompt}
+          answerButtonPrompt={this.state.answerButtonPrompt}
+        />
+        <div className="container">
           <div className="questionBox">
+            <p className="boxTitle">Reports</p>
             <div className="cellBoxTop">
               <p className="listTitle">{t('reported', { totalReported })}</p>
               <button
@@ -173,7 +198,6 @@ class App extends PureComponent {
                 const allReportsFlagged = Object.values(questionOrAnswerAndReport.reports).filter(
                   item => item.block !== true && item.approved !== true,
                 )
-                const questionUser = this.getUser(id)
                 if (allReportsFlagged.length) {
                   return (
                     <li className="cellBox" key={id}>
@@ -199,6 +223,7 @@ class App extends PureComponent {
             </ul>
           </div>
           <div className="questionBox">
+            <div className="boxSpace" />
             <span>
               <p className="listTitle">{t('blocked', { totalBlocked })}</p>
             </span>
@@ -213,7 +238,6 @@ class App extends PureComponent {
                 const allReportsBlocked = Object.values(questionOrAnswerAndReport.reports).filter(
                   item => item.block === true && item.approved !== true,
                 )
-                const questionUser = this.getUser(id)
                 if (allReportsBlocked.length) {
                   return (
                     <li key={id}>

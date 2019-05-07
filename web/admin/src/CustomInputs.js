@@ -1,6 +1,14 @@
 import React from 'react'
 
-const CustomInputs = ({ fbc, questionPrompt, answerPrompt, buttonPrompt, answerButtonPrompt }) => {
+const CustomInputs = ({
+  fbc,
+  questionPrompt,
+  answerPrompt,
+  buttonPrompt,
+  answerButtonPrompt,
+  buttonPromptPlural,
+  answerButtonPromptPlural,
+}) => {
   return (
     <div className="flexContainer">
       <p className="boxTitle">Custom App Titles</p>
@@ -57,6 +65,36 @@ const CustomInputs = ({ fbc, questionPrompt, answerPrompt, buttonPrompt, answerB
               value={answerButtonPrompt}
               maxLength={10}
               onChange={e => fbc.database.public.adminRef('answerButtonPrompt').set(e.target.value)}
+              placeholder="Ex: Answer"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="rowBox">
+        <div className="text-editor">
+          <p className="text-editor__title">Plural Submit Question Type</p>
+          <div className="text-editor__inputBox">
+            <input
+              type="text"
+              className="text-editor__input"
+              value={buttonPromptPlural}
+              maxLength={10}
+              onChange={e => fbc.database.public.adminRef('buttonPromptPlural').set(e.target.value)}
+              placeholder="Ex: Question"
+            />
+          </div>
+        </div>
+        <div className="text-editor">
+          <p className="text-editor__title">PluralSubmit Response Type</p>
+          <div className="text-editor__inputBox">
+            <input
+              type="text"
+              className="text-editor__input"
+              value={answerButtonPromptPlural}
+              maxLength={10}
+              onChange={e =>
+                fbc.database.public.adminRef('answerButtonPromptPlural').set(e.target.value)
+              }
               placeholder="Ex: Answer"
             />
           </div>

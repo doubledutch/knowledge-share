@@ -12,7 +12,7 @@ export default class TableCell extends Component {
   }
 
   renderCell = item => {
-    const { primaryColor, currentUser, answerButtonPrompt } = this.props
+    const { primaryColor, currentUser, answerButtonPrompt, answerButtonPromptPlural } = this.props
     const voteCount = item.questionId
       ? this.props.votesByAnswer[item.id] || 0
       : this.props.votesByQuestion[item.id] || 0
@@ -20,8 +20,8 @@ export default class TableCell extends Component {
     let buttonPrompt = this.props.commentsTotal === 1
       ? t('one_answer')
       : t('answers_count', { count: this.props.commentsTotal })
-    if (answerButtonPrompt) buttonPrompt = `${this.props.commentsTotal} ${answerButtonPrompt}${this.props.commmentsTotal === 1 ? "": "s"}`
-    console.log(this.props.commentsTotal)
+  
+    if (answerButtonPrompt && answerButtonPromptPlural) buttonPrompt = `${this.props.commentsTotal} ${this.props.commmentsTotal === 1 ? answerButtonPrompt : answerButtonPromptPlural}`
 
     if (this.props.showQuestion) {
       return (

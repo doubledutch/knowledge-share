@@ -63,7 +63,9 @@ class HomeView extends PureComponent {
       questionPrompt: "",
       answerPrompt: "",
       buttonPrompt: "",
-      answerButtonPrompt: ""
+      answerButtonPrompt: "",
+      buttonPromptPlural: "",
+      answerButtonPromptPlural: ""
     }
 
     this.signin = props.fbc.signin()
@@ -139,6 +141,16 @@ class HomeView extends PureComponent {
         .adminRef('answerButtonPrompt')
         .on('value', data => {
           this.setState({ answerButtonPrompt: data.val() || "Answer" })
+        })
+        fbc.database.public
+        .adminRef('buttonPromptPlural')
+        .on('value', data => {
+          this.setState({ buttonPromptPlural: data.val() || "" })
+        })
+        fbc.database.public
+        .adminRef('answerButtonPromptPlural')
+        .on('value', data => {
+          this.setState({ answerButtonPromptPlural: data.val() || "Answers" })
         })
         this.hideLogInScreen = setTimeout(() => {
           this.setState( {isLoggedIn: true})
@@ -282,7 +294,7 @@ class HomeView extends PureComponent {
             handleChange={this.handleChange}
             sortTopics={this.sortTopics}
             currentSort={this.state.currentSort}
-            lastSort={this.state.buttonPrompt ? `My ${this.state.buttonPrompt}` : t("questions")}
+            lastSort={this.state.buttonPromptPlural ? `My ${this.state.buttonPromptPlural}` : t("questions")}
           />
         </View>
       )
@@ -334,6 +346,7 @@ class HomeView extends PureComponent {
               answerPrompt={this.state.answerPrompt}
               buttonPrompt={this.state.buttonPrompt}
               answerButtonPrompt={this.state.answerButtonPrompt}
+              answerButtonPromptPlural={this.state.answerButtonPromptPlural}
             />
           </View>
         </View>

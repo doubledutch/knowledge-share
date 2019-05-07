@@ -52,6 +52,8 @@ class App extends PureComponent {
       answerPrompt: '',
       buttonPrompt: '',
       answerButtonPrompt: '',
+      buttonPromptPlural: '',
+      answerButtonPromptPlural: '',
     }
     this.signin = props.fbc
       .signinAdmin()
@@ -99,6 +101,12 @@ class App extends PureComponent {
         fbc.database.public
           .adminRef('answerButtonPrompt')
           .on('value', data => this.setState({ answerButtonPrompt: data.val() || '' }))
+        fbc.database.public
+          .adminRef('buttonPromptPlural')
+          .on('value', data => this.setState({ buttonPromptPlural: data.val() || '' }))
+        fbc.database.public
+          .adminRef('answerButtonPromptPlural')
+          .on('value', data => this.setState({ answerButtonPromptPlural: data.val() || '' }))
       })
     })
   }
@@ -166,6 +174,8 @@ class App extends PureComponent {
           answerPrompt={this.state.answerPrompt}
           buttonPrompt={this.state.buttonPrompt}
           answerButtonPrompt={this.state.answerButtonPrompt}
+          buttonPromptPlural={this.state.buttonPromptPlural}
+          answerButtonPromptPlural={this.state.answerButtonPromptPlural}
         />
         <div className="container">
           <div className="questionBox">

@@ -157,6 +157,7 @@ export default class CustomModal extends Component {
         newFilter={this.newFilter}
         primaryColor={this.props.primaryColor}
         currentUser={this.props.currentUser}
+        questionError={this.props.questionError}
       />
     )
   }

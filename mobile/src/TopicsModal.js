@@ -96,7 +96,7 @@ export default class TopicsModal extends Component {
             style={[s.sendButton, { backgroundColor: primaryColor }]}
             onPress={() => makeQuestion()}
           >
-            <Text style={s.sendButtonText}>{t('submitQ')}</Text>
+            <Text style={s.sendButtonText}>{this.props.questionError}</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={s.modalBottom} onPress={modalClose} />
@@ -308,6 +308,7 @@ const s = ReactNative.StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10,
     height: 42,
+    width: 124,
     borderRadius: 4,
     borderWidth: 1,
   },
@@ -319,6 +320,7 @@ const s = ReactNative.StyleSheet.create({
   sendButton: {
     justifyContent: 'center',
     marginRight: 10,
+    width: 124,
     height: 42,
     borderRadius: 4,
   },

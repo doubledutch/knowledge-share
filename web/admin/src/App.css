@@ -46,7 +46,7 @@
 }
 
 .boxSpace {
-  height: 51px;
+  height: 30px;
 }
 
 .csvButton{
@@ -85,6 +85,10 @@
 
 .text-editor__title, .select-editor__title {
   margin-bottom: 5px;
+}
+.text-editor__subTitle, .select-editor__title {
+  margin-top: 0px;
+  font-size: 12px;
 }
 
 

@@ -14,7 +14,8 @@ export class MyList extends Component {
       handleReport,
       primaryColor,
       currentUser,
-      comments
+      comments,
+      answerButtonPrompt
     } = this.props
     const data = this.verifyData()
     return (
@@ -40,6 +41,7 @@ export class MyList extends Component {
                 isReported={isReported}
                 primaryColor={primaryColor}
                 currentUser={currentUser}
+                answerButtonPrompt={answerButtonPrompt}
               />
             )
           }}

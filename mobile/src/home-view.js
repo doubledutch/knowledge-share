@@ -129,15 +129,16 @@ class HomeView extends PureComponent {
         .adminRef('buttonPrompt')
         .on('value', data => {
           if (data.val()){
-            this.setState({ buttonPrompt: data.val(), questionError: "Submit " + data.val()  })
+            this.setState({ buttonPrompt: data.val(), questionError: "Submit " + data.val() })
+          }
+          else {
+          this.setState({ buttonPrompt: "", questionError: "Submit Question" })
           }
         })
         fbc.database.public
         .adminRef('answerButtonPrompt')
         .on('value', data => {
-          if (data.val()){
-            this.setState({ answerButtonPrompt: data.val() })
-          }
+          this.setState({ answerButtonPrompt: data.val() || "Answer" })
         })
         this.hideLogInScreen = setTimeout(() => {
           this.setState( {isLoggedIn: true})
@@ -330,7 +331,9 @@ class HomeView extends PureComponent {
               reports={this.state.reports}
               primaryColor={this.state.primaryColor}
               currentUser={this.state.currentUser}
+              answerPrompt={this.state.answerPrompt}
               buttonPrompt={this.state.buttonPrompt}
+              answerButtonPrompt={this.state.answerButtonPrompt}
             />
           </View>
         </View>
@@ -378,7 +381,7 @@ class HomeView extends PureComponent {
   }
 
   closeAnswer = () => {
-    this.setState({ showQuestion: true, questionError: this.state.buttonPrompt })
+    this.setState({ showQuestion: true, questionError: `Submit ${this.state.buttonPrompt ? this.state.buttonPrompt : "Question"}` })
   }
 
   showModal = () => {
@@ -419,7 +422,7 @@ class HomeView extends PureComponent {
   }
 
   showComments = question => {
-    this.setState({ question, showQuestion: false, questionError: "Submit " + this.state.answerButtonPrompt || t('submitA') })
+    this.setState({ question, showQuestion: false, questionError: `Submit ${this.state.answerButtonPrompt || t('submitA')}` })
   }
 
   handleChange = (prop, value) => {

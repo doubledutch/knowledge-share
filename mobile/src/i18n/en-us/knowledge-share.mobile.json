@@ -31,7 +31,7 @@
   "tap": "Tap here to get started",
   "filters": "Filters",
   "begin": "Begin typing to add topics",
-  "back": "Back to Question",
+  "back": "Back",
   "create": "Create New Topic",
   "no_suggestions": "No Suggestions",
   "error_connecting": "Error connecting to database"

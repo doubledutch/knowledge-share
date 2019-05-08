@@ -73,6 +73,7 @@ const CustomInputs = ({
       <div className="rowBox">
         <div className="text-editor">
           <p className="text-editor__title">Plural Submit Question Type</p>
+          <p className="text-editor__subTitle">*Note: `My` will be auto included in sorting</p>
           <div className="text-editor__inputBox">
             <input
               type="text"
@@ -85,7 +86,7 @@ const CustomInputs = ({
           </div>
         </div>
         <div className="text-editor">
-          <p className="text-editor__title">PluralSubmit Response Type</p>
+          <p className="text-editor__title">Plural Submit Response Type</p>
           <div className="text-editor__inputBox">
             <input
               type="text"

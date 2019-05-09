@@ -83,6 +83,10 @@
   margin-right: 30px;
 }
 
+.text-editor__title_space, .select-editor__title_space {
+  margin-top: 30px;
+}
+
 .text-editor__title, .select-editor__title {
   margin-bottom: 5px;
 }
@@ -141,6 +145,7 @@
   display: flex;
   margin-top: 10px;
   margin-right: 50px;
+  margin-bottom: 100px;
 }
 
 .App {

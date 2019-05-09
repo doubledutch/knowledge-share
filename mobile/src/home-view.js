@@ -130,7 +130,7 @@ class HomeView extends PureComponent {
         fbc.database.public
         .adminRef('buttonPrompt')
         .on('value', data => {
-          if (data.val()){
+          if (data.val().trim()){
             this.setState({ buttonPrompt: data.val().trim(), questionError: "Submit " + data.val().trim() })
           }
           else {

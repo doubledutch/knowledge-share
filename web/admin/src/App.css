@@ -83,6 +83,10 @@
   margin-right: 30px;
 }
 
+.text-editor__title_space, .select-editor__title_space {
+  margin-top: 30px;
+}
+
 .text-editor__title, .select-editor__title {
   margin-bottom: 5px;
 }

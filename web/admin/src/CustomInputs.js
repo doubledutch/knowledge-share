@@ -86,7 +86,7 @@ const CustomInputs = ({
           </div>
         </div>
         <div className="text-editor">
-          <p className="text-editor__title">Plural Submit Response Type</p>
+          <p className="text-editor__title_space">Plural Submit Response Type</p>
           <div className="text-editor__inputBox">
             <input
               type="text"

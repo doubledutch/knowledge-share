@@ -123,16 +123,22 @@ class HomeView extends PureComponent {
         })
         fbc.database.public
         .adminRef('questionPrompt')
-        .on('value', data => this.setState({ questionPrompt: data.val().trim() || '' }))
+        .on('value', data => {
+          const prompt = data.val() || ""
+          this.setState({ questionPrompt: prompt.trim() })
+        })
         fbc.database.public
         .adminRef('answerPrompt')
-        .on('value', data => this.setState({ answerPrompt: data.val().trim() || '' }))
+        .on('value', data => {
+          const prompt = data.val() || ""
+          this.setState({ answerPrompt: prompt.trim() })
+        })
         fbc.database.public
         .adminRef('buttonPrompt')
         .on('value', data => {
           const prompt = data.val() || ""
           if (prompt.trim()){
-            this.setState({ buttonPrompt: data.val().trim(), questionError: "Submit " + data.val().trim() })
+            this.setState({ buttonPrompt: prompt.trim(), questionError: "Submit " + prompt.trim() })
           }
           else {
           this.setState({ buttonPrompt: "", questionError: "Submit Question" })
@@ -141,17 +147,20 @@ class HomeView extends PureComponent {
         fbc.database.public
         .adminRef('answerButtonPrompt')
         .on('value', data => {
-          this.setState({ answerButtonPrompt: data.val().trim() || "Answer" })
+          const prompt = data.val() || ""
+          this.setState({ answerButtonPrompt: prompt.trim() || "Answer" })
         })
         fbc.database.public
         .adminRef('buttonPromptPlural')
         .on('value', data => {
-          this.setState({ buttonPromptPlural: data.val().trim() || "" })
+          const prompt = data.val() || ""
+          this.setState({ buttonPromptPlural: prompt.trim() || "" })
         })
         fbc.database.public
         .adminRef('answerButtonPromptPlural')
         .on('value', data => {
-          this.setState({ answerButtonPromptPlural: data.val().trim() || "Answers" })
+          const prompt = data.val() || ""
+          this.setState({ answerButtonPromptPlural: prompt.trim() || "Answers" })
         })
         this.hideLogInScreen = setTimeout(() => {
           this.setState( {isLoggedIn: true})

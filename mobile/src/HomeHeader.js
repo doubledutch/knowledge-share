@@ -140,7 +140,6 @@ const s = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     flexWrap: 'wrap',
-    height: 50,
   },
   upVoteButton: {
     alignContent: 'center',

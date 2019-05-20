@@ -27,6 +27,7 @@ import {
 import i18n from './i18n'
 import CustomInputs from './CustomInputs'
 import CustomCell from './cell'
+import AllQuestionsContainer from './AllQuestionsContainer'
 import '@doubledutch/react-components/lib/base.css'
 
 useStrings(i18n)
@@ -168,15 +169,6 @@ class App extends PureComponent {
     return (
       <div>
         <p className="bigBoxTitle">Knowledge Share</p>
-        <CustomInputs
-          fbc={this.props.fbc}
-          questionPrompt={this.state.questionPrompt}
-          answerPrompt={this.state.answerPrompt}
-          buttonPrompt={this.state.buttonPrompt}
-          answerButtonPrompt={this.state.answerButtonPrompt}
-          buttonPromptPlural={this.state.buttonPromptPlural}
-          answerButtonPromptPlural={this.state.answerButtonPromptPlural}
-        />
         <div className="container">
           <div className="questionBox">
             <p className="boxTitle">Reports</p>
@@ -284,6 +276,20 @@ class App extends PureComponent {
             <CSVDownload data={this.state.exportList} filename="results.csv" target="_blank" />
           ) : null}
         </div>
+        <AllQuestionsContainer
+          fbc={this.props.fbc}
+          questions={this.state.questions}
+          answers={this.state.answersByQuestion}
+        />
+        <CustomInputs
+          fbc={this.props.fbc}
+          questionPrompt={this.state.questionPrompt}
+          answerPrompt={this.state.answerPrompt}
+          buttonPrompt={this.state.buttonPrompt}
+          answerButtonPrompt={this.state.answerButtonPrompt}
+          buttonPromptPlural={this.state.buttonPromptPlural}
+          answerButtonPromptPlural={this.state.answerButtonPromptPlural}
+        />
       </div>
     )
   }

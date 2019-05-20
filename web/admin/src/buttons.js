@@ -21,7 +21,7 @@ import deleteocircle from './icons/deleteocircle.svg'
 
 export default class CustomButtons extends Component {
   render() {
-    const { markBlock, report, unBlock, currentKey, currentUser, reportUser } = this.props
+    const { markBlock, report, unBlock, currentKey, currentUser } = this.props
     if (markBlock) {
       return (
         <span className="cellBoxRight">

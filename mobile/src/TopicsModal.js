@@ -111,14 +111,14 @@ export default class TopicsModal extends Component {
   }
 
   filtersTable = () => {
-    const { currentUser, primaryColor } = this.props
+    const { currentUser, primaryColor, selectedFilters } = this.props
     let currentList = this.props.filters
     if (this.state.search) currentList = this.state.newList
-    if (this.state.search === false) {
+    if (!this.state.search) {
       return (
         <View style={s.table2}>
           <ScrollView horizontal>
-            {this.props.selectedFilters.map((item, i) => (
+            {selectedFilters.map((item, i) => (
               <FilterCell
                 item={item}
                 key={i}
@@ -128,7 +128,7 @@ export default class TopicsModal extends Component {
                 currentUser={currentUser}
               />
             ))}
-            {currentList.map((item, i) => (
+            {selectedFilters.length < 8 && currentList.map((item, i) => (
               <FilterCell
                 item={item}
                 key={i}
@@ -144,27 +144,29 @@ export default class TopicsModal extends Component {
     }
 
     return (
-      <View style={s.table2}>
-        <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}>
-          <Text style={[s.topicsButtonText, { color: primaryColor }]}>{t('create')}</Text>
-        </TouchableOpacity>
-        {currentList.length ? (
-          <ScrollView horizontal>
-            {currentList.map((item, i) => (
-              <FilterCell
-                item={item}
-                key={i}
-                select={this.props.selectedFilters.includes(item)}
-                addFilter={this.addFilter}
-                primaryColor={this.props.primaryColor}
-                currentUser={currentUser}
-                removeFilter={this.props.removeFilter}
-              />
-            ))}
-          </ScrollView>
-        ) : (
-          <Text style={{ color: '#9B9B9B' }}>{t('no_suggestions')}</Text>
-        )}
+      <View>
+        {selectedFilters.length >= 8 ? <View style={s.table2}><Text style={s.topicHelpText}>{t('remove_topics')}</Text></View> : <View style={s.table2}>
+          <TouchableOpacity disabled={!this.state.topic.trim().length} onPress={this.addNewTopic}>
+            <Text style={[s.topicsButtonText, { color: primaryColor }]}>{t('create')}</Text>
+          </TouchableOpacity>
+          {currentList.length ? (
+            <ScrollView horizontal>
+              {currentList.map((item, i) => (
+                <FilterCell
+                  item={item}
+                  key={i}
+                  select={this.props.selectedFilters.includes(item)}
+                  addFilter={this.addFilter}
+                  primaryColor={this.props.primaryColor}
+                  currentUser={currentUser}
+                  removeFilter={this.props.removeFilter}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <Text style={s.suggestionHelpText}>{t('no_suggestions')}</Text>
+          )}
+        </View>}
       </View>
     )
   }
@@ -222,6 +224,13 @@ const s = ReactNative.StyleSheet.create({
     height: 20,
     color: '#9B9B9B',
     textAlign: 'center',
+  },
+  topicHelpText: {
+    color: '#9B9B9B',
+    marginLeft: 10
+  },
+  suggestionHelpText: {
+    color: '#9B9B9B',
   },
   table2: {
     flexDirection: 'row',

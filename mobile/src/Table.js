@@ -102,7 +102,7 @@ export class MyList extends Component {
     const { currentSort, selectedFilters, currentUser } = this.props
     const votes = this.props.votesByQuestion || 0
     if (questions) {
-      const prompt = this.props.buttonPrompt ? `My ${this.props.buttonPrompt}` : t("questions")
+      const prompt = this.props.buttonPromptPlural ? `My ${this.props.buttonPromptPlural}` : t("questions")
       if (currentSort === prompt){
         return questions.filter(item => item.creator.id === currentUser.id)
       }

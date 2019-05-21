@@ -112,7 +112,6 @@ export default class TopicsModal extends Component {
 
   filtersTable = () => {
     const { currentUser, primaryColor, selectedFilters } = this.props
-    console.log(selectedFilters.length)
     let currentList = this.props.filters
     if (this.state.search) currentList = this.state.newList
     if (!this.state.search) {

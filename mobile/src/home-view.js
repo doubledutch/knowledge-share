@@ -355,6 +355,7 @@ class HomeView extends PureComponent {
               currentUser={this.state.currentUser}
               answerPrompt={this.state.answerPrompt}
               buttonPrompt={this.state.buttonPrompt}
+              buttonPromptPlural={this.state.buttonPromptPlural}
               answerButtonPrompt={this.state.answerButtonPrompt}
               answerButtonPromptPlural={this.state.answerButtonPromptPlural}
             />

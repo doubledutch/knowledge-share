@@ -12,5 +12,10 @@
   "hide_question": "Hide Question",
   "view_question": "View Question",
   "flagged": "Flagged by: ${users}",
-  "export": "Export Data"
+  "export": "Export Data",
+  "all_questions": "All Questions",
+  "total": "Total: (${total})",
+  "blocked_bold": "BLOCKED",
+  "question": "Question",
+  "answer": "Answer"
 }

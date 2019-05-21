@@ -142,6 +142,4 @@ export default class CustomCell extends Component {
   hideQuestion = () => {
     this.setState({ isShowingQuestion: false })
   }
-
-  showQuestion = (location, key) => {}
 }

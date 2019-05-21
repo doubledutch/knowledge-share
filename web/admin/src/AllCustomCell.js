@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 DoubleDutch, Inc.
+ * Copyright 2019 DoubleDutch, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import checkocircle from './icons/checkocircle.svg'
 import deleteocircle from './icons/deleteocircle.svg'
 
 const AllQuestionsContainer = ({ content, responses, fbc }) => {
-  const isQuestion = true
   return (
     <div className="verticalBox">
-      <Cell content={content} fbc={fbc} isQuestion={isQuestion} />
+      <Cell content={content} fbc={fbc} isQuestion />
       {responses.map(item => (
         <Cell content={item} fbc={fbc} />
       ))}

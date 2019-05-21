@@ -138,10 +138,10 @@ class HomeView extends PureComponent {
         .on('value', data => {
           const prompt = data.val() || ""
           if (prompt.trim()){
-            this.setState({ buttonPrompt: prompt.trim(), questionError: "Submit " + prompt.trim() })
+            this.setState({ buttonPrompt: prompt.trim(), questionError: t("customSubmit", {prompt: prompt.trim()}) })
           }
           else {
-          this.setState({ buttonPrompt: "", questionError: "Submit Question" })
+          this.setState({ buttonPrompt: "", questionError: t("submitQ") })
           }
         })
         fbc.database.public
@@ -304,7 +304,7 @@ class HomeView extends PureComponent {
             handleChange={this.handleChange}
             sortTopics={this.sortTopics}
             currentSort={this.state.currentSort}
-            lastSort={this.state.buttonPromptPlural ? `My ${this.state.buttonPromptPlural}` : t("questions")}
+            lastSort={this.state.buttonPromptPlural ? t("customPrompt", { prompt: this.state.buttonPromptPlural }) : t("questions")}
           />
         </View>
       )
@@ -405,7 +405,8 @@ class HomeView extends PureComponent {
   }
 
   closeAnswer = () => {
-    this.setState({ showQuestion: true, questionError: `Submit ${this.state.buttonPrompt ? this.state.buttonPrompt : "Question"}` })
+    const prompt = this.state.buttonPrompt ? this.state.buttonPrompt : "Question"
+    this.setState({ showQuestion: true, questionError: t("customSubmit", {prompt}) })
   }
 
   showModal = () => {

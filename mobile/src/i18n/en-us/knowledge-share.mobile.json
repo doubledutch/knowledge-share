@@ -34,5 +34,6 @@
   "back": "Back",
   "create": "Create New Topic",
   "no_suggestions": "No Suggestions",
-  "error_connecting": "Error connecting to database"
+  "error_connecting": "Error connecting to database",
+  "remove_topics": "Please remove a current topic to add more"
 }

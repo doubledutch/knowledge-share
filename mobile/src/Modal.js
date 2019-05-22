@@ -13,7 +13,7 @@ export default class CustomModal extends Component {
       inputHeight: 0,
       showTopics: false,
       selectedFilters: [],
-      filters: this.props.filters,
+      filters: this.props.filters.slice(),
     }
   }
 

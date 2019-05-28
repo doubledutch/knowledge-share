@@ -16,7 +16,8 @@ export class MyList extends Component {
       currentUser,
       comments,
       answerButtonPrompt,
-      answerButtonPromptPlural
+      answerButtonPromptPlural,
+      handleEdit
     } = this.props
     const data = this.verifyData()
     return (
@@ -39,6 +40,7 @@ export class MyList extends Component {
                 showQuestion={showQuestion}
                 showComments={showComments}
                 handleReport={handleReport}
+                handleEdit={handleEdit}
                 isReported={isReported}
                 primaryColor={primaryColor}
                 currentUser={currentUser}

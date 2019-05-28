@@ -8,12 +8,21 @@ export default class CustomModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      question: '',
+      question: this.props.edit.text || '',
       borderColor: '#EFEFEF',
       inputHeight: 0,
       showTopics: false,
       selectedFilters: [],
       filters: this.props.filters.slice(),
+    }
+  }
+
+  componentDidMount(){
+    if (this.props.edit.filters) {
+      this.props.edit.filters.forEach(filter => {
+        const selectedFilter = this.state.filters.find(foundFilter => foundFilter.title === filter)
+        if (selectedFilter) this.addFilter(selectedFilter)
+      })
     }
   }
 

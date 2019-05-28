@@ -80,6 +80,7 @@ export default class HomeHeader extends Component {
                 report={this.props.reportQuestion}
                 item={question}
                 handleReport={this.props.handleReport}
+                handleEdit={this.props.handleEdit}
                 isReported={isReported}
                 currentUser={currentUser}
               />

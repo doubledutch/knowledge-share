@@ -66,6 +66,7 @@ export default class TableCell extends Component {
               report={this.props.reportQuestion}
               item={item}
               handleReport={this.props.handleReport}
+              handleEdit={this.props.handleEdit}
               isReported={this.props.isReported}
               currentUser={currentUser}
             />

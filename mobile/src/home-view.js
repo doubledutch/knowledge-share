@@ -65,7 +65,8 @@ class HomeView extends PureComponent {
       buttonPrompt: "",
       answerButtonPrompt: "",
       buttonPromptPlural: "",
-      answerButtonPromptPlural: ""
+      answerButtonPromptPlural: "",
+      edit: {}
     }
 
     this.signin = props.fbc.signin()
@@ -323,6 +324,7 @@ class HomeView extends PureComponent {
             newVote={this.newVote}
             handleChange={this.handleChange}
             handleReport={this.handleReport}
+            handleEdit={this.handleEditQ}
             reportedQuestions={this.state.reportedQuestions}
             reports={this.state.reports}
             primaryColor={this.state.primaryColor}
@@ -330,6 +332,7 @@ class HomeView extends PureComponent {
             questionPrompt={this.state.questionPrompt}
             answerPrompt={this.state.answerPrompt}
             buttonPrompt={this.state.buttonPrompt}
+            edit={this.state.edit}
           />
           <View style={{ flex: 1 }}>
             <MyList
@@ -348,6 +351,7 @@ class HomeView extends PureComponent {
               selectedFilters={this.state.selectedFilters}
               reportQuestion={this.reportQuestion}
               handleReport={this.handleReport}
+              handleEdit={this.handleEdit}
               reportedQuestions={this.state.reportedQuestions}
               reportedComments={this.state.reportedComments}
               reports={this.state.reports}
@@ -386,6 +390,7 @@ class HomeView extends PureComponent {
         currentUser={this.state.currentUser}
         questionPrompt={this.state.questionPrompt}
         answerPrompt={this.state.answerPrompt}
+        edit={this.state.edit}
       />
     )
   }
@@ -419,6 +424,13 @@ class HomeView extends PureComponent {
 
   handleReport = item => {
     this.setState({ showReportModal: true, report: item })
+  }
+  handleEdit = item => {
+    this.setState({ modalVisible: true, animation: 'none', edit: item })
+  }
+
+  handleEditQ = item => {
+    this.setState({ modalVisible: true, showQuestion: true, edit: item })
   }
 
   reportQuestion = question =>
@@ -464,7 +476,27 @@ class HomeView extends PureComponent {
       this.setState({ showError: true })
     }
     if (questionName.length > 0) {
-      ref('questions')
+      if (this.state.edit.id) {
+        ref('questions')
+        .child(this.state.edit.id).update({
+          text: questionName,
+          creator: this.state.currentUser,
+          comments: [],
+          dateCreate: time,
+          block: false,
+          lastEdit: time,
+          filters,
+        })
+        .then(() => {
+          this.setState({ question: '', showError: false, edit: {} })
+          setTimeout(() => {
+            this.hideModal()
+          }, 250)
+        })
+        .catch(error => this.setState({ questionError: t('retry') }))
+      }
+      else {
+        ref('questions')
         .push({
           text: questionName,
           creator: this.state.currentUser,
@@ -481,6 +513,7 @@ class HomeView extends PureComponent {
           }, 250)
         })
         .catch(error => this.setState({ questionError: t('retry') }))
+      }
     }
   }
 
@@ -494,7 +527,27 @@ class HomeView extends PureComponent {
       this.setState({ showError: true })
     }
     if (commentName.length > 0) {
-      ref('answers')
+      if (this.state.edit.id){
+        ref('answers')
+        .child(this.state.edit.id)
+        .update({
+          text: commentName,
+          creator: this.state.currentUser,
+          dateCreate: time,
+          block: false,
+          lastEdit: time,
+          questionId: this.state.question.id,
+        })
+        .then(() => {
+          this.setState({ showError: false, edit: {} })
+          setTimeout(() => {
+            this.hideModal()
+          }, 250)
+        })
+        .catch(error => this.setState({ questionError: t('retry') }))
+      }
+      else { 
+        ref('answers')
         .push({
           text: commentName,
           creator: this.state.currentUser,
@@ -510,6 +563,7 @@ class HomeView extends PureComponent {
           }, 250)
         })
         .catch(error => this.setState({ questionError: t('retry') }))
+      }
     }
   }
 

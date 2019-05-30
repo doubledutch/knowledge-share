@@ -419,7 +419,7 @@ class HomeView extends PureComponent {
   }
 
   hideModal = () => {
-    this.setState({ modalVisible: false, animation: 'slide', showError: false })
+    this.setState({ modalVisible: false, animation: 'slide', showError: false, edit: {} })
   }
 
   handleReport = item => {
@@ -430,7 +430,8 @@ class HomeView extends PureComponent {
   }
 
   handleEditQ = item => {
-    this.setState({ modalVisible: true, showQuestion: true, edit: item })
+    const prompt = this.state.buttonPrompt ? this.state.buttonPrompt : "Question"
+    this.setState({ modalVisible: true, showQuestion: true, edit: item, questionError: t("customSubmit", {prompt})  })
   }
 
   reportQuestion = question =>

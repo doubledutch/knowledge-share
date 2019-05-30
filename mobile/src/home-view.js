@@ -419,7 +419,7 @@ class HomeView extends PureComponent {
   }
 
   hideModal = () => {
-    this.setState({ modalVisible: false, animation: 'slide', showError: false })
+    this.setState({ modalVisible: false, animation: 'slide', showError: false, edit: {} })
   }
 
   handleReport = item => {
@@ -430,7 +430,8 @@ class HomeView extends PureComponent {
   }
 
   handleEditQ = item => {
-    this.setState({ modalVisible: true, showQuestion: true, edit: item })
+    const prompt = this.state.buttonPrompt ? this.state.buttonPrompt : "Question"
+    this.setState({ modalVisible: true, showQuestion: true, edit: item, questionError: t("customSubmit", {prompt})  })
   }
 
   reportQuestion = question =>
@@ -480,10 +481,6 @@ class HomeView extends PureComponent {
         ref('questions')
         .child(this.state.edit.id).update({
           text: questionName,
-          creator: this.state.currentUser,
-          comments: [],
-          dateCreate: time,
-          block: false,
           lastEdit: time,
           filters,
         })
@@ -532,11 +529,7 @@ class HomeView extends PureComponent {
         .child(this.state.edit.id)
         .update({
           text: commentName,
-          creator: this.state.currentUser,
-          dateCreate: time,
-          block: false,
           lastEdit: time,
-          questionId: this.state.question.id,
         })
         .then(() => {
           this.setState({ showError: false, edit: {} })

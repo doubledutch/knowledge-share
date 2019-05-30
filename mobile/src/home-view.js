@@ -529,11 +529,7 @@ class HomeView extends PureComponent {
         .child(this.state.edit.id)
         .update({
           text: commentName,
-          creator: this.state.currentUser,
-          dateCreate: time,
-          block: false,
           lastEdit: time,
-          questionId: this.state.question.id,
         })
         .then(() => {
           this.setState({ showError: false, edit: {} })

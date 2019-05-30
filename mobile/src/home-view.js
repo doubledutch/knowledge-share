@@ -481,10 +481,6 @@ class HomeView extends PureComponent {
         ref('questions')
         .child(this.state.edit.id).update({
           text: questionName,
-          creator: this.state.currentUser,
-          comments: [],
-          dateCreate: time,
-          block: false,
           lastEdit: time,
           filters,
         })

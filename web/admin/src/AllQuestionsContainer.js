@@ -21,7 +21,7 @@ import AllCustomCell from './AllCustomCell'
 const AllQuestionsContainer = ({ fbc, questions, answers }) => {
   const filteredQuestions = Object.values(questions)
     .map(item => ({ ...item, isQuestion: true }))
-    .sort((a, b) => b.dateCreate - a.dateCreate)
+    .sort((a, b) => b.lastEdit - a.lastEdit)
   return (
     <div className="flexContainer">
       <div className="questionBoxWide">

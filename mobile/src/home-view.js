@@ -302,6 +302,7 @@ class HomeView extends PureComponent {
       return (
         <View style={{ flex: 1 }}>
           <SortSelect
+            primaryColor={this.state.primaryColor}
             handleChange={this.handleChange}
             sortTopics={this.sortTopics}
             currentSort={this.state.currentSort}

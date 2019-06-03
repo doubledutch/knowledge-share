@@ -47,13 +47,22 @@ const Cell = ({ content, isQuestion, fbc }) => {
         </div>
       </div>
       <span className="cellBoxRight">
-        <img className="button1" onClick={() => unBlock(content)} src={checkocircle} alt="check" />
-        <img
-          className="button1"
-          onClick={() => markBlock(content)}
-          src={deleteocircle}
-          alt="block"
-        />
+        {content.block && (
+          <img
+            className="button1"
+            onClick={() => unBlock(content)}
+            src={checkocircle}
+            alt="check"
+          />
+        )}
+        {!content.block && (
+          <img
+            className="button1"
+            onClick={() => markBlock(content)}
+            src={deleteocircle}
+            alt="block"
+          />
+        )}
       </span>
     </div>
   )

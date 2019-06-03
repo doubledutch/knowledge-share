@@ -11,6 +11,7 @@ export default class SortSelect extends Component {
       search: false,
     }
   }
+  
 
   render() {
     return (
@@ -45,7 +46,7 @@ export default class SortSelect extends Component {
   topicsHeader = () => (
     <View style={s.buttonContainer}>
       <TouchableOpacity onPress={() => this.props.handleChange('showSort', false)}>
-        <Text style={s.closeButton}>X</Text>
+        <Text style={[s.closeButton, {color: this.props.primaryColor}]}>X</Text>
       </TouchableOpacity>
       <Text style={s.title}>{t('sort')}</Text>
       <Text style={{ width: 25 }} />
@@ -83,6 +84,9 @@ const s = StyleSheet.create({
     color: '#9B9B9B',
   },
   closeButton: {
-    marginLeft: 20,
+    marginLeft: 15,
+    fontWeight: '900',
+    fontSize: 16,
+    padding: 5
   },
 })

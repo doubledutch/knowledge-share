@@ -420,6 +420,9 @@ class HomeView extends PureComponent {
   }
 
   hideModal = () => {
+    if (this.state.edit.id) {
+      this.setState({ showQuestion: false, questionError: `Submit ${this.state.answerButtonPrompt || t('submitA')}` })
+    }
     this.setState({ modalVisible: false, animation: 'slide', showError: false, edit: {} })
   }
 

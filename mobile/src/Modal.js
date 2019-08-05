@@ -19,10 +19,7 @@ export default class CustomModal extends Component {
 
   componentDidMount(){
     if (this.props.edit.filters) {
-      this.props.edit.filters.forEach(filter => {
-        const selectedFilter = this.state.filters.find(foundFilter => foundFilter.title === filter)
-        if (selectedFilter) this.addFilter(selectedFilter)
-      })
+      this.addFilters()
     }
   }
 
@@ -186,6 +183,19 @@ export default class CustomModal extends Component {
 
   handleChange = (prop, value) => {
     this.setState({ [prop]: value })
+  }
+
+  addFilters = () => {
+    const {filters } = this.state
+    let selectedFilters = this.state.selectedFilters
+    this.props.edit.filters.forEach(filter => {
+      const selectedFilterIndex = this.state.filters.findIndex(foundFilter => foundFilter.title === filter)
+      if (selectedFilterIndex) {
+        const filter = filters.splice(selectedFilterIndex, 1)
+        selectedFilters = selectedFilters.concat(filter)
+      }
+    })
+    this.setState({ filters, selectedFilters })
   }
 
   addFilter = selected => {

@@ -477,19 +477,19 @@ class HomeView extends PureComponent {
   createQuestion = (ref, question, filters) => {
     const time = new Date().getTime()
     const questionName = question.trim()
+    const newQuestion = { text: questionName, lastEdit: time, filters }
+    const localQ = this.state.question 
+    localQ.text = questionName
+    localQ.filters = filters
     if (questionName.length === 0) {
       this.setState({ showError: true })
     }
     if (questionName.length > 0) {
       if (this.state.edit.id) {
         ref('questions')
-        .child(this.state.edit.id).update({
-          text: questionName,
-          lastEdit: time,
-          filters,
-        })
+        .child(this.state.edit.id).update(newQuestion)
         .then(() => {
-          this.setState({ showError: false, edit: {}, showQuestion: false })
+          this.setState({ showError: false, edit: {}, showQuestion: false, question: localQ })
           setTimeout(() => {
             this.hideModal()
           }, 250)

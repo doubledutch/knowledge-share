@@ -420,7 +420,6 @@ class HomeView extends PureComponent {
   }
 
   hideModal = () => {
-    if (this.state.edit.id) this.setState({ showQuestion: false })
     this.setState({ modalVisible: false, animation: 'slide', showError: false, edit: {} })
   }
 
@@ -487,7 +486,7 @@ class HomeView extends PureComponent {
           filters,
         })
         .then(() => {
-          this.setState({ question: '', showError: false, edit: {} })
+          this.setState({ showError: false, edit: {}, showQuestion: false })
           setTimeout(() => {
             this.hideModal()
           }, 250)

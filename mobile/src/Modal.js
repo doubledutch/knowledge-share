@@ -46,7 +46,7 @@ export default class CustomModal extends Component {
 
   renderQuestion = () => {
     const question = this.props.question
-    if (this.props.showQuestion === false) {
+    if (this.props.showQuestion === false && question) {
       return (
         <View style={s.listContainer}>
           <View style={s.rightContainer}>

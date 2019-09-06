@@ -25,7 +25,7 @@ const AllQuestionsContainer = ({ content, responses, fbc }) => {
     <div className="verticalBox">
       <Cell content={content} fbc={fbc} isQuestion />
       {responses.map(item => (
-        <Cell content={item} fbc={fbc} />
+        <Cell content={item} fbc={fbc} key={item.id} />
       ))}
     </div>
   )

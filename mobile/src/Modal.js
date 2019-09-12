@@ -61,7 +61,7 @@ export default class CustomModal extends Component {
   }
 
   render() {
-    const { primaryColor } = this.props
+    const { primaryColor, clearError } = this.props
     const newStyle = {
       flex: 1,
       fontSize: 18,
@@ -135,7 +135,11 @@ export default class CustomModal extends Component {
             {this.props.showQuestion ? (
               <TouchableOpacity
                 style={[s.topicsButton, { borderColor: primaryColor }]}
-                onPress={() => this.handleChange('showTopics', true)}
+                onPress={() => {
+                    this.handleChange('showTopics', true)
+                    clearError()
+                  }
+                }
               >
                 <Text style={[s.topicsButtonText, { color: primaryColor }]}>{t('add_topics')}</Text>
               </TouchableOpacity>

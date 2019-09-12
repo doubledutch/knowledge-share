@@ -46,6 +46,10 @@
   height: 30px;
 }
 
+.headerDesText {
+  margin: 0px;
+}
+
 .csvButton{
   float: right;
   text-decoration: none;

@@ -12,6 +12,10 @@ const CustomInputs = ({
   return (
     <div className="flexContainer">
       <p className="boxTitle">Custom App Titles</p>
+      <p className="headerDesText">
+        These options allow you to customize the prompts throughout the app to provide a more
+        tailored user experience.
+      </p>
       <div className="rowBox">
         <div className="text-editor">
           <p className="text-editor__title">Question Input Prompt</p>

@@ -49,6 +49,7 @@ const AllQuestionsContainer = ({ fbc, questions, answers }) => {
               </li>
             )
           })}
+          {filteredQuestions.length === 0 && <p className="tableHelpText">No Questions Found</p>}
         </ul>
       </div>
     </div>

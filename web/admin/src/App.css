@@ -103,6 +103,13 @@
   padding: 0 0.7em;
 }
 
+.tableHelpText {
+  font-size: 18px;
+  flex: 1;
+  margin-top: 250px;
+  text-align: center;
+}
+
 .searchBar {
   margin: 0px;
   padding: 5px;

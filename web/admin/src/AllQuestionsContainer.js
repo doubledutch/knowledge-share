@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-import React from 'react'
-import client, { translate as t, useStrings } from '@doubledutch/admin-client'
+import React, { useState } from 'react'
+import { translate as t } from '@doubledutch/admin-client'
 import AllCustomCell from './AllCustomCell'
+import SearchBar from './SearchBar'
 
 const AllQuestionsContainer = ({ fbc, questions, answers }) => {
-  const filteredQuestions = Object.values(questions)
-    .map(item => ({ ...item, isQuestion: true }))
-    .sort((a, b) => b.lastEdit - a.lastEdit)
+  const [search, updateSearch] = useState('')
+
+  const filteredQuestions = searchFilter(
+    Object.values(questions)
+      .map(item => ({ ...item, isQuestion: true }))
+      .sort((a, b) => b.lastEdit - a.lastEdit),
+    search,
+  )
+
   return (
     <div className="flexContainer">
       <div className="questionBoxWide">
         <p className="boxTitle">{t('all_questions')}</p>
         <div className="cellBoxTop">
           <p className="listTitle">{t('total', { total: filteredQuestions.length })}</p>
+          <SearchBar search={search} updateSearch={updateSearch} />
         </div>
         <ul className="listBox">
           {filteredQuestions.map(content => {
@@ -45,6 +53,16 @@ const AllQuestionsContainer = ({ fbc, questions, answers }) => {
       </div>
     </div>
   )
+}
+
+const searchFilter = (list, search) => {
+  if (search.trim()) {
+    return list.filter(question => {
+      const title = question.text.toLowerCase()
+      return title.includes(search.toLowerCase())
+    })
+  }
+  return list
 }
 
 export default AllQuestionsContainer

@@ -103,6 +103,20 @@
   padding: 0 0.7em;
 }
 
+.searchBar {
+  margin: 0px;
+  padding: 5px;
+  border-radius: 5px;
+  height: 28px;
+  width: 200px;
+  border: 0.06em solid #abbac9;
+}
+
+.containerRowSearchBar {
+  display: flex;
+  align-items: center;
+}
+
 .text-editor__inputBox {
   flex-direction: row wrap;
   display: flex;

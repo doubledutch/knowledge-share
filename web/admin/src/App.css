@@ -46,6 +46,10 @@
   height: 30px;
 }
 
+.headerDesText {
+  margin: 0px;
+}
+
 .csvButton{
   float: right;
   text-decoration: none;
@@ -92,7 +96,6 @@
   font-size: 12px;
 }
 
-
 .text-editor__input {
   flex: 1;
   border: 0px;
@@ -101,6 +104,27 @@
   background-color: #FFFFFF;
   font-size: 1.25em;
   padding: 0 0.7em;
+}
+
+.tableHelpText {
+  font-size: 18px;
+  flex: 1;
+  margin-top: 250px;
+  text-align: center;
+}
+
+.searchBar {
+  margin: 0px;
+  padding: 5px;
+  border-radius: 5px;
+  height: 28px;
+  width: 200px;
+  border: 0.06em solid #abbac9;
+}
+
+.containerRowSearchBar {
+  display: flex;
+  align-items: center;
 }
 
 .text-editor__inputBox {

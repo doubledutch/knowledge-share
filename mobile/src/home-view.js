@@ -392,6 +392,7 @@ class HomeView extends PureComponent {
         questionPrompt={this.state.questionPrompt}
         answerPrompt={this.state.answerPrompt}
         edit={this.state.edit}
+        clearError={this.clearError}
       />
     )
   }
@@ -424,6 +425,10 @@ class HomeView extends PureComponent {
       this.setState({ showQuestion: false, questionError: `Submit ${this.state.answerButtonPrompt || t('submitA')}` })
     }
     this.setState({ modalVisible: false, animation: 'slide', showError: false, edit: {} })
+  }
+
+  clearError = () => {
+    this.setState({showError: false})
   }
 
   handleReport = item => {

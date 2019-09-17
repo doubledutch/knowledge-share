@@ -174,20 +174,22 @@ class App extends PureComponent {
             <p className="boxTitle">Reports</p>
             <div className="cellBoxTop">
               <p className="listTitle">{t('reported', { totalReported })}</p>
-              <button
-                className="noBorderButton"
-                disabled={!totalReported}
-                onClick={() => this.approveAll(questionsOrAnswersAndReports)}
-              >
-                {t('approve_all')}
-              </button>
-              <button
-                className="noBorderButton"
-                disabled={!totalReported}
-                onClick={() => this.blockAll(questionsOrAnswersAndReports)}
-              >
-                {t('block_all')}
-              </button>
+              {!!totalReported && (
+                <button
+                  className="noBorderButton"
+                  onClick={() => this.approveAll(questionsOrAnswersAndReports)}
+                >
+                  {t('approve_all')}
+                </button>
+              )}
+              {!!totalReported && (
+                <button
+                  className="noBorderButton"
+                  onClick={() => this.blockAll(questionsOrAnswersAndReports)}
+                >
+                  {t('block_all')}
+                </button>
+              )}
             </div>
             <ul
               className="listBox"
@@ -306,9 +308,9 @@ class App extends PureComponent {
       if (this.state.answersByQuestion[question.id]) {
         Object.values(this.state.answersByQuestion[question.id]).forEach((item, i) => {
           exportObject[`Response_${i + 1}`] = item.text
-          exportObject[`Response_${i + 1}_Creator`] = `${item.creator.firstName} ${
-            item.creator.lastName
-          }`
+          exportObject[
+            `Response_${i + 1}_Creator`
+          ] = `${item.creator.firstName} ${item.creator.lastName}`
         })
       } else exportObject.Responses = 'None'
       return exportObject

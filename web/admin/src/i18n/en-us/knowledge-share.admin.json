@@ -17,5 +17,6 @@
   "total": "Total: (${total})",
   "blocked_bold": "BLOCKED",
   "question": "Question",
-  "answer": "Answer"
+  "answer": "Answer",
+  "search": "Search"
 }

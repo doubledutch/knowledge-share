@@ -17,6 +17,7 @@
 import React, { Component } from 'react'
 import './App.css'
 import { translate as t } from '@doubledutch/admin-client'
+import ReactTooltip from 'react-tooltip'
 import checkocircle from './icons/checkocircle.svg'
 import deleteocircle from './icons/deleteocircle.svg'
 
@@ -50,6 +51,7 @@ const Cell = ({ content, isQuestion, fbc }) => {
         {content.block && (
           <img
             className="button1"
+            data-tip="UnBlock Question"
             onClick={() => unBlock(content)}
             src={checkocircle}
             alt="check"
@@ -58,12 +60,14 @@ const Cell = ({ content, isQuestion, fbc }) => {
         {!content.block && (
           <img
             className="button1"
+            data-tip="Block Question"
             onClick={() => markBlock(content)}
             src={deleteocircle}
             alt="block"
           />
         )}
       </span>
+      <ReactTooltip />
     </div>
   )
 

@@ -11,7 +11,8 @@
     "@doubledutch/react-csv": "^1.1.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-scripts": "^2.1.8"
+    "react-scripts": "^2.1.8",
+    "react-tooltip": "^3.11.1"
   },
   "scripts": {
     "start": "node emulator",
